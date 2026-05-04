@@ -1,0 +1,39 @@
+# 后端 lint / format 配置（用 ruff —— 比 black + flake8 + isort 加起来还快）
+#
+# 用法：
+#   ruff check backend/             # 检查
+#   ruff check backend/ --fix       # 自动修可修的
+#   ruff format backend/            # 格式化（类似 black）
+
+[tool.ruff]
+line-length = 110
+target-version = "py313"
+extend-exclude = [".venv", "__pycache__", "data"]
+
+[tool.ruff.lint]
+# 启用一组合理的规则（不要太严，否则一堆噪音）
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes (unused imports/vars/etc)
+    "W",   # pycodestyle warnings
+    "I",   # isort (import sorting)
+    "B",   # flake8-bugbear (常见 bug 模式)
+    "UP",  # pyupgrade (使用新语法)
+]
+# 忽略一些噪音规则
+ignore = [
+    "E501",   # 行太长 — 我们用 110 已经够宽，偶尔超一两个字符不报
+    "B008",   # `Depends(...)` 在 default 里是 FastAPI 标准写法
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]  # 允许 re-export
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+# pythonpath 让 tests 能直接 import 业务模块
+pythonpath = ["."]
+# asyncio：自动模式（@pytest.mark.asyncio 不需要每个 case 都标）
+asyncio_mode = "auto"

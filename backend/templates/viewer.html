@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>__TITLE__</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #F2F2F7;
+    --bg-elev: #FFFFFF;
+    --label: rgba(0,0,0,0.92);
+    --label-secondary: rgba(0,0,0,0.55);
+    --label-tertiary: rgba(0,0,0,0.32);
+    --separator: rgba(60,60,67,0.12);
+    --pink: #FF2D55;
+    --pink-soft: rgba(255,45,85,0.12);
+    --gray-3: #C7C7CC;
+    --gray-4: #D1D1D6;
+    --gray-5: #E5E5EA;
+    --gray-6: #F2F2F7;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+    color: var(--label);
+  }
+  .stage { min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* Top bar */
+  .topbar {
+    background: rgba(255,255,255,0.78);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 0.5px solid var(--separator);
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .logo {
+    width: 26px; height: 26px; border-radius: 7px; background: var(--pink);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 13px; flex-shrink: 0;
+  }
+  .title { font-weight: 700; font-size: 16px; letter-spacing: -0.02em; }
+  .crumb { display: flex; gap: 2px; align-items: center; flex: 1; justify-content: center; flex-wrap: wrap; }
+  .crumb button {
+    background: transparent; border: none; padding: 5px 11px; border-radius: 999px;
+    cursor: pointer; font-size: 13px; font-family: inherit; font-weight: 500;
+    color: var(--label-secondary); white-space: nowrap;
+  }
+  .crumb button:hover { background: var(--gray-6); }
+  .crumb button.cur { background: white; color: var(--label); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+  .crumb .sep { color: var(--label-tertiary); font-size: 12px; }
+  .badge { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: var(--label-secondary); background: var(--gray-6); padding: 3px 8px; border-radius: 6px; }
+
+  /* Canvas area */
+  .canvas-wrap {
+    flex: 1; display: flex; align-items: flex-start; justify-content: center;
+    padding: 28px; overflow: auto;
+  }
+  .canvas {
+    position: relative;
+    width: 100%;
+    max-width: 960px;
+    background: var(--bg-elev);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+  .canvas-frame {
+    position: relative;
+    width: 100%;
+    background: var(--gray-5);
+  }
+  .canvas-frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  .canvas-frame .empty {
+    aspect-ratio: 16/10;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--label-tertiary); font-size: 14px;
+  }
+
+  /* Top-left page tag */
+  .page-tag {
+    position: absolute; top: 14px; left: 14px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px; font-weight: 600;
+    color: var(--label);
+    display: inline-flex; align-items: center; gap: 7px;
+    z-index: 5;
+  }
+  .page-tag::before {
+    content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--pink); flex-shrink: 0;
+  }
+
+  /* Bottom description card */
+  .desc {
+    position: absolute; left: 14px; right: 14px; bottom: 14px;
+    max-width: 65%;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-radius: 16px;
+    padding: 12px 16px;
+    z-index: 5;
+  }
+  .desc strong { display: block; font-size: 16px; line-height: 1.2; font-weight: 700; letter-spacing: -0.02em; color: var(--label); margin-bottom: 5px; }
+  .desc p { margin: 0; font-size: 13px; color: var(--label-secondary); line-height: 1.45; }
+
+  /* Hotspot pin — 完全对齐应用内样式 */
+  .pin {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background: transparent; border: none; padding: 0;
+    color: white; font: inherit;
+    z-index: 10;
+    cursor: pointer;
+  }
+  /* 无下钻的热点：灰色 + 不可点 */
+  .pin.dead {
+    cursor: default;
+  }
+  .pin-visual {
+    position: relative;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pin-ring {
+    position: absolute; inset: 0; border-radius: 50%;
+    border: 2px solid white;
+    animation: pulseRing 2.4s ease-out infinite;
+  }
+  .pin-ring-2 {
+    position: absolute; inset: -6px; border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    animation: pulseRing 2.4s ease-out infinite 0.3s;
+  }
+  /* 灰色态：取消脉动 + 无白色 ring */
+  .pin.dead .pin-ring,
+  .pin.dead .pin-ring-2 { animation: none; opacity: 0.3; border-color: rgba(0,0,0,0.2); }
+
+  .pin-dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: white;
+    position: relative; z-index: 2;
+    box-shadow: 0 0 0 1.5px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.4);
+    transition: transform 0.15s;
+  }
+  .pin.linked .pin-dot {
+    background: var(--pink);
+    box-shadow: 0 0 0 2px white, 0 2px 8px rgba(255,45,85,0.5);
+  }
+  .pin.dead .pin-dot {
+    background: var(--gray-3);
+    box-shadow: 0 0 0 1.5px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .pin:hover .pin-dot { transform: scale(1.15); }
+  .pin.dead:hover .pin-dot { transform: none; }
+
+  .pin-arrow {
+    position: absolute; top: -3px; right: -3px;
+    width: 14px; height: 14px;
+    background: white; color: var(--pink);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700;
+    z-index: 3;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  .pin-label {
+    position: absolute;
+    bottom: -32px; left: 50%; transform: translateX(-50%);
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 11.5px; font-weight: 600;
+    white-space: nowrap;
+    color: var(--label);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .pin:hover .pin-label { opacity: 1; }
+  .pin.dead .pin-label { color: var(--label-secondary); }
+
+  @keyframes pulseRing {
+    0%   { transform: scale(0.7); opacity: 1; }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+
+  .footer-hint {
+    text-align: center;
+    color: var(--label-tertiary);
+    font-size: 12px;
+    padding: 8px 0 16px;
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="topbar">
+    <span class="logo">📖</span>
+    <div class="title" id="title">__TITLE__</div>
+    <div class="crumb" id="crumb"></div>
+    <span class="badge" id="badge"></span>
+  </div>
+  <div class="canvas-wrap" id="wrap"></div>
+  <div class="footer-hint">悬停查看标签 · 粉色代表已有子页 · 灰色代表终点</div>
+</div>
+<script>
+const DATA = __PAYLOAD__;
+const nodesById = Object.fromEntries(DATA.nodes.map(n => [n.id, n]));
+const hotspotsByNode = {};
+for (const h of DATA.hotspots) {
+  (hotspotsByNode[h.node_id] = hotspotsByNode[h.node_id] || []).push(h);
+}
+let stack = DATA.root_node_id ? [DATA.root_node_id] : [];
+
+function nodePath(id) {
+  const out = [];
+  let cur = id;
+  while (cur) {
+    const n = nodesById[cur];
+    if (!n) break;
+    out.unshift(n);
+    cur = n.parent_id;
+  }
+  return out;
+}
+
+function render() {
+  const wrap = document.getElementById('wrap');
+  wrap.innerHTML = '';
+  const id = stack[stack.length - 1];
+  if (!id) {
+    wrap.innerHTML = '<div style="color:rgba(0,0,0,0.32)">无内容</div>';
+    return;
+  }
+  const node = nodesById[id];
+  const hotspots = hotspotsByNode[id] || [];
+  const depth = nodePath(id).length - 1;
+
+  const canvas = document.createElement('div');
+  canvas.className = 'canvas';
+
+  const frame = document.createElement('div');
+  frame.className = 'canvas-frame';
+
+  if (node.image_url) {
+    const img = document.createElement('img');
+    img.src = node.image_url;
+    img.alt = node.title || '';
+    frame.appendChild(img);
+  } else {
+    const empty = document.createElement('div');
+    empty.className = 'empty';
+    empty.textContent = node.title || '(无图片)';
+    frame.appendChild(empty);
+  }
+
+  // L<n> · N 个热点
+  const tag = document.createElement('div');
+  tag.className = 'page-tag';
+  tag.textContent = 'L' + depth + ' · ' + hotspots.length + ' 个热点';
+  frame.appendChild(tag);
+
+  // Hotspots
+  for (const h of hotspots) {
+    const linked = h.target_node_id && nodesById[h.target_node_id];
+    const pin = document.createElement('button');
+    pin.className = 'pin' + (linked ? ' linked' : ' dead');
+    pin.style.left = ((h.pos_x + h.width / 2) * 100) + '%';
+    pin.style.top = ((h.pos_y + h.height / 2) * 100) + '%';
+    pin.title = h.label + (linked ? '' : '（终点页面）');
+
+    const visual = document.createElement('div');
+    visual.className = 'pin-visual';
+    visual.innerHTML =
+      '<div class="pin-ring"></div>' +
+      '<div class="pin-ring-2"></div>' +
+      '<div class="pin-dot"></div>' +
+      (linked ? '<div class="pin-arrow">→</div>' : '');
+    pin.appendChild(visual);
+
+    const label = document.createElement('div');
+    label.className = 'pin-label';
+    label.textContent = h.label;
+    pin.appendChild(label);
+
+    if (linked) {
+      pin.onclick = () => { stack.push(h.target_node_id); render(); };
+    } else {
+      pin.onclick = (e) => e.preventDefault();
+    }
+    frame.appendChild(pin);
+  }
+
+  // Bottom description
+  if (node.title || node.description) {
+    const desc = document.createElement('div');
+    desc.className = 'desc';
+    desc.innerHTML =
+      (node.title ? '<strong>' + escapeHtml(node.title) + '</strong>' : '') +
+      (node.description ? '<p>' + escapeHtml(node.description) + '</p>' : '');
+    frame.appendChild(desc);
+  }
+
+  canvas.appendChild(frame);
+  wrap.appendChild(canvas);
+
+  // breadcrumb
+  const crumb = document.getElementById('crumb');
+  crumb.innerHTML = '';
+  const path = nodePath(id);
+  path.forEach((n, i) => {
+    if (i > 0) {
+      const sep = document.createElement('span');
+      sep.className = 'sep';
+      sep.textContent = '/';
+      crumb.appendChild(sep);
+    }
+    const b = document.createElement('button');
+    b.textContent = (i === 0 ? '🏠 ' : '') + (n.title.length > 12 ? n.title.slice(0, 12) + '…' : n.title);
+    if (n.id === id) b.className = 'cur';
+    b.onclick = () => {
+      const idx = stack.indexOf(n.id);
+      stack = idx >= 0 ? stack.slice(0, idx + 1) : [n.id];
+      render();
+    };
+    crumb.appendChild(b);
+  });
+
+  // Hotspot count badge
+  const badge = document.getElementById('badge');
+  const linkedCount = hotspots.filter(h => h.target_node_id && nodesById[h.target_node_id]).length;
+  badge.textContent = linkedCount + '/' + hotspots.length;
+  badge.title = '可点击的热点 / 总热点数';
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+render();
+</script>
+</body>
+</html>
