@@ -1,0 +1,663 @@
+{
+  "date": "2026-10-18",
+  "api": "http://127.0.0.1:8000",
+  "frontend": "http://localhost:5173",
+  "database": "flipbook_acceptance_5edc660b6df2",
+  "provider": "Local HTTP fake with 3-second delay; formal API/DBOS/Postgres execution",
+  "real_paid_provider_calls": 0,
+  "cases": [
+    {
+      "id": "job_0y7l6ka4hq",
+      "kind": "analyze",
+      "project_id": "proj_vvrbmrm24j",
+      "node_id": "node_xg3qh5kxed",
+      "target_node_id": "node_xg3qh5kxed",
+      "status": "succeeded",
+      "operation_id": "browser_page_recovery_demo",
+      "input_summary": {
+        "label": "browser_page_recovery_demo 水循环：蒸发、凝结与降水",
+        "filename": null,
+        "file_sha256": null,
+        "source_type": "text",
+        "input_sha256": "e5fa2aee7861de1bfe0d1286a35a06692775377f8de4b14ca421ce534fe3a906",
+        "generate_images": true
+      },
+      "result": {
+        "id": "node_xg3qh5kxed",
+        "depth": 0,
+        "nodes": [
+          {
+            "id": "node_xg3qh5kxed",
+            "depth": 0,
+            "title": "browser_page_recovery_demo文字根页",
+            "status": "draft",
+            "children": [],
+            "hotspots": [
+              {
+                "id": "hs_0kt5tpn4po",
+                "size": {
+                  "width": 0.25,
+                  "height": 0.3
+                },
+                "label": "可继续探索",
+                "score": null,
+                "position": {
+                  "x": 0.2,
+                  "y": 0.2
+                },
+                "selected": true,
+                "target_node_id": null
+              }
+            ],
+            "image_url": "/uploads/proj_vvrbmrm24j/node_xg3qh5kxed_c747eda40bd84237b5f002d0512e5dc6.png",
+            "parent_id": null,
+            "description": "browser_page_recovery_demo文字根页",
+            "source_type": "text",
+            "scene_document": null
+          }
+        ],
+        "title": "browser_page_recovery_demo文字根页",
+        "status": "draft",
+        "node_id": "node_xg3qh5kxed",
+        "summary": "browser_page_recovery_demo文字根页",
+        "children": [],
+        "hotspots": [
+          {
+            "id": "hs_0kt5tpn4po",
+            "size": {
+              "width": 0.25,
+              "height": 0.3
+            },
+            "label": "可继续探索",
+            "score": null,
+            "position": {
+              "x": 0.2,
+              "y": 0.2
+            },
+            "selected": true,
+            "target_node_id": null
+          }
+        ],
+        "keywords": [],
+        "warnings": [],
+        "image_url": "/uploads/proj_vvrbmrm24j/node_xg3qh5kxed_c747eda40bd84237b5f002d0512e5dc6.png",
+        "parent_id": null,
+        "scene_type": "other",
+        "description": "browser_page_recovery_demo文字根页",
+        "source_type": "text",
+        "main_objects": [
+          "branch_a",
+          "branch_b"
+        ],
+        "scene_document": null,
+        "failed_hotspot_ids": []
+      },
+      "name": "Browser root analysis recovery",
+      "root_node_id": "node_xg3qh5kxed",
+      "case": "empty_root_refresh_reenter_credentials",
+      "attempts": [
+        {
+          "stage": "analyze",
+          "attempt_no": 0,
+          "state": "completed"
+        },
+        {
+          "stage": "image",
+          "attempt_no": 0,
+          "state": "completed"
+        },
+        {
+          "stage": "localize",
+          "attempt_no": 0,
+          "state": "completed"
+        }
+      ],
+      "saved_nodes": 1,
+      "stable_node_id": true,
+      "text_input_sha256_verified": true
+    },
+    {
+      "id": "job_z5131b4cl2",
+      "kind": "regenerate",
+      "project_id": "proj_9k7nuk2c4f",
+      "node_id": "node_o8zty431xn",
+      "target_node_id": "node_o8zty431xn",
+      "status": "succeeded",
+      "operation_id": "browser_page_recovery_demo",
+      "input_summary": {
+        "label": "browser_page_recovery_demo根页",
+        "filename": null,
+        "file_sha256": null,
+        "source_type": "image",
+        "input_sha256": "c1ce86a45217cf7bbab8e5622c6a56d50f75e712ebe8719416976ea298232773",
+        "generate_images": true
+      },
+      "result": {
+        "id": "node_o8zty431xn",
+        "depth": 0,
+        "nodes": [
+          {
+            "id": "node_o8zty431xn",
+            "depth": 0,
+            "title": "browser_page_recovery_demo根页",
+            "status": "generated",
+            "children": [],
+            "hotspots": [
+              {
+                "id": "hs_p07m81kfcj",
+                "size": {
+                  "width": 0.25,
+                  "height": 0.3
+                },
+                "label": "可继续探索",
+                "score": null,
+                "position": {
+                  "x": 0.2,
+                  "y": 0.2
+                },
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "image_url": "/uploads/proj_9k7nuk2c4f/node_o8zty431xn_265a73bcaab24b1aab8b751079a43658.png",
+            "parent_id": null,
+            "description": "browser_page_recovery_demo / browser_page_recovery_demo根页",
+            "source_type": "image",
+            "scene_document": null
+          }
+        ],
+        "title": "browser_page_recovery_demo根页",
+        "status": "generated",
+        "children": [],
+        "hotspots": [
+          {
+            "id": "hs_p07m81kfcj",
+            "size": {
+              "width": 0.25,
+              "height": 0.3
+            },
+            "label": "可继续探索",
+            "score": null,
+            "position": {
+              "x": 0.2,
+              "y": 0.2
+            },
+            "selected": false,
+            "target_node_id": null
+          }
+        ],
+        "warnings": [],
+        "image_url": "/uploads/proj_9k7nuk2c4f/node_o8zty431xn_265a73bcaab24b1aab8b751079a43658.png",
+        "parent_id": null,
+        "description": "browser_page_recovery_demo / browser_page_recovery_demo根页",
+        "source_type": "image",
+        "scene_document": null,
+        "failed_hotspot_ids": []
+      },
+      "name": "Browser page regeneration recovery",
+      "root_node_id": "node_o8zty431xn",
+      "case": "regenerate_refresh_reenter_credentials",
+      "attempts": [
+        {
+          "stage": "image",
+          "attempt_no": 0,
+          "state": "completed"
+        },
+        {
+          "stage": "localize",
+          "attempt_no": 0,
+          "state": "completed"
+        },
+        {
+          "stage": "plan",
+          "attempt_no": 0,
+          "state": "completed"
+        }
+      ],
+      "saved_nodes": 1,
+      "stable_node_id": true
+    },
+    {
+      "id": "job_ij1hij4xgg",
+      "kind": "regenerate",
+      "project_id": "proj_jwclt6lm5i",
+      "node_id": "node_sicaoo70sz",
+      "target_node_id": "node_sicaoo70sz",
+      "status": "cancelled",
+      "operation_id": "browser_page_recovery_demo",
+      "input_summary": {
+        "label": "browser_page_recovery_demo根页",
+        "filename": null,
+        "file_sha256": null,
+        "source_type": "image",
+        "input_sha256": "9771a737be2ea64c7f1275f75ebe6e7e00d38c5ca7b8be425c087614ffb94e4d",
+        "generate_images": true
+      },
+      "result": {
+        "nodes": [],
+        "warnings": [],
+        "failed_hotspot_ids": []
+      },
+      "name": "Browser regeneration unknown cancel",
+      "root_node_id": "node_sicaoo70sz",
+      "case": "regenerate_unknown_cancel_keeps_original",
+      "attempts": [
+        {
+          "stage": "image",
+          "attempt_no": 0,
+          "state": "started"
+        },
+        {
+          "stage": "plan",
+          "attempt_no": 0,
+          "state": "completed"
+        }
+      ],
+      "saved_nodes": 1,
+      "stable_node_id": true,
+      "original_page_preserved_before_next_submit_verified": true
+    },
+    {
+      "id": "job_f448duuqn0",
+      "kind": "regenerate",
+      "project_id": "proj_jwclt6lm5i",
+      "node_id": "node_sicaoo70sz",
+      "target_node_id": "node_sicaoo70sz",
+      "status": "succeeded",
+      "operation_id": "a5adce94-65d5-41bf-8272-12af4d45ecbf",
+      "input_summary": {
+        "label": "browser_page_recovery_demo根页",
+        "filename": null,
+        "file_sha256": null,
+        "source_type": "image",
+        "input_sha256": "9771a737be2ea64c7f1275f75ebe6e7e00d38c5ca7b8be425c087614ffb94e4d",
+        "generate_images": true
+      },
+      "result": {
+        "id": "node_sicaoo70sz",
+        "depth": 0,
+        "nodes": [
+          {
+            "id": "node_sicaoo70sz",
+            "depth": 0,
+            "title": "browser_page_recovery_demo根页",
+            "status": "generated",
+            "children": [],
+            "hotspots": [
+              {
+                "id": "hs_9hvwevkhzc",
+                "size": {
+                  "width": 0.25,
+                  "height": 0.3
+                },
+                "label": "可继续探索",
+                "score": null,
+                "position": {
+                  "x": 0.2,
+                  "y": 0.2
+                },
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "image_url": "/uploads/proj_jwclt6lm5i/node_sicaoo70sz_b6516820d0014dfaade78a81f5f269b2.png",
+            "parent_id": null,
+            "description": "browser_page_recovery_demo / browser_page_recovery_demo根页",
+            "source_type": "image",
+            "scene_document": null
+          }
+        ],
+        "title": "browser_page_recovery_demo根页",
+        "status": "generated",
+        "children": [],
+        "hotspots": [
+          {
+            "id": "hs_9hvwevkhzc",
+            "size": {
+              "width": 0.25,
+              "height": 0.3
+            },
+            "label": "可继续探索",
+            "score": null,
+            "position": {
+              "x": 0.2,
+              "y": 0.2
+            },
+            "selected": false,
+            "target_node_id": null
+          }
+        ],
+        "warnings": [],
+        "image_url": "/uploads/proj_jwclt6lm5i/node_sicaoo70sz_b6516820d0014dfaade78a81f5f269b2.png",
+        "parent_id": null,
+        "description": "browser_page_recovery_demo / browser_page_recovery_demo根页",
+        "source_type": "image",
+        "scene_document": null,
+        "failed_hotspot_ids": []
+      },
+      "name": "Browser regeneration unknown cancel",
+      "root_node_id": "node_sicaoo70sz",
+      "case": "regenerate_submitted_from_page_button",
+      "attempts": [
+        {
+          "stage": "image",
+          "attempt_no": 0,
+          "state": "completed"
+        },
+        {
+          "stage": "localize",
+          "attempt_no": 0,
+          "state": "completed"
+        },
+        {
+          "stage": "plan",
+          "attempt_no": 0,
+          "state": "completed"
+        }
+      ],
+      "saved_nodes": 1,
+      "stable_node_id": true
+    },
+    {
+      "id": "job_12cwyl9x2l",
+      "kind": "analyze",
+      "project_id": "proj_nrvyjwko7n",
+      "node_id": "node_e1e6f850sf",
+      "target_node_id": "node_e1e6f850sf",
+      "status": "succeeded",
+      "operation_id": "051a05f5-9aef-4d44-937d-3bbb44783881",
+      "input_summary": {
+        "label": "浏览器验收：一滴水如何穿过城市",
+        "filename": null,
+        "file_sha256": null,
+        "source_type": "text",
+        "input_sha256": "84eedf6f6fe4bb95b82fa4a0dd86659993b4a8eca7d2dd29419534b30dbf091d",
+        "generate_images": true
+      },
+      "result": {
+        "id": "node_e1e6f850sf",
+        "depth": 0,
+        "nodes": [
+          {
+            "id": "node_e1e6f850sf",
+            "depth": 0,
+            "title": "browser_page_recovery_demo文字根页",
+            "status": "draft",
+            "children": [],
+            "hotspots": [
+              {
+                "id": "hs_p2sdh7pjzn",
+                "size": {
+                  "width": 0.25,
+                  "height": 0.3
+                },
+                "label": "可继续探索",
+                "score": null,
+                "position": {
+                  "x": 0.2,
+                  "y": 0.2
+                },
+                "selected": true,
+                "target_node_id": null
+              }
+            ],
+            "image_url": "/uploads/proj_nrvyjwko7n/node_e1e6f850sf_da65107bfda446d199dd135f5abb6859.png",
+            "parent_id": null,
+            "description": "browser_page_recovery_demo文字根页",
+            "source_type": "text",
+            "scene_document": null
+          }
+        ],
+        "title": "browser_page_recovery_demo文字根页",
+        "status": "draft",
+        "node_id": "node_e1e6f850sf",
+        "summary": "browser_page_recovery_demo文字根页",
+        "children": [],
+        "hotspots": [
+          {
+            "id": "hs_p2sdh7pjzn",
+            "size": {
+              "width": 0.25,
+              "height": 0.3
+            },
+            "label": "可继续探索",
+            "score": null,
+            "position": {
+              "x": 0.2,
+              "y": 0.2
+            },
+            "selected": true,
+            "target_node_id": null
+          }
+        ],
+        "keywords": [],
+        "warnings": [],
+        "image_url": "/uploads/proj_nrvyjwko7n/node_e1e6f850sf_da65107bfda446d199dd135f5abb6859.png",
+        "parent_id": null,
+        "scene_type": "other",
+        "description": "browser_page_recovery_demo文字根页",
+        "source_type": "text",
+        "main_objects": [
+          "branch_a",
+          "branch_b"
+        ],
+        "scene_document": null,
+        "failed_hotspot_ids": []
+      },
+      "name": "浏览器验收：一滴水如何穿过城市",
+      "root_node_id": "node_e1e6f850sf",
+      "case": "text_analysis_submitted_from_creation_form_and_refreshed",
+      "attempts": [
+        {
+          "stage": "analyze",
+          "attempt_no": 0,
+          "state": "completed"
+        },
+        {
+          "stage": "image",
+          "attempt_no": 0,
+          "state": "completed"
+        },
+        {
+          "stage": "localize",
+          "attempt_no": 0,
+          "state": "completed"
+        }
+      ],
+      "saved_nodes": 1,
+      "stable_node_id": true,
+      "text_input_sha256_verified": true
+    },
+    {
+      "id": "job_24eu1y7etx",
+      "kind": "analyze",
+      "project_id": "proj_4wm84c60j0",
+      "node_id": "node_u142r519r4",
+      "target_node_id": "node_u142r519r4",
+      "status": "succeeded",
+      "operation_id": "5f8d26b2-ba6d-4ebd-af1c-1ec778972252",
+      "input_summary": {
+        "label": "flipbook-round3-browser-image.png",
+        "filename": "flipbook-round3-browser-image.png",
+        "file_sha256": "3f8409903224f6cd84d31f2db69b7c2eedcaa69af83ce89d46835216863e5772",
+        "source_type": "image",
+        "input_sha256": "3f8409903224f6cd84d31f2db69b7c2eedcaa69af83ce89d46835216863e5772",
+        "generate_images": true
+      },
+      "result": {
+        "id": "node_u142r519r4",
+        "depth": 0,
+        "nodes": [
+          {
+            "id": "node_u142r519r4",
+            "depth": 0,
+            "title": "browser_page_recovery_demo根页",
+            "status": "draft",
+            "children": [],
+            "hotspots": [
+              {
+                "id": "hs_0df61ptoes",
+                "size": {
+                  "width": 0.2,
+                  "height": 0.2
+                },
+                "label": "分支甲",
+                "score": null,
+                "position": {
+                  "x": 0.1,
+                  "y": 0.1
+                },
+                "selected": true,
+                "target_node_id": null
+              },
+              {
+                "id": "hs_8ao9awzwnt",
+                "size": {
+                  "width": 0.2,
+                  "height": 0.2
+                },
+                "label": "分支乙",
+                "score": null,
+                "position": {
+                  "x": 0.6,
+                  "y": 0.4
+                },
+                "selected": true,
+                "target_node_id": null
+              }
+            ],
+            "image_url": "/uploads/proj_4wm84c60j0/root-input_b42332018bc54d7caf50393b9e3f0918.png",
+            "parent_id": null,
+            "description": "browser_page_recovery_demo根页",
+            "source_type": "image",
+            "scene_document": null
+          }
+        ],
+        "title": "browser_page_recovery_demo根页",
+        "status": "draft",
+        "node_id": "node_u142r519r4",
+        "summary": "browser_page_recovery_demo根页",
+        "children": [],
+        "hotspots": [
+          {
+            "id": "hs_0df61ptoes",
+            "size": {
+              "width": 0.2,
+              "height": 0.2
+            },
+            "label": "分支甲",
+            "score": null,
+            "position": {
+              "x": 0.1,
+              "y": 0.1
+            },
+            "selected": true,
+            "target_node_id": null
+          },
+          {
+            "id": "hs_8ao9awzwnt",
+            "size": {
+              "width": 0.2,
+              "height": 0.2
+            },
+            "label": "分支乙",
+            "score": null,
+            "position": {
+              "x": 0.6,
+              "y": 0.4
+            },
+            "selected": true,
+            "target_node_id": null
+          }
+        ],
+        "keywords": [],
+        "warnings": [],
+        "image_url": "/uploads/proj_4wm84c60j0/root-input_b42332018bc54d7caf50393b9e3f0918.png",
+        "parent_id": null,
+        "scene_type": "other",
+        "description": "browser_page_recovery_demo根页",
+        "source_type": "image",
+        "main_objects": [
+          "分支甲",
+          "分支乙"
+        ],
+        "scene_document": null,
+        "failed_hotspot_ids": []
+      },
+      "name": "flipbook-round3-browser-image",
+      "root_node_id": "node_u142r519r4",
+      "case": "image_analysis_file_keywords_submitted_and_refreshed",
+      "attempts": [
+        {
+          "stage": "analyze",
+          "attempt_no": 0,
+          "state": "completed"
+        }
+      ],
+      "saved_nodes": 1,
+      "stable_node_id": true,
+      "file_metadata": {
+        "bytes": 2456,
+        "raw_sha256_verified": true,
+        "normalized_asset_sha256_verified": true,
+        "keywords": [
+          "图形",
+          "空间关系"
+        ],
+        "dimensions": [
+          600,
+          400
+        ],
+        "hotspots": 2,
+        "extra_image_or_localize_calls": 0
+      }
+    }
+  ],
+  "actual_fake_provider_memory_counts_observed_via_stdin": {
+    "analysis": 5,
+    "plan": 3,
+    "image": 4,
+    "localize": 4
+  },
+  "application_log_counts": {
+    "analysis": 5,
+    "plan": 3,
+    "image": 4,
+    "localize": 4,
+    "image_cache_hit": 1
+  },
+  "count_note": "Fake model intentionally returns identical composed text-cover prompts. The newly submitted text root reused an existing image cache once; image-upload analysis reused its uploaded image and inline hotspots, with no extra image/localize request. Regeneration bypasses image cache. Fixture preparation used SQL only to remove hotspots before task submission; UI actions used no hidden store writes.",
+  "zip": {
+    "filename": "flipbook-round3-browser-image.zip",
+    "bytes": 70410,
+    "sha256": "18cc7d94b725f734e3d2a1553cb0bfd912973cf36f0289ab82d955f5bb3b4a9a",
+    "entries": [
+      "index.html",
+      "player.js",
+      "player.css",
+      "project.json",
+      "README.txt",
+      "images/image-1.png"
+    ],
+    "nodes": 1,
+    "image_dimensions": [
+      600,
+      400
+    ],
+    "all_uncompressed_entries_credential_clean": true
+  },
+  "credential_audit": {
+    "tables_scanned": 20,
+    "cells_scanned": 1751,
+    "checkpoint_cells_inspected": 66,
+    "base64_decoded_candidates_inspected": 316,
+    "raw_postgres_relation_files_scanned": 419,
+    "raw_postgres_relation_bytes_scanned": 9625600,
+    "worker_log_and_asset_files_clean": true,
+    "logical_sql_rows_clean": true,
+    "pg_dump_sql_clean": true,
+    "serialized_negative_control_detected": true
+  },
+  "browser_evidence_source": "Root agent CUA visible UI screenshots for empty root refresh, root and regeneration recovery, cancel, page-button regeneration, text/image form submit, preview and export. This script only reads DB, logs and downloaded files.",
+  "scope": "Completed visible form submission, refresh, explicit credentials, unknown-result cancel, same-ID regeneration, preview and ZIP download. ZIP file:// double-click execution remains untested."
+}

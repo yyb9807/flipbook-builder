@@ -1,5 +1,7 @@
 # ── Stage 1: build ────────────────────────────────────────────
-FROM node:22-alpine AS builder
+ARG NODE_IMAGE=node:24-alpine
+ARG NGINX_IMAGE=nginx:1.27-alpine
+FROM ${NODE_IMAGE} AS builder
 
 WORKDIR /app
 
@@ -8,11 +10,11 @@ COPY package.json package-lock.json* ./
 RUN npm ci
 
 COPY . .
-# 跳过 tsc -b（type-check 是 dev/CI 职责，生产构建不需要）；vite 用 esbuild 转译已足够。
-RUN npx vite build
+# 与本地及 CI 使用相同的类型检查和正式构建。
+RUN npm run build
 
 # ── Stage 2: runtime (nginx) ─────────────────────────────────
-FROM nginx:1.27-alpine
+FROM ${NGINX_IMAGE}
 
 # 自定义 nginx 配置：前端静态 + /api + /uploads 反代到后端
 COPY nginx.conf /etc/nginx/conf.d/default.conf

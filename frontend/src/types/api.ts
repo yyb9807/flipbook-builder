@@ -22,6 +22,7 @@ export interface AnalyzeStreamDone {
   source_type: SourceType
   hotspots: Hotspot[]
   keywords: Keyword[]
+  warnings?: string[]
 }
 
 // ── /api/projects/{id}/nodes/{nid}/generate-children (SSE) ──
@@ -39,6 +40,8 @@ export interface GenChildNode {
 export interface GenChildrenStreamDone {
   done: true
   nodes: GenChildNode[]
+  warnings?: string[]
+  failed_hotspot_ids?: string[]
 }
 
 // ── /api/projects/{id}/nodes/{nid}/regenerate ──
@@ -48,6 +51,8 @@ export interface RegenerateResponse {
   description: string
   image_url: string | null
   status: string
+  hotspots?: Hotspot[]
+  warnings?: string[]
 }
 
 // ── /api/projects 列表 ──

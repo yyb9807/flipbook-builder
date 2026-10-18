@@ -1,0 +1,116 @@
+{
+  "date": "2026-10-18",
+  "base_url": "http://127.0.0.1:18080",
+  "health": {
+    "status": "ok"
+  },
+  "frontend_assets": [
+    {
+      "asset": "/assets/_virtual_offline-player-BBUlGe0T.js",
+      "bytes": 210110,
+      "sha256": "069c3ab19695b4cc967fa270753c48d1e9fdafd4f6f1244761f4b4983cc1c00c",
+      "matches_local_build": true
+    },
+    {
+      "asset": "/assets/index-C-My-yrR.js",
+      "bytes": 387621,
+      "sha256": "36685687e1b397adb2a192be32fc1e40fef26a8a45abb508325612aefd33ec65",
+      "matches_local_build": true
+    },
+    {
+      "asset": "/assets/index-vkmu1TTC.css",
+      "bytes": 40784,
+      "sha256": "1562b4b1d3ba0bcaebad4469cc05dd526d25afd29c63277e57b1323e0766d1c0",
+      "matches_local_build": true
+    },
+    {
+      "asset": "/assets/offlineExport-CBr8bEBh.js",
+      "bytes": 15753,
+      "sha256": "d046bf2e5a978bbe1e5759870a0fe6dbf893fa92c9fc5db6e79c6b5cc51b430b",
+      "matches_local_build": true
+    }
+  ],
+  "backend_sources": [
+    {
+      "path": "agents/knowledge.py",
+      "sha256": "2148d6167d7cfef752606bffcca93bf1872d7003eba3e0b79e2fef784317d4c7",
+      "matches_running_container": true
+    },
+    {
+      "path": "agents/input_analysis.py",
+      "sha256": "e35da9c1c0c19ef84e0da143218c3f78fb026752152b69f9f4e7221c65cee8a8",
+      "matches_running_container": true
+    },
+    {
+      "path": "agents/page_generation.py",
+      "sha256": "1165f48bdea9d53049525375f9ba0752b5af48d3ec4116df0a2b503f2c9ac230",
+      "matches_running_container": true
+    },
+    {
+      "path": "content_metadata.py",
+      "sha256": "6411b98f441d7272bfdf6f38fdb6c7494a2a0fd561c2b923c9b71c2942033cc8",
+      "matches_running_container": true
+    },
+    {
+      "path": "jobs/store.py",
+      "sha256": "a14373b960e0078a705e5c67d8817c868ae66c4b530e270822eb304ef42f838c",
+      "matches_running_container": true
+    },
+    {
+      "path": "jobs/workflows.py",
+      "sha256": "19e18bc9ca2dbbf442a361d3e7b03b3d444bf9fd0b26cb52657022a98c8691b5",
+      "matches_running_container": true
+    },
+    {
+      "path": "jobs/page_workflows.py",
+      "sha256": "9ab310cc1aaff53e7045107c08c63e2430ce3e3719f2b792cf4bff5c948f7e38",
+      "matches_running_container": true
+    },
+    {
+      "path": "jobs/providers.py",
+      "sha256": "6fd4c3b3803dd2bac1ccbe6a2b3276e6bcfad657e7b573f15ef4c4c1212e3ad9",
+      "matches_running_container": true
+    },
+    {
+      "path": "hotspots.py",
+      "sha256": "c041a6d8186a940732d31b72d9c398bbb94b88785d70e867644ed657744c2483",
+      "matches_running_container": true
+    },
+    {
+      "path": "routers/nodes.py",
+      "sha256": "0da6745fe4b9cc5367eb77d399ae23ae03fb4087997286251a7d4d180aa4c78b",
+      "matches_running_container": true
+    },
+    {
+      "path": "routers/projects.py",
+      "sha256": "2d9f7edc5e1a9e6c47df14ecdf57050b487014837dcfa95c3ae1dbcb064b706e",
+      "matches_running_container": true
+    },
+    {
+      "path": "schema.sql",
+      "sha256": "02ebd48aab03dd6e0a29fe1422e49544a2225f23d9e42c9307b59c5047cf3091",
+      "matches_running_container": true
+    }
+  ],
+  "remaining_server_projects": 0,
+  "http_smoke": "round5-postgres-stack.json",
+  "browser_proof": ".impeccable/screenshots/round5-final-official-stack.jpg",
+  "temporary_services_stopped": true,
+  "isolated_test_databases_cleaned": true,
+  "tests": {
+    "backend_postgres": 257,
+    "frontend_vitest": 232,
+    "frontend_test_files": 30,
+    "process_scenarios": 7,
+    "http_checks": 19,
+    "player_host_environments": [
+      "development",
+      "production"
+    ],
+    "ruff": "passed",
+    "frontend_lint": "passed",
+    "frontend_build": "passed",
+    "paid_model_calls": 0,
+    "remote_CI_executed": false
+  }
+}

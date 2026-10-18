@@ -1,96 +1,32 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { api } from '../api/client'
-import { useProjectStore } from '../store/projectStore'
-import { ViewerPage } from './ViewerPage'
 import type { Project } from '../types'
+import { ProjectViewer } from '../components/scene/ProjectViewer'
+import { useI18n } from '../i18n'
 
-/**
- * 分享链接专用入口：`/v/:projectId`。
- * - 从 API 加载项目（不依赖任何本地 store 状态）
- * - 自动切到 viewer 模式
- * - 加载完成后渲染 ViewerPage
- *
- * 该路由是只读的，没有"返回主页"等编辑入口。
- */
+/** Read-only navigation owns its state and never replaces the author's workspace. */
 export function SharedViewerPage() {
   const { projectId } = useParams<{ projectId: string }>()
-  const setProject = useProjectStore((s) => s.setProject)
-  const setActiveNode = useProjectStore((s) => s.setActiveNode)
-  const navigateInto = useProjectStore((s) => s.navigateInto)
-  const setMode = useProjectStore((s) => s.setMode)
-  const resetProject = useProjectStore((s) => s.resetProject)
+  const [project, setProject] = useState<Project | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
+  const { locale } = useI18n()
 
   useEffect(() => {
-    if (!projectId) return
-    let alive = true
-    // 进入分享视图时重置之前的状态，避免残留
-    resetProject()
-    setMode('viewer')
-    api
-      .getProject(projectId)
-      .then((proj) => {
-        if (!alive) return
-        const p = proj as Project
-        setProject(p)
-        if (p.root_node_id) {
-          setActiveNode(p.root_node_id)
-          navigateInto(p.root_node_id)
-        }
+    const controller = new AbortController()
+    setProject(null)
+    setError(null)
+    if (!projectId) { setError(locale === 'zh' ? '缺少作品地址。' : 'The project address is missing.'); return }
+    fetch(`/api/projects/${encodeURIComponent(projectId)}`, { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(locale === 'zh' ? '项目可能已被删除，或当前服务暂时无法连接。' : 'The project may have been removed, or the service is unavailable.')
+        return response.json() as Promise<Project>
       })
-      .catch((e) => alive && setError((e as Error).message || '加载失败'))
-      .finally(() => alive && setLoading(false))
-    return () => {
-      alive = false
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectId])
+      .then((value) => { if (!controller.signal.aborted) setProject(value) })
+      .catch((reason: unknown) => { if (!controller.signal.aborted) setError(reason instanceof Error ? reason.message : String(reason)) })
+    return () => controller.abort()
+  }, [projectId, locale])
 
-  if (loading) {
-    return (
-      <div
-        style={{
-          width: '100%',
-          height: '100vh',
-          background: 'black',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'rgba(255,255,255,0.5)',
-          fontSize: 14,
-        }}
-      >
-        加载中…
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div
-        style={{
-          width: '100%',
-          height: '100vh',
-          background: 'black',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'rgba(255,255,255,0.7)',
-          fontSize: 14,
-          gap: 12,
-          padding: 32,
-          textAlign: 'center',
-        }}
-      >
-        <div style={{ fontSize: 22, fontWeight: 700 }}>翻翻书无法打开</div>
-        <div>{error}</div>
-        <div style={{ fontSize: 12, opacity: 0.5 }}>项目可能已被删除或链接无效。</div>
-      </div>
-    )
-  }
-
-  return <ViewerPage />
+  if (error) return <div className="project-viewer viewer-empty"><div className="viewer-error"><h1>{locale === 'zh' ? '作品暂时无法打开' : 'This project could not be opened'}</h1><p>{error}</p><a href="/">{locale === 'zh' ? '返回工作区' : 'Back to workspace'}</a></div></div>
+  if (!project) return <div className="project-viewer viewer-empty" aria-busy="true"><p role="status">{locale === 'zh' ? '正在打开作品…' : 'Opening project…'}</p><div className="viewer-loading" /></div>
+  return <ProjectViewer project={project} locale={locale} />
 }

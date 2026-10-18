@@ -1,358 +1,144 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { renderHook, act, cleanup } from '@testing-library/react'
+import { renderHook, act, cleanup, waitFor } from '@testing-library/react'
 import { useBuilderActions } from './useBuilderActions'
 import { useProjectStore } from '../store/projectStore'
-import { useSettingsStore } from '../store/settingsStore'
+import { DEFAULT_MODEL_SETTINGS, useSettingsStore } from '../store/settingsStore'
+import { providerConfig, useGenerationJobStore } from '../store/generationJobStore'
+import { useCreationStore } from '../store/creationStore'
+import type { GenerationJob } from '../types/jobs'
+import type { Project } from '../types'
 
-// Mock api 模块 —— 避免真发 fetch
-vi.mock('../api/client', () => ({
-  api: {
-    createProject: vi.fn(),
-    analyzeUploadStream: vi.fn(),
-    generateChildrenStream: vi.fn(),
-    regenerateNode: vi.fn(),
-    updateHotspots: vi.fn(),
-    getProject: vi.fn(),
-  },
-}))
-
+vi.mock('../api/client', () => ({ api: {
+  createProject: vi.fn(), createAnalysisJob: vi.fn(), createRegenerationJob: vi.fn(), createGenerationJob: vi.fn(),
+  listGenerationJobs: vi.fn(), updateHotspots: vi.fn(), getProject: vi.fn(),
+} }))
 import { api } from '../api/client'
 
-/** 把 SSE 模拟成 async iterable —— 给 streaming API 返回预设事件序列。 */
-function makeStream(events: object[]): AsyncIterable<object> {
-  return {
-    async *[Symbol.asyncIterator]() {
-      for (const e of events) yield e
-    },
-  }
+function job(kind: 'analyze' | 'regenerate'): GenerationJob {
+  return { kind, job_id: 'j', operation_id: 'op', project_id: 'p1', node_id: kind === 'analyze' ? null : 'n1',
+    status: 'running', phase: 'plan', message: '', pct: 10, last_event_id: 1, created_at: '', updated_at: '',
+    provider_config: providerConfig(DEFAULT_MODEL_SETTINGS), required_credentials: ['llm'], result: null, error: null, confirmation: null }
 }
+const project: Project = { project_id: 'p1', name: 'x', root_node_id: 'n1', settings: {} as never, nodes: {
+  n1: { id: 'n1', parent_id: null, depth: 0, title: 'Original', description: 'Keep this content', source_type: 'text', image_url: '/old.png', children: [], hotspots: [], status: 'generated' },
+} }
+function deferred<T>() { let resolve!: (value: T) => void; const promise = new Promise<T>((done) => { resolve = done }); return { promise, resolve } }
+beforeEach(() => {
+  vi.clearAllMocks()
+  useProjectStore.getState().resetProject()
+  useGenerationJobStore.setState({ jobs: {}, references: {}, pending: {}, discovery: {}, checkedRevision: {}, syncing: {}, submitting: {}, connection: {} })
+  useSettingsStore.setState({ ...DEFAULT_MODEL_SETTINGS, llmApiKey: 'valid-fake-key', imgGenApiKey: 'image-fake-key' })
+  useCreationStore.getState().clear()
+  vi.mocked(api.createProject).mockResolvedValue({ project_id: 'p1', name: 'Topic', settings: {} })
+  vi.mocked(api.listGenerationJobs).mockResolvedValue({ jobs: [] })
+  vi.mocked(api.createAnalysisJob).mockImplementation(async (pending) => ({ ...job('analyze'), operation_id: pending.operation_id }))
+  vi.mocked(api.createRegenerationJob).mockImplementation(async (pending) => ({ ...job('regenerate'), operation_id: pending.operation_id }))
+})
+afterEach(cleanup)
 
-describe('useBuilderActions', () => {
-  let toast: ReturnType<typeof vi.fn>
-
-  beforeEach(() => {
-    // 重置所有 store
-    useProjectStore.setState({
-      project: null,
-      activeNodeId: null,
-      navigationStack: [],
-      analyzing: false,
-      generating: false,
-      genProgress: null,
-      keywords: [],
-      selectedKeywords: [],
-    })
-    useSettingsStore.setState({
-      llmApiKey: '',
-      llmBaseUrl: 'https://api.x.com',
-      llmModel: 'claude-x',
-      imgGenApiKey: '',
-      imgGenBaseUrl: 'https://api.y.com',
-      imgGenModel: 'dall-e-3',
-    })
-    toast = vi.fn()
-    vi.clearAllMocks()
+describe('durable creation submission', () => {
+  it.each(['', 'short'])('blocks missing or short LLM credentials before creating a project: %s', async (key) => {
+    useSettingsStore.setState({ llmApiKey: key })
+    const toast = vi.fn()
+    const { result } = renderHook(() => useBuilderActions(toast))
+    await act(async () => { await result.current.handleUpload(undefined, 'topic') })
+    expect(api.createProject).not.toHaveBeenCalled()
+    expect(toast).toHaveBeenCalledWith('请先在设置页填写 LLM API Key', 'error')
   })
-
-  afterEach(cleanup)
-
-  describe('checkApiKey 守卫', () => {
-    it('LLM Key 为空时阻断上传 + 弹错误 toast', async () => {
-      const { result } = renderHook(() => useBuilderActions(toast))
-      await act(async () => {
-        await result.current.handleUpload(undefined, 'hello')
-      })
-      expect(toast).toHaveBeenCalledWith(
-        '请先在设置页填写 LLM API Key',
-        'error',
-      )
-      expect(api.createProject).not.toHaveBeenCalled()
-    })
-
-    it('LLM Key 太短（< 8 字符）也阻断', async () => {
-      useSettingsStore.setState({ llmApiKey: 'sk-x' })
-      const { result } = renderHook(() => useBuilderActions(toast))
-      await act(async () => {
-        await result.current.handleUpload(undefined, 'hello')
-      })
-      expect(toast).toHaveBeenCalledWith(
-        '请先在设置页填写 LLM API Key',
-        'error',
-      )
-      expect(api.createProject).not.toHaveBeenCalled()
-    })
-
-    it('handleGenerateChildren 同样守卫', async () => {
-      // 即使有 project，没 key 也应阻断
-      useProjectStore.setState({
-        project: { project_id: 'p1', name: 'x', root_node_id: 'n1', settings: {} as never, nodes: {} },
-        activeNodeId: 'n1',
-      })
-      const { result } = renderHook(() => useBuilderActions(toast))
-      await act(async () => {
-        await result.current.handleGenerateChildren()
-      })
-      expect(toast).toHaveBeenCalledWith(
-        '请先在设置页填写 LLM API Key',
-        'error',
-      )
-      expect(api.generateChildrenStream).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('warnSlowImageModel', () => {
-    it('用 gpt-image-2 时提醒慢', async () => {
-      useSettingsStore.setState({
-        llmApiKey: 'sk-ant-valid-long-key',
-        imgGenModel: 'gpt-image-2',
-      })
-      vi.mocked(api.createProject).mockResolvedValue({
-        project_id: 'p1',
-        name: 'x',
-        settings: {},
-      })
-      vi.mocked(api.analyzeUploadStream).mockReturnValue(
-        makeStream([{ done: true, node_id: 'n1', summary: 's', main_objects: [], scene_type: 'x', image_url: null, source_type: 'text', hotspots: [], keywords: [] }]) as never,
-      )
-
-      const { result } = renderHook(() => useBuilderActions(toast))
-      await act(async () => {
-        await result.current.handleUpload(undefined, 'hello')
-      })
-
-      // 第一次 toast 应该是 slow warning（注意此时 key 已填，所以 checkApiKey 不会触发 toast）
-      const slowCall = toast.mock.calls.find((c) =>
-        typeof c[0] === 'string' && c[0].includes('gpt-image-2'),
-      )
-      expect(slowCall).toBeTruthy()
-      expect(slowCall![1]).toBe('info')
-    })
-
-    it('用 dall-e-3 不提醒（不慢）', async () => {
-      useSettingsStore.setState({
-        llmApiKey: 'sk-ant-valid-long-key',
-        imgGenModel: 'dall-e-3',
-      })
-      vi.mocked(api.createProject).mockResolvedValue({ project_id: 'p1', name: 'x', settings: {} })
-      vi.mocked(api.analyzeUploadStream).mockReturnValue(
-        makeStream([{ done: true, node_id: 'n1', summary: 's', main_objects: [], scene_type: 'x', image_url: null, source_type: 'text', hotspots: [], keywords: [] }]) as never,
-      )
-
-      const { result } = renderHook(() => useBuilderActions(toast))
-      await act(async () => {
-        await result.current.handleUpload(undefined, 'hello')
-      })
-      const slowCall = toast.mock.calls.find((c) =>
-        typeof c[0] === 'string' && c[0].includes('约'),
-      )
-      expect(slowCall).toBeFalsy()
-    })
-  })
-
-  describe('handleUpload 流程', () => {
-    beforeEach(() => {
-      useSettingsStore.setState({ llmApiKey: 'sk-ant-valid-long-key' })
-    })
-
-    it('成功路径：创建项目 → SSE 流 → 设置 store → 成功 toast', async () => {
-      vi.mocked(api.createProject).mockResolvedValue({
-        project_id: 'p1',
-        name: '我的翻翻书',
-        settings: { language: 'zh' },
-      })
-      vi.mocked(api.analyzeUploadStream).mockReturnValue(
-        makeStream([
-          { step: 0, pct: 8, message: '分析中' },
-          {
-            done: true,
-            node_id: 'n1',
-            summary: '一段描述',
-            main_objects: ['a', 'b'],
-            scene_type: 'place',
-            image_url: '/uploads/p1/n1.png',
-            source_type: 'text',
-            hotspots: [{ id: 'h1' }, { id: 'h2' }, { id: 'h3' }],
-            keywords: [{ label: 'kw1', description: 'd1' }],
-          },
-        ]) as never,
-      )
-
-      const { result } = renderHook(() => useBuilderActions(toast))
-      await act(async () => {
-        await result.current.handleUpload(undefined, '一段文字')
-      })
-
-      // 项目已设置
+  it('opens an empty recovery workspace and persists the operation before sending paid work', async () => {
+    useCreationStore.getState().setTopic('topic')
+    vi.mocked(api.createAnalysisJob).mockImplementation(async (pending) => {
+      expect(useProjectStore.getState().project?.root_node_id).toBeNull()
       expect(useProjectStore.getState().project?.project_id).toBe('p1')
-      // 根节点 ID 设为 active
-      expect(useProjectStore.getState().activeNodeId).toBe('n1')
-      // analyzing 已重置
-      expect(useProjectStore.getState().analyzing).toBe(false)
-      // 成功 toast
-      expect(toast).toHaveBeenCalledWith('识别到 3 个热点区域', 'success')
+      expect(useGenerationJobStore.getState().pending.p1.operation_id).toBe(pending.operation_id)
+      expect(localStorage.getItem('flipbook-generation-jobs')).toContain(pending.operation_id)
+      return { ...job('analyze'), operation_id: pending.operation_id }
     })
-
-    it('上传时如果已经在 analyzing 中，直接返回（不重复触发）', async () => {
-      useProjectStore.setState({ analyzing: true })
-      const { result } = renderHook(() => useBuilderActions(toast))
-      await act(async () => {
-        await result.current.handleUpload(undefined, 'hi')
-      })
-      expect(api.createProject).not.toHaveBeenCalled()
-    })
-
-    it('SSE 返回 error 事件 → toast 失败', async () => {
-      vi.mocked(api.createProject).mockResolvedValue({ project_id: 'p1', name: 'x', settings: {} })
-      vi.mocked(api.analyzeUploadStream).mockReturnValue(
-        makeStream([{ error: 'LLM API Key 未配置' }]) as never,
-      )
-
-      const { result } = renderHook(() => useBuilderActions(toast))
-      await act(async () => {
-        await result.current.handleUpload(undefined, 'hi')
-      })
-      // 错误信息含 "LLM API Key 未配置" → 引导去设置
-      expect(toast).toHaveBeenCalledWith(
-        '请先在设置页填写 LLM API Key',
-        'error',
-      )
-      expect(useProjectStore.getState().analyzing).toBe(false)
-    })
-
-    it('其他后端错误显示通用失败 toast', async () => {
-      vi.mocked(api.createProject).mockResolvedValue({ project_id: 'p1', name: 'x', settings: {} })
-      vi.mocked(api.analyzeUploadStream).mockReturnValue(
-        makeStream([{ error: 'OpenAI rate limit exceeded' }]) as never,
-      )
-
-      const { result } = renderHook(() => useBuilderActions(toast))
-      await act(async () => {
-        await result.current.handleUpload(undefined, 'hi')
-      })
-      const failCall = toast.mock.calls.find((c) =>
-        typeof c[0] === 'string' && c[0].startsWith('分析失败'),
-      )
-      expect(failCall).toBeTruthy()
-      expect(failCall![0]).toContain('rate limit')
-    })
+    const { result } = renderHook(() => useBuilderActions(vi.fn()))
+    await act(async () => { await result.current.handleUpload(undefined, 'topic') })
+    expect(useProjectStore.getState().activeNodeId).toBeNull()
+    expect(useProjectStore.getState().analyzing).toBe(false)
+    expect(useCreationStore.getState().topic).toBe('topic')
+    expect(useGenerationJobStore.getState().jobs.j.kind).toBe('analyze')
   })
-
-  describe('cancelInflight', () => {
-    it('未进行任何请求时调用安全（不抛错）', () => {
-      const { result } = renderHook(() => useBuilderActions(toast))
-      expect(() => result.current.cancelInflight()).not.toThrow()
-    })
-
-    it('上传期间调用 cancel 让 abortController 触发', async () => {
-      useSettingsStore.setState({ llmApiKey: 'sk-ant-valid-long-key' })
-      vi.mocked(api.createProject).mockResolvedValue({ project_id: 'p1', name: 'x', settings: {} })
-
-      let capturedSignal: AbortSignal | undefined
-      vi.mocked(api.analyzeUploadStream).mockImplementation(
-        ((_pid, _f, _t, _kw, signal) => {
-          capturedSignal = signal
-          // 返回一个永不结束的流（用 yield 让它确实是 generator，规避 lint）
-          return {
-            async *[Symbol.asyncIterator]() {
-              await new Promise((r) => setTimeout(r, 1000))
-              yield {} // 永远不会到这里
-            },
-          }
-        }) as never,
-      )
-
-      const { result } = renderHook(() => useBuilderActions(toast))
-      const uploadPromise = act(async () => {
-        await result.current.handleUpload(undefined, 'hi')
-      })
-      // 等流启动
-      await new Promise((r) => setTimeout(r, 10))
-      result.current.cancelInflight()
-      await uploadPromise
-
-      expect(capturedSignal?.aborted).toBe(true)
-    })
+  it('keeps the original operation and input when submission response is lost', async () => {
+    vi.mocked(api.createAnalysisJob).mockRejectedValue(new Error('response lost'))
+    const { result } = renderHook(() => useBuilderActions(vi.fn()))
+    await act(async () => { await result.current.handleUpload(undefined, 'original topic', 'keyword') })
+    expect(useGenerationJobStore.getState().pending.p1).toEqual(expect.objectContaining({ kind: 'analyze', text: 'original topic', keywords: 'keyword' }))
+    expect(useProjectStore.getState().project?.root_node_id).toBeNull()
   })
+  it('prevents same-tick duplicate project creation across hook instances', async () => {
+    const created = deferred<object>()
+    vi.mocked(api.createProject).mockReturnValue(created.promise)
+    const { result } = renderHook(() => ({ first: useBuilderActions(vi.fn()), second: useBuilderActions(vi.fn()) }))
+    let first!: Promise<void>
+    act(() => { first = result.current.first.handleUpload(undefined, 'topic'); void result.current.second.handleUpload(undefined, 'other topic') })
+    expect(api.createProject).toHaveBeenCalledTimes(1)
+    await act(async () => { created.resolve({ project_id: 'p1', name: 'topic', settings: {} }); await first })
+  })
+  it('does not submit the old topic if the workspace changes during project bootstrap', async () => {
+    const created = deferred<object>()
+    vi.mocked(api.createProject).mockReturnValue(created.promise)
+    const { result } = renderHook(() => useBuilderActions(vi.fn()))
+    let creation!: Promise<void>
+    act(() => { creation = result.current.handleUpload(undefined, 'old topic') })
+    act(() => useProjectStore.getState().openProject({ ...project, project_id: 'local-next' }, 'local'))
+    await act(async () => { created.resolve({ project_id: 'p1', name: 'topic', settings: {} }); await creation })
+    expect(api.createAnalysisJob).not.toHaveBeenCalled()
+    expect(useProjectStore.getState().project?.project_id).toBe('local-next')
+  })
+  it('does not duplicate a bootstrap already in progress', async () => {
+    useProjectStore.getState().setAnalyzing(true)
+    const { result } = renderHook(() => useBuilderActions(vi.fn()))
+    await act(async () => { await result.current.handleUpload(undefined, 'topic') })
+    expect(api.createProject).not.toHaveBeenCalled()
+  })
+  it('freezes image generation intent from the original settings', async () => {
+    useSettingsStore.setState({ imgGenApiKey: '' })
+    const { result } = renderHook(() => useBuilderActions(vi.fn()))
+    await act(async () => { await result.current.handleUpload(undefined, 'topic') })
+    expect(api.createAnalysisJob).toHaveBeenCalledWith(expect.objectContaining({ generate_images: false }), expect.anything(), undefined)
+  })
+  it.each(['gpt-image-2', 'dall-e-3'])('only warns about known slow image models: %s', async (model) => {
+    useSettingsStore.setState({ imgGenModel: model })
+    const toast = vi.fn()
+    const { result } = renderHook(() => useBuilderActions(toast))
+    await act(async () => { await result.current.handleUpload(undefined, 'topic') })
+    const warning = toast.mock.calls.find(([message]) => String(message).includes('单张图约'))
+    expect(Boolean(warning)).toBe(model === 'gpt-image-2')
+  })
+})
 
-  describe('handleRegenerate', () => {
-    beforeEach(() => {
-      useSettingsStore.setState({ llmApiKey: 'sk-ant-valid-long-key' })
-      useProjectStore.setState({
-        project: {
-          project_id: 'p1',
-          name: 'x',
-          root_node_id: 'n1',
-          settings: {} as never,
-          nodes: {
-            n1: {
-              id: 'n1',
-              parent_id: null,
-              depth: 0,
-              title: 'Root',
-              description: '',
-              source_type: 'text',
-              image_url: null,
-              children: [],
-              hotspots: [],
-              status: 'generated',
-            },
-          },
-        },
-        activeNodeId: 'n1',
-      })
-    })
-
-    it('成功调用 regenerateNode 并更新 store', async () => {
-      vi.mocked(api.regenerateNode).mockResolvedValue({
-        id: 'n1',
-        title: '新标题',
-        description: '新描述',
-        image_url: '/uploads/p1/n1.png',
-        status: 'generated',
-      })
-
-      const { result } = renderHook(() => useBuilderActions(toast))
-      await act(async () => {
-        await result.current.handleRegenerate()
-      })
-
-      expect(api.regenerateNode).toHaveBeenCalledWith('p1', 'n1')
-      expect(useProjectStore.getState().project?.nodes.n1.title).toBe('新标题')
-      // 成功 toast 包含新标题
-      const successCall = toast.mock.calls.find((c) =>
-        typeof c[0] === 'string' && c[0].includes('已重新生成'),
-      )
-      expect(successCall).toBeTruthy()
-    })
-
-    it('针对指定 node 重新生成（不是 active）', async () => {
-      // 添加另一个节点
-      useProjectStore.setState((s) => ({
-        project: {
-          ...s.project!,
-          nodes: {
-            ...s.project!.nodes,
-            n2: {
-              id: 'n2', parent_id: 'n1', depth: 1, title: 'Child',
-              description: '', source_type: 'image', image_url: null,
-              children: [], hotspots: [], status: 'generated',
-            },
-          },
-        },
-      }))
-      vi.mocked(api.regenerateNode).mockResolvedValue({
-        id: 'n2',
-        title: 'X',
-        description: '',
-        image_url: null,
-        status: 'generated',
-      })
-
-      const { result } = renderHook(() => useBuilderActions(toast))
-      await act(async () => {
-        await result.current.handleRegenerate('n2')
-      })
-      expect(api.regenerateNode).toHaveBeenCalledWith('p1', 'n2')
-    })
+describe('durable page regeneration', () => {
+  beforeEach(() => { useProjectStore.getState().openProject(project, 'server'); useGenerationJobStore.getState().setDiscovery('p1', 'ready') })
+  it('submits a job while keeping the old page untouched', async () => {
+    const toast = vi.fn()
+    const { result } = renderHook(() => useBuilderActions(toast))
+    await act(async () => { await result.current.handleRegenerate() })
+    expect(api.createRegenerationJob).toHaveBeenCalledWith(expect.objectContaining({ kind: 'regenerate', node_id: 'n1' }), expect.anything())
+    expect(useProjectStore.getState().project?.nodes.n1).toEqual(project.nodes.n1)
+    expect(useProjectStore.getState().generating).toBe(false)
+    expect(toast).toHaveBeenCalledWith('页面再生任务已提交，原页面会保留到新结果完成', 'success')
+  })
+  it('can target another page without changing navigation', async () => {
+    useProjectStore.getState().setProject({ ...project, nodes: { ...project.nodes, n2: { ...project.nodes.n1, id: 'n2', parent_id: 'n1', depth: 1 } } })
+    const { result } = renderHook(() => useBuilderActions(vi.fn()))
+    await act(async () => { await result.current.handleRegenerate('n2') })
+    expect(api.createRegenerationJob).toHaveBeenCalledWith(expect.objectContaining({ node_id: 'n2' }), expect.anything())
+    expect(useProjectStore.getState().activeNodeId).toBe('n1')
+  })
+  it.each(['hotspot', 'scene'])('protects existing %s content before submission', async (content) => {
+    useProjectStore.getState().updateNode('n1', content === 'hotspot' ? { hotspots: [{ id: 'h', label: 'h', position: { x: 0, y: 0 }, size: { width: .2, height: .2 }, selected: true, target_node_id: null }] } : { scene_document: { version: 1, layout: 'atlas', sections: [] } })
+    const { result } = renderHook(() => useBuilderActions(vi.fn()))
+    await act(async () => { await result.current.handleRegenerate() })
+    expect(api.createRegenerationJob).not.toHaveBeenCalled()
+  })
+  it('releases a definitively rejected regeneration instead of trapping the page in pending', async () => {
+    vi.mocked(api.createRegenerationJob).mockRejectedValue(Object.assign(new Error('页面已有热点'), { status: 409 }))
+    const { result } = renderHook(() => useBuilderActions(vi.fn()))
+    await act(async () => { await result.current.handleRegenerate() })
+    await waitFor(() => expect(useGenerationJobStore.getState().pending.p1).toBeUndefined())
+    expect(useProjectStore.getState().project?.nodes.n1.image_url).toBe('/old.png')
   })
 })

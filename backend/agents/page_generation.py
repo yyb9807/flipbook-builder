@@ -1,6 +1,7 @@
 from agents.base import BaseLLMAgent, LLMConfig
 from agents.composition import build_image_prompt
 from agents.composition import normalize as normalize_composition
+from agents.knowledge import compose_knowledge, knowledge_prompt
 
 # 风格 preset：DK 图鉴的不同色彩/材质变体（保持图鉴感）
 _DK_BASE = (
@@ -32,11 +33,22 @@ class PageGenerationAgent(BaseLLMAgent):
         visual_style: str = "encyclopedia",
         language: str = "zh",
         selected_keywords: list[str] | None = None,
+        content_format: str | None = None,
     ) -> dict:
         style_desc = STYLE_PROMPTS.get(visual_style, STYLE_PROMPTS["encyclopedia"])
         keywords_hint = ""
         if selected_keywords:
             keywords_hint = f"\n用户特别关注的探索方向：{'、'.join(selected_keywords)}"
+
+        if content_format == "knowledge-v1":
+            raw = await self.call(
+                [{"role": "user", "content": (
+                    f"背景主题：{parent_title}\n已有内容：{parent_description}\n"
+                    f"本页探索主题：{hotspot_label}{keywords_hint}\n"
+                    "本页应深入解释当前主题，避免重复已有内容。"
+                )}], max_tokens=4000, system=knowledge_prompt(language),
+            )
+            return compose_knowledge(self.extract_json(raw), style_desc)
 
         system = (
             "你是交互式知识翻页书的内容策划专家。"

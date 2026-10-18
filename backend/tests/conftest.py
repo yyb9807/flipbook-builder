@@ -38,3 +38,21 @@ async def project(client: AsyncClient):
         yield pid
     finally:
         await client.delete(f"/api/projects/{pid}")
+
+
+@pytest_asyncio.fixture
+async def isolated_api():
+    """API boundary tests with a fake pool: no database or paid provider required."""
+    from fastapi import FastAPI
+
+    from database import get_pool
+    from routers import nodes, projects
+    from tests.helpers import FakePool
+
+    pool = FakePool()
+    app = FastAPI()
+    app.include_router(projects.router, prefix="/api")
+    app.include_router(nodes.router, prefix="/api")
+    app.dependency_overrides[get_pool] = lambda: pool
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+        yield ac, pool

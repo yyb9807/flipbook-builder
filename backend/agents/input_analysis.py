@@ -1,7 +1,8 @@
 from agents.base import BaseLLMAgent, LLMConfig
 from agents.composition import build_image_prompt
 from agents.composition import normalize as normalize_composition
-from agents.hotspot_localization import _compress_image_for_vision
+from agents.hotspot_localization import _compress_image_for_vision, sanitize_hotspots
+from agents.knowledge import compose_knowledge, knowledge_prompt
 
 
 class InputAnalysisAgent(BaseLLMAgent):
@@ -67,22 +68,20 @@ class InputAnalysisAgent(BaseLLMAgent):
             }
         if "keywords" not in result:
             result["keywords"] = []
-        # 规范化 hotspots：确保坐标 0-1
-        if "hotspots" in result and isinstance(result["hotspots"], list):
-            for hs in result["hotspots"]:
-                for key in ("x", "y", "width", "height"):
-                    try:
-                        hs[key] = max(0.0, min(1.0, float(hs.get(key, 0.1))))
-                    except Exception:
-                        hs[key] = 0.1
-        else:
-            result["hotspots"] = []
+        result["hotspots"] = sanitize_hotspots(result.get("hotspots"))
         # 兼容：从 hotspots 派生 main_objects（用于子页面生成的关键对象）
         if "main_objects" not in result or not result["main_objects"]:
             result["main_objects"] = [hs.get("label", "") for hs in result.get("hotspots", []) if hs.get("label")]
         return result
 
-    async def analyze_text(self, text: str, language: str = "zh", style_desc: str = "") -> dict:
+    async def analyze_text(self, text: str, language: str = "zh", style_desc: str = "",
+                           content_format: str | None = None) -> dict:
+        if content_format == "knowledge-v1":
+            raw = await self.call(
+                [{"role": "user", "content": f"知识页素材：\n{text}"}], max_tokens=4000,
+                system=knowledge_prompt(language),
+            )
+            return compose_knowledge(self.extract_json(raw), style_desc)
         system = (
             "你是交互式知识翻页书的内容策划专家。"
             "你要把用户的文字素材转化为一张『可深度探索的封面图』。"

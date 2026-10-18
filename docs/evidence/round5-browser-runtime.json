@@ -1,0 +1,118 @@
+{
+  "provider": "local HTTP fake",
+  "paid_calls": 0,
+  "database": "flipbook_acceptance_49e1867ff836",
+  "scenarios": [],
+  "provider_calls": {
+    "analysis": 5,
+    "plan": 2,
+    "image": 1
+  },
+  "credential_audit": {
+    "tables_scanned": 20,
+    "cells_scanned": 1388,
+    "checkpoint_cells_inspected": 46,
+    "base64_decoded_candidates_inspected": 176,
+    "raw_postgres_relation_files_scanned": 420,
+    "raw_postgres_relation_bytes_scanned": 9568256,
+    "worker_log_and_asset_files_clean": true,
+    "logical_sql_rows_clean": true,
+    "pg_dump_sql_clean": false,
+    "serialized_negative_control_detected": true
+  },
+  "cleanup_complete": true,
+  "manual_browser_acceptance": {
+    "method": "Visible CUA controls, actual file chooser and downloads; no hidden state writes or API substitution",
+    "passes": 2,
+    "desktop": {
+      "width": 1280,
+      "height": 720
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844
+    },
+    "completed": [
+      "text-model-only creation",
+      "reload during root generation",
+      "structured content edit",
+      "unsafe reference URL blocked with draft retained",
+      "author references and review declaration",
+      "reference change resets review",
+      "mobile source draft survives reload",
+      "one generated child page",
+      "manual server section then second-level generation",
+      "three-level preview",
+      "actual ZIP and JSON download",
+      "uploaded image retains image hotspots",
+      "English creation and mobile layout",
+      "optional illustration rejection keeps knowledge content",
+      "invalid knowledge format fails without retry"
+    ],
+    "final_confirmation": {
+      "image_label_change_resets_review": true,
+      "reset_persists_after_reload": true,
+      "English_example_attribution": true,
+      "new_ZIP_downloaded_again_from_UI": true,
+      "all_files_extracted_from_new_ZIP": true,
+      "actual_export_HTTP_player_startup": true,
+      "actual_export_root_child_leaf_navigation": true,
+      "actual_export_reference_visible": true,
+      "actual_export_mobile_scroll_width": 390,
+      "console_errors": [],
+      "console_warnings": [],
+      "file_protocol_browser_execution": false
+    },
+    "mobile_source_form": {
+      "current_page_top": 64,
+      "current_page_bottom": 132,
+      "save_top": 132,
+      "save_bottom": 174,
+      "source_field_top": 394,
+      "source_field_bottom": 457,
+      "document_width": 390
+    },
+    "screenshots": [
+      {
+        "path": ".impeccable/screenshots/round5-final-image-review-reset.jpg",
+        "bytes": 55167,
+        "sha256": "693722b771d529f20c39a1078a0bcbae4b5d15634d0a67c7f7a9c0ec0c5fae07"
+      },
+      {
+        "path": ".impeccable/screenshots/round5-final-offline-source.jpg",
+        "bytes": 42242,
+        "sha256": "9c801404f934208dcc97573884326d6eeb36da0fe7c872c685173c3a44299b90"
+      },
+      {
+        "path": ".impeccable/screenshots/round5-final-offline-mobile-leaf.jpg",
+        "bytes": 37915,
+        "sha256": "504bb56ec4f966f784ff41ae276e7f3f464bbd6971750ea46306959dd84d1637"
+      },
+      {
+        "path": ".impeccable/screenshots/round5-final-official-stack.jpg",
+        "bytes": 84813,
+        "sha256": "494d7cdd24db03ddf112cd3337603655a8df2928104e1853c7c21d30b57894f0"
+      },
+      {
+        "path": ".impeccable/screenshots/round5-mobile-source-draft.jpg",
+        "bytes": 35151,
+        "sha256": "eab1f6c2bb8935bf4ce279b59809bc576ad1895ed4a97f4eb454b56026c03ac5"
+      },
+      {
+        "path": ".impeccable/screenshots/round5-mobile-english-knowledge.jpg",
+        "bytes": 36243,
+        "sha256": "151460587494ff88aa1d1df9cab9198ad5bb0cb764e477885530e9182e9b6101"
+      },
+      {
+        "path": ".impeccable/screenshots/round5-mobile-partial-knowledge.jpg",
+        "bytes": 28358,
+        "sha256": "676e8c0d2c723c810fbeacb5c07cd7aad7c659029bac995789c0c9d4b52be482"
+      },
+      {
+        "path": ".impeccable/screenshots/round5-mobile-invalid-knowledge.jpg",
+        "bytes": 38665,
+        "sha256": "ecca2d4d1f5136b602b2b34c4c1d0cb20c52a538eda6a0e08d25a2c1e702d2da"
+      }
+    ]
+  }
+}

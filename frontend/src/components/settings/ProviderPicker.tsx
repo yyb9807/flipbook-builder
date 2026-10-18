@@ -7,6 +7,7 @@ import type { TranslationKey } from '../../i18n'
 interface Props {
   currentBaseUrl: string
   onPick: (provider: LLMProvider) => void
+  kind?: 'chat' | 'image'
 }
 
 /**
@@ -15,14 +16,14 @@ interface Props {
  *
  * 不带自己的 label，标签由父组件用 FieldGroup 提供（避免双重 label）。
  */
-export function ProviderPicker({ currentBaseUrl, onPick }: Props) {
+export function ProviderPicker({ currentBaseUrl, onPick, kind = 'chat' }: Props) {
   const { t } = useI18n()
   const currentMatch = findProviderByBaseUrl(currentBaseUrl)
   const isCustom = !currentMatch
 
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-      {LLM_PROVIDERS.map((p) => {
+      {LLM_PROVIDERS.filter((provider) => kind === 'chat' || provider.id === 'custom' || !!provider.imageModels?.length).map((p) => {
         const active = p.id === 'custom' ? isCustom : currentMatch?.id === p.id
         return (
           <Chip

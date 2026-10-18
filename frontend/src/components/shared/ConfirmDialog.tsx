@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useI18n } from '../../i18n'
 
@@ -30,6 +30,8 @@ function notify() {
 /** 命令式 confirm，返回 Promise<boolean>。 */
 export function confirm(opts: ConfirmOptions): Promise<boolean> {
   return new Promise((resolve) => {
+    // A replacement must not leave the previous caller waiting indefinitely.
+    pending?.resolve(false)
     pending = { ...opts, resolve }
     notify()
   })
@@ -47,6 +49,8 @@ export function ConfirmHost() {
   const { t } = useI18n()
   const [current, setCurrent] = useState<PendingDialog | null>(pending)
   const cancelBtnRef = useRef<HTMLButtonElement>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const id = useId()
 
   useEffect(() => {
     subscribers.add(setCurrent)
@@ -57,29 +61,54 @@ export function ConfirmHost() {
 
   useEffect(() => {
     if (!current) return
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null
     cancelBtnRef.current?.focus()
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') close(false)
-      else if (e.key === 'Enter') close(true)
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        e.stopPropagation()
+        close(false)
+      } else if (e.key === 'Tab') {
+        const buttons = dialogRef.current?.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')
+        if (!buttons?.length) return
+        const first = buttons[0]
+        const last = buttons[buttons.length - 1]
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
+      // Enter activates the focused native button. Never map it to a global confirm.
+    }
+    function onFocus(event: FocusEvent) {
+      if (event.target instanceof Node && !dialogRef.current?.contains(event.target)) cancelBtnRef.current?.focus()
     }
     window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    window.addEventListener('focusin', onFocus)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('focusin', onFocus)
+      if (previousFocus?.isConnected) previousFocus.focus()
+    }
   }, [current])
 
   if (!current) return null
 
   return createPortal(
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="confirm-title"
+      aria-labelledby={`${id}-title`}
+      aria-describedby={current.message ? `${id}-message` : undefined}
       onClick={() => close(false)}
       style={{
         position: 'fixed',
         inset: 0,
         background: 'rgba(0,0,0,0.35)',
-        backdropFilter: 'saturate(180%) blur(12px)',
-        WebkitBackdropFilter: 'saturate(180%) blur(12px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -96,11 +125,10 @@ export function ConfirmHost() {
           width: 380,
           maxWidth: 'calc(100vw - 32px)',
           boxShadow: '0 24px 60px rgba(0,0,0,0.25)',
-          animation: 'popIn 0.18s cubic-bezier(0.34, 1.56, 0.64, 1)',
         }}
       >
         <h3
-          id="confirm-title"
+          id={`${id}-title`}
           style={{
             margin: '0 0 8px',
             fontWeight: 700,
@@ -113,6 +141,7 @@ export function ConfirmHost() {
         </h3>
         {current.message && (
           <p
+            id={`${id}-message`}
             style={{
               margin: '0 0 18px',
               fontSize: 14,
@@ -126,6 +155,7 @@ export function ConfirmHost() {
         <div style={{ display: 'flex', gap: 8, marginTop: current.message ? 0 : 16 }}>
           <button
             ref={cancelBtnRef}
+            type="button"
             onClick={() => close(false)}
             style={{
               flex: 1,
@@ -143,6 +173,7 @@ export function ConfirmHost() {
             {current.cancelText ?? t('common.cancel')}
           </button>
           <button
+            type="button"
             onClick={() => close(true)}
             style={{
               flex: 1,

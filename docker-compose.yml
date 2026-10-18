@@ -4,18 +4,17 @@
 #   docker compose up -d --build
 #   docker compose logs -f backend
 #   docker compose down               # 停止但保留卷
-#   docker compose down -v            # 同时清空数据库 + 上传图片
+#   docker compose down -v            # 删除数据库卷；宿主机 ./data 图片仍保留
 #
 # 访问：http://localhost:${FRONTEND_PORT:-8080}
 
 services:
   db:
     image: postgres:16-alpine
-    container_name: flipbook-db
     restart: unless-stopped
     ports:
       # 仍暴露到宿主机 5434，方便本地连库调试；线上可去掉
-      - "5434:5432"
+      - "127.0.0.1:${POSTGRES_PORT:-5434}:5432"
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-flipbook}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-flipbook}
@@ -31,13 +30,14 @@ services:
   backend:
     build:
       context: ./backend
-    container_name: flipbook-backend
+      args:
+        PYTHON_IMAGE: ${PYTHON_IMAGE:-python:3.13-slim}
     restart: unless-stopped
     environment:
       # 容器内连库走 service 名 + 默认端口 5432
       DATABASE_URL: postgresql://${POSTGRES_USER:-flipbook}:${POSTGRES_PASSWORD:-flipbook}@db:5432/${POSTGRES_DB:-flipbook}
-      # 前后端同源（由 nginx 反代），CORS 通配即可
-      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+      # 前后端同源；仅为本地开发声明跨域来源。
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173,http://127.0.0.1:5173}
       # LLM / 图片生成默认值；前端请求 header 会覆盖（用户在设置页填的 key）
       LLM_API_KEY: ${LLM_API_KEY:-}
       LLM_BASE_URL: ${LLM_BASE_URL:-https://api.anthropic.com}
@@ -55,10 +55,12 @@ services:
   frontend:
     build:
       context: ./frontend
-    container_name: flipbook-frontend
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:-node:24-alpine}
+        NGINX_IMAGE: ${NGINX_IMAGE:-nginx:1.27-alpine}
     restart: unless-stopped
     ports:
-      - "${FRONTEND_PORT:-8080}:80"
+      - "${FRONTEND_BIND:-127.0.0.1}:${FRONTEND_PORT:-8080}:80"
     depends_on:
       - backend
 

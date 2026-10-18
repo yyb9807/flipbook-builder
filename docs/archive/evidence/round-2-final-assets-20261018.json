@@ -1,0 +1,18 @@
+{
+  "base_url": "http://127.0.0.1:18080",
+  "health": {
+    "status": "ok"
+  },
+  "final_assets": [
+    {
+      "path": "/assets/index-BfUNAidu.js",
+      "bytes": 365632,
+      "content_type": "application/javascript"
+    },
+    {
+      "path": "/assets/index-DOOoa_O5.css",
+      "bytes": 35532,
+      "content_type": "text/css"
+    }
+  ]
+}

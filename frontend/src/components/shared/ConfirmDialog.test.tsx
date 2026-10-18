@@ -1,5 +1,6 @@
 import { describe, it, expect, afterEach } from 'vitest'
 import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { ConfirmHost, confirm } from './ConfirmDialog'
 
 describe('Confirm singleton', () => {
@@ -29,12 +30,39 @@ describe('Confirm singleton', () => {
     await expect(promise).resolves.toBe(false)
   })
 
-  it('Enter 键确认（resolves true）', async () => {
+  it('初始聚焦取消，Enter 激活取消而非删除', async () => {
+    const user = userEvent.setup()
     render(<ConfirmHost />)
-    const promise = confirm({ title: '删除？' })
-    await screen.findByText('删除？')
-    fireEvent.keyDown(window, { key: 'Enter' })
+    const promise = confirm({ title: '删除？', tone: 'danger' })
+    expect(await screen.findByText('取消')).toHaveFocus()
+    await user.keyboard('{Enter}')
+    await expect(promise).resolves.toBe(false)
+  })
+
+  it('Tab 焦点保持在弹窗内，确认按钮获得焦点后 Enter 才确认', async () => {
+    const user = userEvent.setup()
+    render(<><button>外部</button><ConfirmHost /></>)
+    const promise = confirm({ title: '删除？', confirmText: '删除' })
+    expect(await screen.findByText('取消')).toHaveFocus()
+    await user.tab({ shift: true })
+    expect(screen.getByText('删除')).toHaveFocus()
+    await user.tab()
+    expect(screen.getByText('取消')).toHaveFocus()
+    await user.tab()
+    await user.keyboard('{Enter}')
     await expect(promise).resolves.toBe(true)
+  })
+
+  it('关闭后恢复触发控件焦点', async () => {
+    const user = userEvent.setup()
+    render(<><button>触发</button><ConfirmHost /></>)
+    const trigger = screen.getByText('触发')
+    trigger.focus()
+    const promise = confirm({ title: '删除？' })
+    await screen.findByText('取消')
+    await user.keyboard('{Escape}')
+    await expect(promise).resolves.toBe(false)
+    expect(trigger).toHaveFocus()
   })
 
   it('点击背景关闭 (cancel)', async () => {

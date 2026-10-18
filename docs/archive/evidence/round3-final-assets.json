@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-18",
+  "base_url": "http://127.0.0.1:18080",
+  "health": {
+    "status": "ok"
+  },
+  "frontend_assets": [
+    {
+      "asset": "/assets/index-CrDGOz96.js",
+      "bytes": 371581,
+      "sha256": "6f9824d9925ffa223d46fcedb6941260aa72bc9074aeb47a00f92801b69cb97f",
+      "matches_local_build": true
+    },
+    {
+      "asset": "/assets/index-D-ckP0X-.css",
+      "bytes": 36115,
+      "sha256": "3c7d686588b3ff3123d3aa6a0ca8f0ed799ef1f0b80fefb04b166456837f3af4",
+      "matches_local_build": true
+    }
+  ],
+  "backend_sources": [
+    {
+      "path": "jobs/workflows.py",
+      "sha256": "d6adadee7590dda392312ec94224f30232145ae5230e70aeb217220a1caf6fcd",
+      "matches_running_container": true
+    },
+    {
+      "path": "jobs/page_workflows.py",
+      "sha256": "a02d29a7d8a86cb57e5df2934bf931793be5ae487ad450745cbbb7ef8d5e7840",
+      "matches_running_container": true
+    },
+    {
+      "path": "jobs/store.py",
+      "sha256": "7c1eed9cc93041a6078584aead6e054dc757a01b1ef40d548b31212e42b8d986",
+      "matches_running_container": true
+    },
+    {
+      "path": "schema.sql",
+      "sha256": "5828c66803c8fdda2bbb708633427d42c828fc4ad4c5ce9eb471dbd664c2bdf2",
+      "matches_running_container": true
+    }
+  ],
+  "remaining_test_projects": 0,
+  "final_http_smoke": "round3-postgres-stack.json",
+  "temporary_demo_services_stopped": true
+}

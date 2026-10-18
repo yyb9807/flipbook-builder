@@ -213,6 +213,24 @@
     font-size: 12px;
     padding: 8px 0 16px;
   }
+  .scene-sections { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 24px; padding: 28px; }
+  .scene-sections.sequence { grid-template-columns: 1fr; }
+  .scene-section { min-width: 0; overflow-wrap: anywhere; }
+  .scene-section h2 { margin: 0 0 10px; font-size: 20px; }
+  .scene-section p { margin: 0; white-space: pre-wrap; line-height: 1.7; }
+  .scene-section button { margin-top: 14px; min-height: 44px; padding: 8px 14px; font: inherit; cursor: pointer; }
+  .knowledge-header { padding: 28px 28px 0; }
+  .knowledge-header h1 { margin: 0 0 12px; font-size: 28px; line-height: 1.25; }
+  .knowledge-header p { margin: 0; white-space: pre-wrap; line-height: 1.7; color: var(--label-secondary); }
+  .content-sources { border-top: 1px solid var(--separator); margin: 0 28px; padding: 22px 0 28px; font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
+  .content-sources h2 { margin: 0 0 10px; font-size: 16px; }
+  .content-sources p { margin: 6px 0; white-space: pre-wrap; }
+  .content-sources ol { padding-left: 20px; }
+  .content-sources a { color: #1b6355; text-underline-offset: 3px; }
+  .content-sources .source-note { color: var(--label-secondary); }
+  .pin:focus-visible { outline: 3px solid var(--pink); outline-offset: 4px; }
+  .pin:focus-visible .pin-label { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
 </head>
 <body>
@@ -257,6 +275,11 @@ function render() {
   }
   const node = nodesById[id];
   const hotspots = hotspotsByNode[id] || [];
+  let scene = node.scene_document;
+  if (typeof scene === 'string') {
+    try { scene = JSON.parse(scene); } catch { scene = null; }
+  }
+  const structured = scene && scene.version === 1 && Array.isArray(scene.sections);
   const depth = nodePath(id).length - 1;
 
   const canvas = document.createElement('div');
@@ -280,11 +303,12 @@ function render() {
   // L<n> · N 个热点
   const tag = document.createElement('div');
   tag.className = 'page-tag';
-  tag.textContent = 'L' + depth + ' · ' + hotspots.length + ' 个热点';
+  tag.textContent = 'L' + depth + ' · ' + (structured ? scene.sections.length + ' 个区块' : hotspots.length + ' 个热点');
   frame.appendChild(tag);
 
   // Hotspots
   for (const h of hotspots) {
+    if (h.kind === 'section' || ![h.pos_x, h.pos_y, h.width, h.height].every(Number.isFinite)) continue;
     const linked = h.target_node_id && nodesById[h.target_node_id];
     const pin = document.createElement('button');
     pin.className = 'pin' + (linked ? ' linked' : ' dead');
@@ -315,7 +339,7 @@ function render() {
   }
 
   // Bottom description
-  if (node.title || node.description) {
+  if (!structured && (node.title || node.description)) {
     const desc = document.createElement('div');
     desc.className = 'desc';
     desc.innerHTML =
@@ -324,7 +348,43 @@ function render() {
     frame.appendChild(desc);
   }
 
-  canvas.appendChild(frame);
+  if (!structured || node.image_url) canvas.appendChild(frame);
+  if (structured) {
+    const intro = document.createElement('header');
+    intro.className = 'knowledge-header';
+    const title = document.createElement('h1');
+    title.textContent = node.title || '';
+    const description = document.createElement('p');
+    description.textContent = node.description || '';
+    intro.append(title, description);
+    canvas.appendChild(intro);
+  }
+  // Compatibility reader for v1 structured pages. New exports use the shared
+  // React player; this endpoint still preserves all editable text and links.
+  if (structured) {
+    const sections = document.createElement('div');
+    sections.className = 'scene-sections' + (scene.layout === 'sequence' ? ' sequence' : '');
+    for (const section of scene.sections) {
+      const article = document.createElement('article');
+      article.className = 'scene-section';
+      const heading = document.createElement('h2');
+      heading.textContent = section.title || '';
+      const body = document.createElement('p');
+      body.textContent = section.body || '';
+      article.append(heading, body);
+      const hotspot = hotspots.find(h => h.id === section.hotspot_id);
+      const target = section.target_node_id || (hotspot && hotspot.target_node_id);
+      if (target && nodesById[target]) {
+        const link = document.createElement('button');
+        link.textContent = '继续探索：' + nodesById[target].title;
+        link.onclick = () => { stack.push(target); render(); };
+        article.appendChild(link);
+      }
+      sections.appendChild(article);
+    }
+    canvas.appendChild(sections);
+  }
+  renderContentMetadata(canvas, node.content_metadata);
   wrap.appendChild(canvas);
 
   // breadcrumb
@@ -353,7 +413,65 @@ function render() {
   const badge = document.getElementById('badge');
   const linkedCount = hotspots.filter(h => h.target_node_id && nodesById[h.target_node_id]).length;
   badge.textContent = linkedCount + '/' + hotspots.length;
-  badge.title = '可点击的热点 / 总热点数';
+  badge.title = '可打开的分支 / 全部分支';
+}
+
+function safeReferenceUrl(value) {
+  if (typeof value !== 'string' || !value || value.length > 2000 || /[\s\\\p{C}]/u.test(value)) return null;
+  const authority = value.match(/^https?:\/\/([^/?#]+)/i);
+  if (!authority || /[@%]/.test(authority[1])) return null;
+  try {
+    const url = new URL(value);
+    if (!['http:', 'https:'].includes(url.protocol) || !url.hostname || url.username || url.password || url.port === '0') return null;
+    return url.href;
+  } catch { return null; }
+}
+
+function renderContentMetadata(canvas, metadata) {
+  if (!metadata || metadata.version !== 1) return;
+  const sources = document.createElement('footer');
+  sources.className = 'content-sources';
+  const heading = document.createElement('h2');
+  heading.textContent = '生成与参考资料';
+  sources.appendChild(heading);
+  const provenance = metadata.provenance;
+  if (provenance && provenance.kind === 'ai') {
+    const inputLabels = {text: '主题文字', image: '上传图片', parent_page: '上级页面', page: '当前页面'};
+    const generated = document.createElement('p');
+    generated.textContent = 'AI 生成 · 依据：' + (inputLabels[provenance.input_kind] || '创作输入') + ' · 模型：' + provenance.model;
+    sources.appendChild(generated);
+  }
+  const review = document.createElement('p');
+  review.textContent = metadata.review_status === 'reviewed' ? '作者声明已人工核对。' : '尚未声明人工核对，生成内容可能有误。';
+  sources.appendChild(review);
+  const references = Array.isArray(metadata.references) ? metadata.references : [];
+  if (references.length) {
+    const list = document.createElement('ol');
+    for (const reference of references.slice(0, 12)) {
+      const item = document.createElement('li');
+      const url = safeReferenceUrl(reference.url);
+      const title = document.createElement(url ? 'a' : 'span');
+      title.textContent = reference.title || '';
+      if (url) { title.href = url; title.target = '_blank'; title.rel = 'noopener noreferrer'; }
+      item.appendChild(title);
+      if (reference.note) {
+        const note = document.createElement('p');
+        note.textContent = reference.note;
+        item.appendChild(note);
+      }
+      list.appendChild(item);
+    }
+    sources.appendChild(list);
+  } else {
+    const empty = document.createElement('p');
+    empty.textContent = '尚未添加参考资料。';
+    sources.appendChild(empty);
+  }
+  const disclaimer = document.createElement('p');
+  disclaimer.className = 'source-note';
+  disclaimer.textContent = '参考资料由作者填写，系统未抓取或核验。';
+  sources.appendChild(disclaimer);
+  canvas.appendChild(sources);
 }
 
 function escapeHtml(s) {

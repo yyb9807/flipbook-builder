@@ -1,55 +1,15 @@
 import { useProjectStore } from '../../store/projectStore'
-import { useI18n } from '../../i18n'
+import { useCopy } from '../../i18n/workspace'
+import { Icon } from './Icon'
+import { useNodeDraftStore } from '../../store/nodeDraftStore'
 
 export function ModeToggle() {
-  const { t } = useI18n()
-  const mode = useProjectStore((s) => s.mode)
-  const setMode = useProjectStore((s) => s.setMode)
   const project = useProjectStore((s) => s.project)
-
+  const mode = useProjectStore((s) => s.mode)
+  const busy = useProjectStore((s) => s.generating || s.analyzing)
+  const setMode = useProjectStore((s) => s.setMode)
+  const c = useCopy()
+  const hasDrafts = useNodeDraftStore((s) => Object.keys(s.drafts[project?.project_id ?? ''] ?? {}).length > 0)
   if (!project?.root_node_id) return null
-
-  if (mode === 'viewer') {
-    return (
-      <button
-        onClick={() => setMode('builder')}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: 6,
-          padding: '6px 14px',
-          background: 'var(--gray-6)',
-          border: 'none',
-          borderRadius: 999,
-          fontSize: 13,
-          fontWeight: 500,
-          color: 'var(--label)',
-          cursor: 'pointer',
-        }}
-      >
-        {t('mode.editor')}
-      </button>
-    )
-  }
-
-  return (
-    <button
-      onClick={() => setMode('viewer')}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 6,
-        padding: '6px 14px',
-        background: 'var(--pink)',
-        border: 'none',
-        borderRadius: 999,
-        fontSize: 13,
-        fontWeight: 600,
-        color: 'white',
-        cursor: 'pointer',
-      }}
-    >
-      {t('mode.viewer')}
-    </button>
-  )
+  return <button className="btn btn-primary preview-button" disabled={busy || hasDrafts} title={hasDrafts ? c('请先保存页面草稿', 'Save page drafts first') : undefined} onClick={() => setMode(mode === 'viewer' ? 'builder' : 'viewer')}><Icon name={mode === 'viewer' ? 'pen' : 'arrow-right'} />{mode === 'viewer' ? c('返回编辑', 'Edit') : c('预览作品', 'Preview')}</button>
 }

@@ -83,7 +83,7 @@ class TestUploadValidation:
             f"/api/projects/{project}/analyze",
             files={"file": ("big.png", big, "image/png")},
         )
-        assert r.status_code == 400
+        assert r.status_code == 413
         assert "20 MB" in r.json()["detail"]
 
     async def test_wrong_mime_rejected(self, client: AsyncClient, project: str):

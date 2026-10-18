@@ -9,6 +9,10 @@ import { useProjectStore } from './store/projectStore'
 import { ErrorBoundary } from './components/shared/ErrorBoundary'
 import { ToastHost } from './components/shared/Toast'
 import { ConfirmHost } from './components/shared/ConfirmDialog'
+import { useEffect } from 'react'
+import { useI18n } from './i18n'
+import { useGenerationJobs } from './hooks/useGenerationJobs'
+import { CreationJobPage } from './pages/CreationJobPage'
 
 /**
  * 根路由 "/"：根据 store 状态在 3 个页面间切换（URL 不变）：
@@ -16,17 +20,21 @@ import { ConfirmHost } from './components/shared/ConfirmDialog'
  *   - 有 project + activeNode → BuilderPage（3 列编辑器）
  *   - 否则 → HomePage（首页/dashboard）
  */
-function RootRoute() {
+export function RootRoute() {
   const mode = useProjectStore((s) => s.mode)
   const project = useProjectStore((s) => s.project)
   const activeNodeId = useProjectStore((s) => s.activeNodeId)
 
-  if (mode === 'viewer') return <ViewerPage />
-  if (project && activeNodeId) return <BuilderPage />
+  if (project && (!activeNodeId || !project.nodes[activeNodeId])) return <CreationJobPage />
+  if (mode === 'viewer' && project) return <ViewerPage />
+  if (project && activeNodeId) return <BuilderPage key={project.project_id} />
   return <HomePage />
 }
 
 export default function App() {
+  useGenerationJobs()
+  const { locale } = useI18n()
+  useEffect(() => { document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en' }, [locale])
   return (
     <ErrorBoundary>
       <BrowserRouter>

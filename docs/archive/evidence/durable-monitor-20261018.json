@@ -1,0 +1,11 @@
+{
+  "scenario": "executor_error_unfinished_intent",
+  "passed": true,
+  "test_entrypoint": "scripts/verify_durable_generation.py:Harness.executor_error_with_unfinished_intent",
+  "test_only_fault": "JobStore.complete_attempt(image) raises after remote success, before result persistence",
+  "error_intent_kept_locked": true,
+  "automatic_retry_calls": 0,
+  "explicit_cancel_required": true,
+  "replacement_after_cancel_succeeded": true,
+  "full_combined_run_pending_after_source_finalization": true
+}

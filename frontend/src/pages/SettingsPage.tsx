@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useSettingsStore } from '../store/settingsStore'
+import { useRef, useState, type ReactNode } from 'react'
+import { sameEndpoint, useSettingsStore, type ModelSettings } from '../store/settingsStore'
 import { api } from '../api/client'
 import type { TestConfigResult } from '../types/api'
 import type { LLMProvider } from '../utils/llmProviders'
@@ -16,284 +16,166 @@ import { Footer } from '../components/shared/Footer'
 import { QuickStartHint } from '../components/settings/QuickStartHint'
 import { Collapse } from '../components/settings/Collapse'
 import { useI18n } from '../i18n'
+import type { TranslationKey } from '../i18n'
+import '../components/settings/settings.css'
 
-/** 把 API Key 显示成 "sk-an…X4n2 (108)" 这种形式，方便用户核对粘贴是否完整。 */
-function maskKey(key: string): string {
-  if (!key) return ''
-  if (key.length <= 12) return `${key.slice(0, 4)}… (${key.length})`
-  return `${key.slice(0, 6)}…${key.slice(-4)} (${key.length})`
+function readSettings(): ModelSettings {
+  const s = useSettingsStore.getState()
+  return {
+    llmBaseUrl: s.llmBaseUrl, llmApiKey: s.llmApiKey, llmModel: s.llmModel,
+    imgGenBaseUrl: s.imgGenBaseUrl, imgGenApiKey: s.imgGenApiKey, imgGenModel: s.imgGenModel,
+    rememberKeys: s.rememberKeys,
+  }
 }
 
-/** 从 URL 抽取主机名作为副标题（找不到 provider 时降级用）。 */
 function hostFromUrl(url: string, fallback: string): string {
-  try {
-    return new URL(url).hostname.replace(/^api\./, '')
-  } catch {
-    return url || fallback
-  }
+  try { return new URL(url).hostname } catch { return url || fallback }
 }
 
 export function SettingsPage() {
   const settings = useSettingsStore()
   const { t } = useI18n()
-  const [form, setForm] = useState({
-    llmBaseUrl: settings.llmBaseUrl,
-    llmApiKey: settings.llmApiKey,
-    llmModel: settings.llmModel,
-    imgGenBaseUrl: settings.imgGenBaseUrl,
-    imgGenApiKey: settings.imgGenApiKey,
-    imgGenModel: settings.imgGenModel,
-  })
+  const [form, setForm] = useState<ModelSettings>(readSettings)
   const [saved, setSaved] = useState(false)
+  const [cleared, setCleared] = useState(false)
   const [testing, setTesting] = useState(false)
   const [testResult, setTestResult] = useState<TestConfigResult | null>(null)
   const [testError, setTestError] = useState<string | null>(null)
+  const [llmUrlOpen, setLlmUrlOpen] = useState(!findProviderByBaseUrl(settings.llmBaseUrl))
+  const [imgUrlOpen, setImgUrlOpen] = useState(!findProviderByBaseUrl(settings.imgGenBaseUrl))
+  const testRevision = useRef(0)
+  const dirty = (Object.keys(form) as Array<keyof ModelSettings>).some((key) => form[key] !== settings[key])
 
-  const dirty =
-    form.llmBaseUrl !== settings.llmBaseUrl ||
-    form.llmApiKey !== settings.llmApiKey ||
-    form.llmModel !== settings.llmModel ||
-    form.imgGenBaseUrl !== settings.imgGenBaseUrl ||
-    form.imgGenApiKey !== settings.imgGenApiKey ||
-    form.imgGenModel !== settings.imgGenModel
-
-  function update<K extends keyof typeof form>(field: K, value: string) {
-    setForm((f) => ({ ...f, [field]: value }))
+  function resetFeedback() {
+    testRevision.current += 1
+    setSaved(false)
+    setCleared(false)
+    setTestResult(null)
+    setTestError(null)
   }
 
-  /** 选 LLM 厂商：填 base URL + 自动选这家的推荐 model（如果当前 model 不在该家清单内）。 */
-  function pickLlmProvider(p: LLMProvider) {
-    setForm((f) => {
-      const updates: Partial<typeof f> = { llmBaseUrl: p.baseUrl }
-      const currentInList = p.chatModels.some((m) => m.id === f.llmModel)
-      if (!currentInList && p.chatModels.length > 0) {
-        const recommended = p.chatModels.find((m) => m.recommended) ?? p.chatModels[0]
-        updates.llmModel = recommended.id
-      }
-      return { ...f, ...updates }
-    })
+  function update<K extends keyof ModelSettings>(field: K, value: ModelSettings[K]) {
+    resetFeedback()
+    setForm((previous) => ({
+      ...previous,
+      [field]: value,
+      ...(field === 'llmBaseUrl' && !sameEndpoint(String(value), previous.llmBaseUrl) ? { llmApiKey: '' } : {}),
+      ...(field === 'imgGenBaseUrl' && !sameEndpoint(String(value), previous.imgGenBaseUrl) ? { imgGenApiKey: '' } : {}),
+    }))
   }
 
-  /** 选图片厂商：同上，但是图片模型清单（部分 provider 没有 imageModels 就只切 base URL）。 */
-  function pickImgProvider(p: LLMProvider) {
-    setForm((f) => {
-      const updates: Partial<typeof f> = { imgGenBaseUrl: p.baseUrl }
-      if (p.imageModels && p.imageModels.length > 0) {
-        const inList = p.imageModels.some((m) => m.id === f.imgGenModel)
-        if (!inList) {
-          const recommended = p.imageModels.find((m) => m.recommended) ?? p.imageModels[0]
-          updates.imgGenModel = recommended.id
-        }
+  function pickProvider(provider: LLMProvider, kind: 'chat' | 'image') {
+    resetFeedback()
+    if (!provider.baseUrl) {
+      if (kind === 'chat') setLlmUrlOpen(true)
+      else setImgUrlOpen(true)
+    }
+    setForm((previous) => {
+      const baseField = kind === 'chat' ? 'llmBaseUrl' : 'imgGenBaseUrl'
+      const keyField = kind === 'chat' ? 'llmApiKey' : 'imgGenApiKey'
+      const modelField = kind === 'chat' ? 'llmModel' : 'imgGenModel'
+      const models = kind === 'chat' ? provider.chatModels : provider.imageModels ?? []
+      const currentModel = models.find((model) => model.id === previous[modelField])
+      return {
+        ...previous,
+        [baseField]: provider.baseUrl,
+        [keyField]: sameEndpoint(previous[baseField], provider.baseUrl) ? previous[keyField] : '',
+        [modelField]: currentModel ? previous[modelField] : (models.find((model) => model.recommended) ?? models[0])?.id ?? previous[modelField],
       }
-      return { ...f, ...updates }
     })
   }
 
   function handleSave() {
     settings.updateSettings(form)
     setSaved(true)
-    setTestResult(null)
-    setTestError(null)
-    setTimeout(() => setSaved(false), 2500)
+    setCleared(false)
+  }
+
+  function handleClear() {
+    resetFeedback()
+    settings.clearCredentials()
+    setForm((previous) => ({ ...previous, llmApiKey: '', imgGenApiKey: '', rememberKeys: false }))
+    setCleared(true)
   }
 
   async function handleTest() {
     if (testing) return
-    settings.updateSettings(form)
+    const revision = ++testRevision.current
     setTesting(true)
     setTestResult(null)
     setTestError(null)
     try {
-      setTestResult(await api.testConfig())
-    } catch (e) {
-      setTestError((e as Error).message || t('settings.test.unknownError'))
+      const result = await api.testConfig(form)
+      if (revision === testRevision.current) setTestResult(result)
+    } catch (error) {
+      if (revision === testRevision.current) setTestError((error as Error).message || t('settings.test.unknownError'))
     } finally {
       setTesting(false)
     }
   }
 
-  // 副标题 / 状态：基于已保存的 settings（不是 form），让用户看到"当前生效"的配置
-  const llmProvider = findProviderByBaseUrl(settings.llmBaseUrl)
-  const imgProvider = findProviderByBaseUrl(settings.imgGenBaseUrl)
-  const notConfigured = t('settings.subtitle.notConfigured')
-  const noModel = t('settings.subtitle.noModel')
-  const llmProviderName = llmProvider ? t(`provider.${llmProvider.id}` as 'provider.custom') : hostFromUrl(settings.llmBaseUrl, notConfigured)
-  const imgProviderName = imgProvider ? t(`provider.${imgProvider.id}` as 'provider.custom') : hostFromUrl(settings.imgGenBaseUrl, notConfigured)
-  const llmSubtitle = `${llmProviderName} · ${settings.llmModel || noModel}`
-  const imgSubtitle = `${imgProviderName} · ${settings.imgGenModel || noModel}`
-
-  const hasLlmKey = !!settings.llmApiKey && settings.llmApiKey.length >= 8
-  const hasImgKey = !!settings.imgGenApiKey && settings.imgGenApiKey.length >= 8
-
-  // 自定义 provider 时自动展开"高级 Base URL"，避免用户找不到地方填
-  const llmIsCustom = !findProviderByBaseUrl(form.llmBaseUrl)
-  const imgIsCustom = !findProviderByBaseUrl(form.imgGenBaseUrl)
+  const llmProvider = findProviderByBaseUrl(form.llmBaseUrl)
+  const imgProvider = findProviderByBaseUrl(form.imgGenBaseUrl)
+  const fallback = t('settings.subtitle.notConfigured')
+  const providerName = (provider: LLMProvider | null, url: string) => provider
+    ? t(`provider.${provider.id}` as TranslationKey) : hostFromUrl(url, fallback)
+  const hasKeys = !!(form.llmApiKey || form.imgGenApiKey || settings.llmApiKey || settings.imgGenApiKey)
 
   return (
-    <div
-      style={{
-        width: '100%',
-        height: '100vh',
-        background: 'var(--bg)',
-        overflow: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
+    <div className="settings-page">
       <SettingsNav />
+      <main className="settings-content">
+        <header className="settings-intro">
+          <h1>{t('settings.page.title')}</h1>
+          <p>{t('settings.page.description')}</p>
+        </header>
+        <QuickStartHint hasLlmKey={!!form.llmApiKey.trim()} hasImgKey={!!form.imgGenApiKey.trim()} />
 
-      <div
-        style={{
-          flex: 1,
-          maxWidth: 680,
-          width: '100%',
-          margin: '0 auto',
-          padding: '24px 24px 8px',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <QuickStartHint hasLlmKey={hasLlmKey} hasImgKey={hasImgKey} />
-
-        {/* ── 文本 LLM ── */}
-        <Section
-          title={t('settings.section.llm')}
-          subtitle={llmSubtitle}
-          tone="blue"
-          status={hasLlmKey ? 'ok' : 'missing'}
-        >
+        <Section title={t('settings.section.llm')} subtitle={providerName(llmProvider, form.llmBaseUrl)} status={form.llmApiKey.trim() ? 'ok' : 'missing'}>
+          <p className="settings-section-description">{t('settings.section.llmDescription')}</p>
           <FieldGroup label={t('settings.field.provider')}>
-            <ProviderPicker currentBaseUrl={form.llmBaseUrl} onPick={pickLlmProvider} />
+            <ProviderPicker currentBaseUrl={form.llmBaseUrl} onPick={(provider) => pickProvider(provider, 'chat')} />
           </FieldGroup>
-
-          <SettingField
-            label={t('settings.field.apiKey')}
-            type="password"
-            value={form.llmApiKey}
-            onChange={(v) => update('llmApiKey', v)}
-            placeholder={
-              llmProvider?.id === 'anthropic'
-                ? t('settings.placeholder.keyAnthropic')
-                : t('settings.placeholder.keyGeneric')
-            }
-            labelHint={
-              settings.llmApiKey ? t('settings.field.savedKey', { value: maskKey(settings.llmApiKey) }) : undefined
-            }
-          />
-
-          <SettingField
-            label={t('settings.field.model')}
-            value={form.llmModel}
-            onChange={(v) => update('llmModel', v)}
-            placeholder={t('settings.placeholder.modelLlm')}
-            below={
-              <div style={{ marginTop: 8 }}>
-                <ChatModelPresets
-                  baseUrl={form.llmBaseUrl}
-                  current={form.llmModel}
-                  onPick={(id) => update('llmModel', id)}
-                />
-              </div>
-            }
-          />
-
-          <Collapse label={t('settings.field.advancedBaseUrl')} defaultOpen={llmIsCustom}>
-            <SettingField
-              label={t('settings.field.baseUrl')}
-              value={form.llmBaseUrl}
-              onChange={(v) => update('llmBaseUrl', v)}
-              placeholder="https://api.anthropic.com"
-            />
+          <SettingField label={t('settings.field.apiKey')} type="password" value={form.llmApiKey} onChange={(value) => update('llmApiKey', value)} placeholder={llmProvider?.id === 'anthropic' ? t('settings.placeholder.keyAnthropic') : t('settings.placeholder.keyGeneric')} />
+          <SettingField label={t('settings.field.model')} value={form.llmModel} onChange={(value) => update('llmModel', value)} placeholder={t('settings.placeholder.modelLlm')} below={<ChatModelPresets baseUrl={form.llmBaseUrl} current={form.llmModel} onPick={(model) => update('llmModel', model)} />} />
+          <Collapse label={t('settings.field.advancedBaseUrl')} open={llmUrlOpen} onOpenChange={setLlmUrlOpen}>
+            <SettingField label={t('settings.field.baseUrl')} value={form.llmBaseUrl} onChange={(value) => update('llmBaseUrl', value)} placeholder="https://api.anthropic.com" />
           </Collapse>
         </Section>
 
-        {/* ── 图片生成 ── */}
-        <Section
-          title={t('settings.section.imggen')}
-          subtitle={imgSubtitle}
-          tone="pink"
-          status={hasImgKey ? 'ok' : 'missing'}
-        >
+        <Section title={t('settings.section.imggen')} subtitle={providerName(imgProvider, form.imgGenBaseUrl)} status={form.imgGenApiKey.trim() ? 'ok' : 'missing'}>
+          <p className="settings-section-description">{t('settings.section.imgDescription')}</p>
           <FieldGroup label={t('settings.field.provider')}>
-            <ProviderPicker currentBaseUrl={form.imgGenBaseUrl} onPick={pickImgProvider} />
+            <ProviderPicker kind="image" currentBaseUrl={form.imgGenBaseUrl} onPick={(provider) => pickProvider(provider, 'image')} />
           </FieldGroup>
-
-          <SettingField
-            label={t('settings.field.apiKey')}
-            type="password"
-            value={form.imgGenApiKey}
-            onChange={(v) => update('imgGenApiKey', v)}
-            placeholder={t('settings.placeholder.keyGeneric')}
-            labelHint={
-              settings.imgGenApiKey
-                ? t('settings.field.savedKey', { value: maskKey(settings.imgGenApiKey) })
-                : undefined
-            }
-          />
-
-          <SettingField
-            label={t('settings.field.model')}
-            value={form.imgGenModel}
-            onChange={(v) => update('imgGenModel', v)}
-            placeholder={t('settings.placeholder.modelImg')}
-            below={
-              <div style={{ marginTop: 8 }}>
-                <ImgModelPresets
-                  baseUrl={form.imgGenBaseUrl}
-                  current={form.imgGenModel}
-                  onPick={(id) => update('imgGenModel', id)}
-                />
-              </div>
-            }
-          />
-
-          <Collapse label={t('settings.field.advancedBaseUrl')} defaultOpen={imgIsCustom}>
-            <SettingField
-              label={t('settings.field.baseUrl')}
-              value={form.imgGenBaseUrl}
-              onChange={(v) => update('imgGenBaseUrl', v)}
-              placeholder="https://api.openai.com/v1"
-            />
+          <SettingField label={t('settings.field.apiKey')} type="password" value={form.imgGenApiKey} onChange={(value) => update('imgGenApiKey', value)} placeholder={t('settings.placeholder.keyGeneric')} />
+          <SettingField label={t('settings.field.model')} value={form.imgGenModel} onChange={(value) => update('imgGenModel', value)} placeholder={t('settings.placeholder.modelImg')} below={<ImgModelPresets baseUrl={form.imgGenBaseUrl} current={form.imgGenModel} onPick={(model) => update('imgGenModel', model)} />} />
+          <Collapse label={t('settings.field.advancedBaseUrl')} open={imgUrlOpen} onOpenChange={setImgUrlOpen}>
+            <SettingField label={t('settings.field.baseUrl')} value={form.imgGenBaseUrl} onChange={(value) => update('imgGenBaseUrl', value)} placeholder="https://api.openai.com/v1" />
           </Collapse>
         </Section>
 
-        {/* 测试结果（仅有结果或错误时占位） */}
+        <section className="settings-privacy" aria-labelledby="settings-privacy-title">
+          <h2 id="settings-privacy-title">{t('settings.privacy.title')}</h2>
+          <p>{t('settings.privacy.description')}</p>
+          <label className="settings-checkbox">
+            <input type="checkbox" checked={form.rememberKeys} onChange={(event) => update('rememberKeys', event.target.checked)} />
+            <span>{t('settings.privacy.remember')}</span>
+          </label>
+          <p className="settings-privacy-detail">{form.rememberKeys ? t('settings.privacy.persistent') : t('settings.privacy.temporary')}</p>
+          <button type="button" className="settings-clear" disabled={!hasKeys && !settings.rememberKeys} onClick={handleClear}>{t('settings.action.clearKeys')}</button>
+          {cleared && <p role="status">{t('settings.action.keysCleared')}</p>}
+        </section>
+
+        <p className="settings-test-note">{t('settings.test.draftHint')}</p>
         <TestResult result={testResult} error={testError} />
-
-        <ActionBar
-          saved={saved}
-          testing={testing}
-          dirty={dirty}
-          onSave={handleSave}
-          onTest={handleTest}
-        />
-
+        <ActionBar saved={saved} testing={testing} dirty={dirty} onSave={handleSave} onTest={handleTest} />
         <Footer />
-      </div>
+      </main>
     </div>
   )
 }
 
-/**
- * 与 SettingField 一致排版的非 input 字段组（供 ProviderPicker 用）。
- * 不直接复用 SettingField 是因为它强制 input；这里只想要 label + 自由内容。
- */
-function FieldGroup({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div style={{ marginBottom: 14 }}>
-      <label
-        style={{
-          display: 'block',
-          fontSize: 12.5,
-          fontWeight: 600,
-          color: 'var(--label-secondary)',
-          letterSpacing: '0.01em',
-          marginBottom: 6,
-        }}
-      >
-        {label}
-      </label>
-      {children}
-    </div>
-  )
+function FieldGroup({ label, children }: { label: string; children: ReactNode }) {
+  return <fieldset className="settings-field-group"><legend>{label}</legend>{children}</fieldset>
 }

@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react'
+import type { CSSProperties, ReactElement } from 'react'
 
 export type IconName =
   | 'arrow-right'
@@ -54,7 +54,7 @@ export function Icon({ name, size = 14, stroke = 1.8, style, className }: Props)
 // ──────────────────────────────────────────
 // Path 库 —— 全部 24x24 viewBox
 // ──────────────────────────────────────────
-const PATHS: Record<IconName, JSX.Element> = {
+const PATHS: Record<IconName, ReactElement> = {
   'arrow-right': <path d="M5 12h14M13 5l7 7-7 7" />,
   'arrow-left': <path d="M15 6l-9 6 9 6" />,
   plus: <path d="M12 5v14M5 12h14" />,

@@ -1,192 +1,75 @@
-# flipbook-builder
+# Flipbook Builder
 
-English · **[中文](./README.md)**
+A self-hosted visual knowledge workspace with no account required. Connect topics, images and explanations into branching projects, edit their content, then export for readers.
 
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![GitHub](https://img.shields.io/badge/GitHub-yyb9807%2Fflipbook--builder-181717?logo=github)](https://github.com/yyb9807/flipbook-builder)
-[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![Postgres](https://img.shields.io/badge/Postgres-16-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
-[![i18n](https://img.shields.io/badge/i18n-zh%20%2F%20en-AF52DE)](#)
-[![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](#)
+[中文](README.md) · [Documentation](docs/README.md) · [Architecture](docs/ARCHITECTURE.md) · [Verification](docs/VERIFICATION.md)
 
-> **Give any image the power of "click forever to dive deeper".** Like [Flipbook](https://flipbook.page/), but you can save, edit, and export.
+## Try it without AI or a backend
 
-[Flipbook](https://flipbook.page/)'s "click anywhere to go anywhere" pixel-stream exploration is fun, but it's view-only — once you're done, it's gone. This project keeps the same interaction but turns every layer into a **persistent, editable structure**:
+Use Node.js 24:
 
-- AI auto-picks one of 4 compositions by content (map / plate / scene / diagram)
-- Named hotspots — drag, rename, delete
-- Projects live in Postgres, sync across devices
-- Export offline ZIP / JSON / public share link
-
-![demo](./flipbook-builder-demo.gif)
-
----
-
-## Architecture
-
-```
-┌──────────── Browser ────────────┐
-│  React 19 + Vite + Zustand      │   ← state, SSE, i18n (zh/en)
-└────────────┬────────────────────┘
-             │ /api/*  /uploads/*
-┌────────────▼────────────────────┐
-│  nginx (static + proxy + SSE)   │
-└────────────┬────────────────────┘
-             │
-┌────────────▼────────────────────┐    ┌──────────────────┐
-│  FastAPI + uvicorn              │ ─► │  Postgres 16     │
-│  • input_analysis               │    │  (projects/nodes)│
-│  • composition (map/plate/…)    │    └──────────────────┘
-│  • image_generation (cached)    │
-│  • hotspot_localization         │    ./data/
-│  • SSE streaming                │ ─► uploads/  img_cache/
-└─────────────────────────────────┘
-        │
-        ├─► Anthropic / OpenAI / OpenRouter (text + vision LLM)
-        └─► DALL-E 3 / Flux / GPT-Image (image generation)
+```sh
+cd frontend
+npm ci
+npm run dev
 ```
 
-### Multi-agent pipeline
+Open the URL printed by Vite, usually http://localhost:5173. Explore the four-page water-cycle example and edit a local copy. Write knowledge pages, add child pages directly from sections, annotate PNG/JPEG/WebP images, preview and export.
 
-The backend splits "understand → plan → render → annotate" into 5 single-responsibility agents, chained into an SSE stream:
+Local projects live in this browser; export before clearing site data. Manual local images are limited to 2 MB. Creation inputs and page-content drafts survive navigation and reloads. Save page drafts before previewing or exporting; uncreated file selections stay only for the current session.
 
-```
-User input (image / text / keywords)
-        │
-        ▼
-┌─────────────────────┐
-│ input_analysis      │  Vision LLM reads input → summary / scene_type / keywords
-└─────────┬───────────┘
-          │
-          ▼
-┌─────────────────────┐
-│ composition         │  Routes by content type to 1 of 4 prompt templates:
-│   • map             │
-│   • plate           │  ← prose-style, DALL-E 3 friendly
-│   • scene           │
-│   • diagram         │
-└─────────┬───────────┘
-          │
-          ▼
-┌─────────────────────┐
-│ page_generation     │  LLM writes title / description / sub-hotspots per page
-└─────────┬───────────┘
-          │
-          ▼
-┌─────────────────────┐
-│ image_generation    │  DALL-E 3 / Flux + SHA256 cache (skip API on identical prompt)
-└─────────┬───────────┘
-          │
-          ▼
-┌─────────────────────┐
-│ hotspot_localization│  Vision LLM marks clickable regions ([0,1] bbox) on the rendered image
-└─────────────────────┘
-```
+## Self-host the AI workflow
 
-All agents extend a shared `BaseLLMAgent` that handles Anthropic / OpenAI-compatible protocols, prompt caching, retries, and SSE progress events.
+With Docker Compose installed:
 
-**Key designs:**
-- **Prompt caching**: same system prompt within 5 min hits cache. When generating 4 sub-pages in parallel, only the first call pays full price.
-- **Image cache**: identical (model, prompt) hits local disk SHA256, skips API.
-- **Composition routing + prose prompts**: 5–7 descriptors in natural prose, positive descriptions only (no "MUST/NOT" — DALL-E 3 doesn't respect them).
-- **Provider abstraction**: users paste a key in the browser to use Anthropic / OpenAI / OpenRouter / DeepSeek / any OpenAI-compatible relay.
-
----
-
-## Deploy
-
-### One-shot (recommended)
-
-```bash
-git clone <repo>
-cd flipbook_builder
+```sh
+cp .env.example .env
 docker compose up -d --build
 ```
 
-Open http://localhost:8080 → click "Settings" top-right → paste your API Key → upload an image.
+Open http://localhost:8080. The default binding is localhost. nginx serves React and proxies FastAPI; Postgres stores server projects and `data/` holds images.
 
-### Services
+Configure a content provider in AI settings. Topic creation and new child pages generate editable knowledge content; illustrations require an explicit choice and an image provider. Uploaded images retain actual image hotspots. The content model must support the required text/vision input. Invalid knowledge output fails explicitly, without fabricated content or automatic paid retries.
 
-| Container | Image | Port | Role |
-|---|---|---|---|
-| `flipbook-frontend` | nginx:1.27-alpine | 8080→80 | Static + `/api` `/uploads` proxy + SSE long-poll |
-| `flipbook-backend` | python:3.13-slim | 8000 (internal) | FastAPI + uvicorn |
-| `flipbook-db` | postgres:16-alpine | 5434→5432 | Project data |
+Keys stay in page memory by default. Explicitly remembering a key stores it as plain text in browser storage. AI requests send credentials through this instance’s backend to the selected provider; ordinary editing, project and export requests do not send model keys. Endpoint, model and key form one configuration group, so a client endpoint never inherits a deployment key. Connection tests use unsaved drafts; text probes may cost money and image probes do not generate an image.
 
-Volumes:
-- `./data/` — uploaded + cached images (host-persisted)
-- `postgres_data` — database (docker volume)
+**This is one shared workspace with no login, roles or user isolation, intended for a personal or trusted environment.** Users bring their own keys; deployment defaults are also supported. A read-only viewer route is not an API access boundary. Share exported static projects with public readers. Run one backend worker and one replica.
 
-### Common commands
+## Editing, recovery and attribution
 
-```bash
-docker compose logs -f backend   # tail logs
-docker compose ps                # status
-docker compose down              # stop (keep data)
-docker compose down -v           # stop + wipe everything
+- **Two content modes:** knowledge-page sections connect to child pages; image hotspots use actual image coordinates. The editor, online viewer and offline player share one rendering core.
+- **Durable jobs:** root analysis, child generation and eligible single-page regeneration use Postgres/DBOS. Reloads, disconnections and settings navigation do not cancel work. Completed stages are reused; lost temporary keys require explicit resumption. Unknown provider outcomes pause for review before a potentially billable retry.
+- **Draft protection:** save status remains visible, successful branches are kept, and active jobs lock the project. Pages with hotspots or structured content cannot be regenerated wholesale, preserving authored text and relationships.
+- **Author review:** generated pages record input type and model. Authors may add references and declare a review; changing content, references or hotspot labels clears that declaration. References are author-supplied, with no fetching, statement-level attribution or automatic fact verification. Model-generated citations are ignored.
+
+![Offline knowledge page with author references](docs/images/round5-final-offline-source.jpg)
+
+## Preview and export
+
+| Format | Contents and requirements |
+|---|---|
+| Offline ZIP | Shared player, images and project data. Extract the whole folder and open `index.html`; no backend, account or key is required. |
+| JSON | Project content, structure and attribution, without image binaries or provider settings. |
+| Instance link | Read-only interface requiring a running instance. It reads current project data, not an immutable publication snapshot. |
+
+Keep the ZIP files together. Publish the entire extracted folder as static files. Actual browser acceptance covers HTTP playback; the independent player verifier covers JSDOM file URLs. Cross-browser acceptance of double-clicked `file://` files remains pending.
+
+## Development and verification
+
+Use Node.js 24, Python 3.13 and Postgres 16. For the frontend:
+
+```sh
+cd frontend
+npm run lint
+npm test
+npm run verify:player
+npm run build
 ```
 
-### Local dev (no containers)
+See [backend development](backend/README.md), [current architecture](docs/ARCHITECTURE.md) and [verification commands and limits](docs/VERIFICATION.md). CI runs frontend checks, real Postgres backend tests and process recovery verification using controlled providers, with no paid model calls.
 
-```bash
-# Backend
-cd backend && python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn main:app --port 8000 --reload
+Back up the database and `data/`; `docker compose down -v` removes database volumes. [Historical reports](docs/archive/README.md) are retained for traceability, not as current setup instructions.
 
-# Frontend
-cd frontend && npm install && npm run dev
-```
+## Contributing and license
 
-A local Postgres (default `localhost:5434`) is required — run `docker compose up db` to start just the DB.
-
----
-
-## Honest comparison
-
-| Dimension | [Flipbook](https://flipbook.page/) (Zain Shah) | [openflipbook](https://github.com/eren23/openflipbook) (eren23) | **This project** |
-|---|---|---|---|
-| **Form** | Pure pixel stream, no DOM | Same as Flipbook (Next.js shell) | Structured pages + editable hotspots |
-| **Generation** | LTX Studio video model (live stream) | fal-ai LTX video (~$0.02/page) | DALL-E 3 / Flux / GPT-Image (per image) |
-| **Interaction** | Click anywhere to generate next page | Same | Click named, AI-detected hotspots |
-| **Composition** | Single style (dreamy roam) | Same | 4 compositions auto-routed by content |
-| **Editable** | ❌ read-only | ❌ read-only | ✅ drag, rename, delete, pick-to-expand |
-| **Persistence** | Server session | Mongo + Cloudflare R2 | Postgres + local disk volume |
-| **Export / share** | ❌ | Link (`/n/:id`) | ZIP / JSON / public share link |
-| **Project mgmt** | ❌ | ❌ | ✅ list, thumbnails, delete, cross-device |
-| **Backend** | Modal serverless GPU | Modal + R2 + Mongo | FastAPI + Postgres (self-host friendly) |
-| **i18n** | English | English | Chinese / English |
-| **Positioning** | Dreamy visual roam | Open clone of Flipbook | Structured visual knowledge tool |
-
-In short: Flipbook / openflipbook are like **TikTok** (endless feed, vibe-driven). This project is like **Notion** (structured, editable, exportable — meant to leave behind a knowledge asset).
-
----
-
-## Roadmap
-
-- **v0.2** — Sub-page preloading (silently generate L2 candidates while user reads L1)
-- **v0.3** — Flipping transitions via image-to-video model (LTX et al.) to fix static-image stiffness
-- **v0.4** — Knowledge tools: ask the current node, cross-node search, export as Anki deck
-- **v0.5** — Real-time multi-user: cursors + comments + node review
-- **v0.6** — One-click deploy to Vercel / Fly.io / self-hosted docker-compose (with HTTPS)
-
----
-
-## Contact
-
-Interested in implementation details, collaboration, or similar problems? Reach out:
-
-📧 yyb980716@gmail.com  
-🐙 [github.com/yyb9807](https://github.com/yyb9807)
-
-Issues / PRs welcome.
-
----
-
-## License
-
-MIT — fork / modify / commercialize freely under the LICENSE terms.
-
-Credits: [Zain Shah](https://x.com/zainhda) (Flipbook), [eren23](https://github.com/eren23) (openflipbook), and the "layered visual knowledge" tradition of [David Macaulay](https://en.wikipedia.org/wiki/David_Macaulay) and DK Eyewitness.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md). The project uses the [MIT license](LICENSE); referenced third-party projects retain their own licenses.

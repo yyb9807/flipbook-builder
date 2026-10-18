@@ -2,9 +2,10 @@ import os
 import sys
 import time
 from dataclasses import dataclass
+from urllib.parse import urlsplit
 
 import httpx
-from fastapi import Request
+from fastapi import HTTPException, Request
 
 from utils import extract_json
 
@@ -28,29 +29,54 @@ class ImgGenConfig:
     model: str
 
 
+def _provider_values(request: Request, prefix: str, env_prefix: str, default_url: str, default_model: str) -> dict:
+    """Endpoint and credential always come from the same configuration group.
+
+    Sending any provider header opts into BYOK. A missing/empty client key must
+    never fall back to a deployment secret, even when only the URL was supplied.
+    """
+    fields = ("base-url", "api-key", "model")
+    client_config = any(f"x-{prefix}-{field}" in request.headers for field in fields)
+    if client_config:
+        values = {
+            "base_url": request.headers.get(f"x-{prefix}-base-url") or default_url,
+            "api_key": request.headers.get(f"x-{prefix}-api-key", ""),
+            "model": request.headers.get(f"x-{prefix}-model") or default_model,
+        }
+    else:
+        values = {
+            "base_url": os.getenv(f"{env_prefix}_BASE_URL") or default_url,
+            "api_key": os.getenv(f"{env_prefix}_API_KEY", ""),
+            "model": os.getenv(f"{env_prefix}_MODEL") or default_model,
+        }
+    try:
+        parsed = urlsplit(values["base_url"])
+        if (parsed.scheme not in {"http", "https"} or not parsed.hostname
+                or parsed.username is not None or parsed.password is not None
+                or parsed.query or parsed.fragment or any(c.isspace() for c in values["base_url"])):
+            raise ValueError
+        _ = parsed.port
+    except ValueError as exc:
+        raise HTTPException(400, "模型服务地址必须是有效的 HTTP(S) URL，且不能包含凭据、查询参数或片段") from exc
+    values["base_url"] = values["base_url"].rstrip("/")
+    return values
+
+
 def get_llm_config(request: Request) -> LLMConfig:
-    return LLMConfig(
-        base_url=request.headers.get("x-llm-base-url", os.getenv("LLM_BASE_URL", "https://api.anthropic.com")),
-        api_key=request.headers.get("x-llm-api-key", os.getenv("LLM_API_KEY", "")),
-        model=request.headers.get("x-llm-model", os.getenv("LLM_MODEL", "claude-sonnet-4-6")),
-    )
+    return LLMConfig(**_provider_values(request, "llm", "LLM", "https://api.anthropic.com", "claude-sonnet-4-6"))
 
 
 def get_imggen_config(request: Request) -> ImgGenConfig:
-    return ImgGenConfig(
-        base_url=request.headers.get("x-imggen-base-url", os.getenv("IMG_GEN_BASE_URL", "https://api.apiyi.com/v1")),
-        api_key=request.headers.get("x-imggen-api-key", os.getenv("IMG_GEN_API_KEY", "")),
-        model=request.headers.get("x-imggen-model", os.getenv("IMG_GEN_MODEL", "dall-e-3")),
-    )
+    return ImgGenConfig(**_provider_values(request, "imggen", "IMG_GEN", "https://api.openai.com/v1", "dall-e-3"))
 
 
 class BaseLLMAgent:
     def __init__(self, config: LLMConfig):
         self.config = config
+        self.safe_errors = False
 
     async def call(self, messages: list[dict], max_tokens: int = 2000, system: str | None = None) -> str:
         if not self.config.api_key:
-            from fastapi import HTTPException
             raise HTTPException(400, "LLM API Key 未配置，请在设置页面填写后重试")
 
         # 估算 payload 大小（含图片就大）
@@ -64,7 +90,7 @@ class BaseLLMAgent:
             for m in messages
         )
 
-        is_anthropic = "anthropic.com" in self.config.base_url
+        is_anthropic = urlsplit(self.config.base_url).hostname in {"anthropic.com", "api.anthropic.com"}
         api_kind = "anthropic" if is_anthropic else "openai-compat"
 
         agent_name = type(self).__name__
@@ -81,7 +107,7 @@ class BaseLLMAgent:
             return result
         except Exception as e:
             elapsed = time.time() - t0
-            _log(f"✕ LLM fail [{agent_name}] took={elapsed:.1f}s err={type(e).__name__}: {str(e)[:200]}")
+            _log(f"✕ LLM fail [{agent_name}] took={elapsed:.1f}s err={type(e).__name__}" + ("" if self.safe_errors else f": {str(e)[:200]}"))
             raise
 
     async def _call_anthropic(self, messages: list[dict], max_tokens: int, system: str | None) -> str:
@@ -131,7 +157,28 @@ class BaseLLMAgent:
         all_messages = []
         if system:
             all_messages.append({"role": "system", "content": system})
-        all_messages.extend(messages)
+        # Agents use one internal image block format; OpenAI-compatible APIs
+        # require image_url blocks rather than Anthropic's image/source shape.
+        for message in messages:
+            content = message.get("content")
+            if isinstance(content, list):
+                converted = []
+                for block in content:
+                    if isinstance(block, dict) and block.get("type") == "image":
+                        source = block.get("source", {})
+                        if source.get("type") == "base64":
+                            converted.append({"type": "image_url", "image_url": {
+                                "url": f"data:{source['media_type']};base64,{source['data']}",
+                            }})
+                        elif source.get("type") == "url":
+                            converted.append({"type": "image_url", "image_url": {"url": source["url"]}})
+                        else:
+                            raise ValueError("不支持的图像输入格式")
+                    else:
+                        converted.append(block)
+                all_messages.append({**message, "content": converted})
+            else:
+                all_messages.append(message)
 
         payload = {
             "model": self.config.model,

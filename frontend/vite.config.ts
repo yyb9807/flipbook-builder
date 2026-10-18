@@ -1,9 +1,10 @@
 /// <reference types="vitest" />
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
+import { offlinePlayerPlugin } from './scripts/build-player.mjs'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), offlinePlayerPlugin()],
   test: {
     // jsdom 让组件 / DOM 测试能跑（纯函数测试也能用，零成本兼容）
     environment: 'jsdom',

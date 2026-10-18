@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { Icon } from './Icon'
 
 export type ToastType = 'success' | 'error' | 'info'
 
@@ -82,11 +83,12 @@ export function ToastHost() {
 function ToastCard({ item }: { item: ToastItem }) {
   const accent = {
     success: 'var(--green)',
-    error: 'var(--pink)',
+    error: 'var(--red)',
     info: 'var(--blue)',
   }[item.type]
   return (
     <div
+      role={item.type === 'error' ? 'alert' : 'status'}
       className="animate-slide-up"
       style={{
         background: 'var(--bg-elev)',
@@ -96,12 +98,13 @@ function ToastCard({ item }: { item: ToastItem }) {
         alignItems: 'center',
         gap: 10,
         boxShadow: '0 8px 32px rgba(0,0,0,0.14)',
-        borderLeft: `3px solid ${accent}`,
+        border: '1px solid var(--separator)',
         minWidth: 220,
-        maxWidth: 400,
+        maxWidth: 'min(400px, calc(100vw - 24px))',
         pointerEvents: 'auto',
       }}
     >
+      <Icon name={item.type === 'error' ? 'warning' : item.type === 'success' ? 'check' : 'spark'} size={17} style={{ color: accent }} />
       <span style={{ flex: 1, fontSize: 14, fontWeight: 500, color: 'var(--label)' }}>
         {item.message}
       </span>

@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-18",
+  "review": "independent focused retest",
+  "passed": true,
+  "sigterm_exit_code": -15,
+  "application_shutdown_complete": true,
+  "open_sse_client_did_not_close": true,
+  "sigkill_used": false,
+  "shutdown_seconds": 5.266,
+  "same_job_resumed": true,
+  "persisted_nonterminal": "running",
+  "restored_phase": "image",
+  "completed_plan_calls": 1,
+  "completed_image_calls": 1,
+  "nodes": 1,
+  "database": "flipbook_acceptance_f9c44f4c0d30",
+  "provider_calls": [
+    {
+      "case": "review_graceful_sse",
+      "stage": "analysis"
+    },
+    {
+      "case": "review_graceful_sse",
+      "stage": "plan"
+    },
+    {
+      "case": "review_graceful_sse",
+      "stage": "image"
+    },
+    {
+      "case": "review_graceful_sse",
+      "stage": "localize"
+    }
+  ],
+  "real_paid_provider_calls": 0,
+  "artifacts": "/var/folders/s7/4dk9_fnn7r93q0fhxgv_2rm00000gn/T/flipbook-review-graceful-fixed-g_uthrdv"
+}

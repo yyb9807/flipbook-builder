@@ -1,10 +1,41 @@
 import base64
 import io
+import math
 import time
 
 from PIL import Image
 
 from agents.base import BaseLLMAgent, LLMConfig, _log
+from storage import url_to_disk_path
+
+
+def sanitize_hotspots(raw: object, max_count: int = 12) -> list[dict]:
+    """Accept only actual, finite image rectangles; never invent coordinates/scores."""
+    if not isinstance(raw, list):
+        return []
+    limit = min(12, max(1, max_count if isinstance(max_count, int) else 3))
+    valid = []
+    for hotspot in raw:
+        if not isinstance(hotspot, dict) or not isinstance(hotspot.get("label"), str):
+            continue
+        label = hotspot["label"].strip()[:200]
+        coordinates = [hotspot.get(field) for field in ("x", "y", "width", "height")]
+        if not label or any(isinstance(value, bool) or not isinstance(value, (int, float))
+                            or not math.isfinite(value) for value in coordinates):
+            continue
+        x, y, width, height = coordinates
+        if (x < 0 or y < 0 or width <= 0 or height <= 0
+                or x + width > 1.000001 or y + height > 1.000001):
+            continue
+        score = hotspot.get("score")
+        if (isinstance(score, bool) or not isinstance(score, (int, float))
+                or not math.isfinite(score) or not 0 <= score <= 1):
+            score = None
+        valid.append({"label": label, "x": float(x), "y": float(y), "width": float(width),
+                      "height": float(height), "score": score})
+        if len(valid) >= limit:
+            break
+    return valid
 
 
 def _compress_image_for_vision(image_b64: str, max_side: int = 768, jpeg_quality: int = 75) -> tuple[str, str]:
@@ -47,6 +78,21 @@ def _compress_image_for_vision(image_b64: str, max_side: int = 768, jpeg_quality
 class HotspotLocalizationAgent(BaseLLMAgent):
     def __init__(self, config: LLMConfig):
         super().__init__(config)
+
+    async def localize_asset(
+        self, image_url: str | None, main_objects: list[str], language: str = "zh", max_hotspots: int = 3,
+    ) -> list[dict]:
+        """One localization call for a safe local image, or an explicit empty result."""
+        path = url_to_disk_path(image_url)
+        if path is None or not path.is_file():
+            return []
+        try:
+            encoded = base64.b64encode(path.read_bytes()).decode()
+            result = await self.localize(encoded, main_objects, language)
+            return sanitize_hotspots(result.get("hotspots"), max_hotspots)
+        except Exception as exc:
+            _log(f"图片热点定位失败: {type(exc).__name__}")
+            return []
 
     async def localize(self, image_b64: str, main_objects: list[str], language: str = "zh") -> dict:
         # 压缩到 768px 长边、JPEG q75，显著提速视觉调用
@@ -101,31 +147,6 @@ class HotspotLocalizationAgent(BaseLLMAgent):
         # max_tokens=600 对热点 JSON 足够（5 个热点 ≈ 400 字）
         raw = await self.call(messages, max_tokens=600, system=system)
         result = self.extract_json(raw)
-        if not result or "hotspots" not in result:
+        if not isinstance(result, dict):
             return {"hotspots": []}
-
-        # 规范化坐标到 0-1 范围
-        for hs in result["hotspots"]:
-            for key in ("x", "y", "width", "height"):
-                hs[key] = max(0.0, min(1.0, float(hs.get(key, 0.1))))
-
-        return result
-
-    async def generate_text_hotspots(self, main_objects: list[str], language: str = "zh") -> dict:
-        """为文字内容生成虚拟热点（均匀分布）"""
-        hotspots = []
-        count = min(len(main_objects), 5)
-        cols = 2
-        for i, obj in enumerate(main_objects[:count]):
-            col = i % cols
-            row = i // cols
-            hotspots.append({
-                "id": f"hs_{i + 1}",
-                "label": obj,
-                "x": 0.1 + col * 0.45,
-                "y": 0.15 + row * 0.3,
-                "width": 0.35,
-                "height": 0.2,
-                "reason": f"展开关于「{obj}」的内容",
-            })
-        return {"hotspots": hotspots}
+        return {"hotspots": sanitize_hotspots(result.get("hotspots"))}

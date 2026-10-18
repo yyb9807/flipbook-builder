@@ -1,0 +1,745 @@
+{
+  "python": "3.13.15",
+  "platform": "Darwin",
+  "database": "flipbook_acceptance_ae5df6970aa3",
+  "scenarios": [
+    {
+      "scenario": "two_SIGKILL_checkpoints_BYOK_reentry_SSE_idempotency",
+      "passed": true,
+      "remote_calls": {
+        "plan": 2,
+        "image": 2,
+        "localize": 2
+      },
+      "saved_children": 2,
+      "events": 22,
+      "replayed_after_cursor": 10,
+      "job_id": "job_xjp4223c3y",
+      "final_status": "succeeded"
+    },
+    {
+      "scenario": "unknown_image_retry",
+      "passed": true,
+      "final_status": "succeeded",
+      "remote_stage_calls": 2,
+      "confirmation_consumed_once": true
+    },
+    {
+      "scenario": "unknown_image_accept",
+      "passed": true,
+      "final_status": "succeeded",
+      "remote_stage_calls": 1,
+      "confirmation_consumed_once": true
+    },
+    {
+      "scenario": "unknown_image_cancel",
+      "passed": true,
+      "final_status": "cancelled",
+      "remote_stage_calls": 1,
+      "confirmation_consumed_once": true
+    },
+    {
+      "scenario": "unknown_localize_accept",
+      "passed": true,
+      "final_status": "succeeded",
+      "remote_stage_calls": 1,
+      "confirmation_consumed_once": true
+    },
+    {
+      "scenario": "unknown_plan_retry",
+      "passed": true,
+      "final_status": "succeeded",
+      "remote_stage_calls": 2,
+      "confirmation_consumed_once": true
+    },
+    {
+      "scenario": "unknown_image_accept_503",
+      "passed": true,
+      "final_status": "succeeded",
+      "remote_stage_calls": 1,
+      "confirmation_consumed_once": true
+    },
+    {
+      "scenario": "remote_success_checkpoint_missing",
+      "passed": true,
+      "SIGKILL": true,
+      "state_after_restart": "waiting_confirmation",
+      "automatic_retries": 0,
+      "accepted": "text_only"
+    },
+    {
+      "scenario": "late_cancel",
+      "passed": true,
+      "saved_children_after_cancel": 0,
+      "cancellation_survived_restart": true
+    },
+    {
+      "scenario": "partial_failure",
+      "passed": true,
+      "saved_children": 1,
+      "failed_hotspots": 1,
+      "provider_error_body_redacted": true
+    },
+    {
+      "scenario": "concurrency",
+      "passed": true,
+      "simultaneous_same_operation_submissions": 4,
+      "jobs_created": 1,
+      "competing_executor_rejected": true
+    },
+    {
+      "scenario": "commit_before_checkpoint",
+      "passed": true,
+      "saved_children": 1,
+      "duplicate_nodes": 0,
+      "additional_remote_calls_after_restart": 0
+    },
+    {
+      "scenario": "consumed_credentials_notification",
+      "passed": true,
+      "consumed_notification_recovered_without_secret": true,
+      "extra_remote_calls": 0
+    },
+    {
+      "scenario": "executor_lock_lost",
+      "passed": true,
+      "executor_exited_on_lock_loss": true,
+      "abandoned_executor_remote_calls": 0,
+      "restored_children": 1
+    },
+    {
+      "scenario": "transactional_enqueue_rollback",
+      "passed": true,
+      "orphan_jobs": 0,
+      "orphan_dbos_workflows": 0,
+      "parent_status_restored": true,
+      "subsequent_same_operation_succeeded": true
+    },
+    {
+      "scenario": "executor_error_unfinished_intent",
+      "passed": true,
+      "error_intent_kept_locked": true,
+      "automatic_retry_calls": 0,
+      "explicit_cancel_required": true,
+      "replacement_after_cancel_succeeded": true
+    },
+    {
+      "scenario": "graceful_shutdown_open_sse",
+      "passed": true,
+      "sigterm_exit_code": -15,
+      "open_sse_client_did_not_close": true,
+      "sigkill_used": false,
+      "shutdown_seconds": 5.278,
+      "lifespan_shutdown_completed": true,
+      "same_job_resumed": true,
+      "completed_plan_calls": 1,
+      "completed_image_calls": 1
+    },
+    {
+      "scenario": "root_upload_checkpoint_recovery",
+      "passed": true,
+      "SIGKILL": true,
+      "uploaded_asset_survived": true,
+      "analyze_calls": 1,
+      "extra_localize_calls": 0,
+      "stable_root_id": true,
+      "duplicate_nodes": 0,
+      "replay_after_terminal_reused_job": true
+    },
+    {
+      "scenario": "analyze_three_SIGKILL_checkpoints",
+      "passed": true,
+      "SIGKILL_count": 3,
+      "first_stage_calls": 1,
+      "image_calls": 1,
+      "localize_calls": 1,
+      "commit_replay_duplicate_nodes": 0,
+      "same_target_id": true,
+      "original_replaced_only_at_commit": false
+    },
+    {
+      "scenario": "regenerate_three_SIGKILL_checkpoints",
+      "passed": true,
+      "SIGKILL_count": 3,
+      "first_stage_calls": 1,
+      "image_calls": 1,
+      "localize_calls": 1,
+      "commit_replay_duplicate_nodes": 0,
+      "same_target_id": true,
+      "original_replaced_only_at_commit": true
+    },
+    {
+      "scenario": "analyze_unknown_analysis_retry",
+      "passed": true,
+      "remote_stage_calls": 2,
+      "automatic_retries": 0,
+      "confirmation_consumed_once": true,
+      "final_status": "succeeded"
+    },
+    {
+      "scenario": "analyze_unknown_image_accept",
+      "passed": true,
+      "remote_stage_calls": 1,
+      "automatic_retries": 0,
+      "confirmation_consumed_once": true,
+      "final_status": "partial"
+    },
+    {
+      "scenario": "analyze_unknown_image_retry",
+      "passed": true,
+      "remote_stage_calls": 2,
+      "automatic_retries": 0,
+      "confirmation_consumed_once": true,
+      "final_status": "succeeded"
+    },
+    {
+      "scenario": "analyze_unknown_image_cancel",
+      "passed": true,
+      "remote_stage_calls": 1,
+      "automatic_retries": 0,
+      "confirmation_consumed_once": true,
+      "final_status": "cancelled"
+    },
+    {
+      "scenario": "analyze_unknown_localize_accept",
+      "passed": true,
+      "remote_stage_calls": 1,
+      "automatic_retries": 0,
+      "confirmation_consumed_once": true,
+      "final_status": "partial"
+    },
+    {
+      "scenario": "regenerate_unknown_plan_retry",
+      "passed": true,
+      "remote_stage_calls": 2,
+      "automatic_retries": 0,
+      "confirmation_consumed_once": true,
+      "final_status": "succeeded"
+    },
+    {
+      "scenario": "regenerate_unknown_image_retry",
+      "passed": true,
+      "remote_stage_calls": 2,
+      "automatic_retries": 0,
+      "confirmation_consumed_once": true,
+      "final_status": "succeeded"
+    },
+    {
+      "scenario": "regenerate_unknown_image_cancel",
+      "passed": true,
+      "remote_stage_calls": 1,
+      "automatic_retries": 0,
+      "confirmation_consumed_once": true,
+      "final_status": "cancelled"
+    },
+    {
+      "scenario": "regenerate_unknown_localize_accept",
+      "passed": true,
+      "remote_stage_calls": 1,
+      "automatic_retries": 0,
+      "confirmation_consumed_once": true,
+      "final_status": "partial"
+    },
+    {
+      "scenario": "analyze_late_image_cancel",
+      "passed": true,
+      "cancellation_survived_SIGKILL": true,
+      "late_result_not_committed": true,
+      "old_page_preserved": false,
+      "image_calls": 1
+    },
+    {
+      "scenario": "regenerate_late_image_cancel",
+      "passed": true,
+      "cancellation_survived_SIGKILL": true,
+      "late_result_not_committed": true,
+      "old_page_preserved": true,
+      "image_calls": 1
+    },
+    {
+      "scenario": "root_missing_upload_after_checkpoint",
+      "passed": true,
+      "local_asset_failure_not_charge_confirmation": true,
+      "extra_remote_calls": 0
+    }
+  ],
+  "credential_audit": {
+    "tables_scanned": 20,
+    "cells_scanned": 13152,
+    "checkpoint_cells_inspected": 497,
+    "base64_decoded_candidates_inspected": 2138,
+    "raw_postgres_relation_files_scanned": 437,
+    "raw_postgres_relation_bytes_scanned": 11247616,
+    "worker_log_and_asset_files_clean": true,
+    "logical_sql_rows_clean": true,
+    "pg_dump_sql_clean": true,
+    "serialized_negative_control_detected": true
+  },
+  "all_provider_calls": [
+    {
+      "case": "checkpoint_recovery",
+      "stage": "analysis"
+    },
+    {
+      "case": "checkpoint_recovery",
+      "stage": "plan"
+    },
+    {
+      "case": "checkpoint_recovery",
+      "stage": "image"
+    },
+    {
+      "case": "checkpoint_recovery",
+      "stage": "localize"
+    },
+    {
+      "case": "checkpoint_recovery",
+      "stage": "plan"
+    },
+    {
+      "case": "checkpoint_recovery",
+      "stage": "image"
+    },
+    {
+      "case": "checkpoint_recovery",
+      "stage": "localize"
+    },
+    {
+      "case": "unknown_image_retry",
+      "stage": "analysis"
+    },
+    {
+      "case": "unknown_image_retry",
+      "stage": "plan"
+    },
+    {
+      "case": "unknown_image_retry",
+      "stage": "image"
+    },
+    {
+      "case": "unknown_image_retry",
+      "stage": "image"
+    },
+    {
+      "case": "unknown_image_retry",
+      "stage": "localize"
+    },
+    {
+      "case": "unknown_image_accept",
+      "stage": "analysis"
+    },
+    {
+      "case": "unknown_image_accept",
+      "stage": "plan"
+    },
+    {
+      "case": "unknown_image_accept",
+      "stage": "image"
+    },
+    {
+      "case": "unknown_image_cancel",
+      "stage": "analysis"
+    },
+    {
+      "case": "unknown_image_cancel",
+      "stage": "plan"
+    },
+    {
+      "case": "unknown_image_cancel",
+      "stage": "image"
+    },
+    {
+      "case": "unknown_localize_accept",
+      "stage": "analysis"
+    },
+    {
+      "case": "unknown_localize_accept",
+      "stage": "plan"
+    },
+    {
+      "case": "unknown_localize_accept",
+      "stage": "image"
+    },
+    {
+      "case": "unknown_localize_accept",
+      "stage": "localize"
+    },
+    {
+      "case": "unknown_plan_retry",
+      "stage": "analysis"
+    },
+    {
+      "case": "unknown_plan_retry",
+      "stage": "plan"
+    },
+    {
+      "case": "unknown_plan_retry",
+      "stage": "plan"
+    },
+    {
+      "case": "unknown_plan_retry",
+      "stage": "image"
+    },
+    {
+      "case": "unknown_plan_retry",
+      "stage": "localize"
+    },
+    {
+      "case": "unknown_image_accept_503",
+      "stage": "analysis"
+    },
+    {
+      "case": "unknown_image_accept_503",
+      "stage": "plan"
+    },
+    {
+      "case": "unknown_image_accept_503",
+      "stage": "image"
+    },
+    {
+      "case": "remote_success_checkpoint_missing",
+      "stage": "analysis"
+    },
+    {
+      "case": "remote_success_checkpoint_missing",
+      "stage": "plan"
+    },
+    {
+      "case": "remote_success_checkpoint_missing",
+      "stage": "image"
+    },
+    {
+      "case": "late_cancel",
+      "stage": "analysis"
+    },
+    {
+      "case": "late_cancel",
+      "stage": "plan"
+    },
+    {
+      "case": "late_cancel",
+      "stage": "image"
+    },
+    {
+      "case": "partial_failure",
+      "stage": "analysis"
+    },
+    {
+      "case": "partial_failure",
+      "stage": "plan"
+    },
+    {
+      "case": "partial_failure",
+      "stage": "plan"
+    },
+    {
+      "case": "partial_failure",
+      "stage": "image"
+    },
+    {
+      "case": "partial_failure",
+      "stage": "localize"
+    },
+    {
+      "case": "concurrency",
+      "stage": "analysis"
+    },
+    {
+      "case": "concurrency",
+      "stage": "plan"
+    },
+    {
+      "case": "concurrency",
+      "stage": "image"
+    },
+    {
+      "case": "concurrency",
+      "stage": "localize"
+    },
+    {
+      "case": "commit_before_checkpoint",
+      "stage": "analysis"
+    },
+    {
+      "case": "commit_before_checkpoint",
+      "stage": "plan"
+    },
+    {
+      "case": "commit_before_checkpoint",
+      "stage": "image"
+    },
+    {
+      "case": "commit_before_checkpoint",
+      "stage": "localize"
+    },
+    {
+      "case": "consumed_credentials_notification",
+      "stage": "analysis"
+    },
+    {
+      "case": "consumed_credentials_notification",
+      "stage": "plan"
+    },
+    {
+      "case": "consumed_credentials_notification",
+      "stage": "image"
+    },
+    {
+      "case": "consumed_credentials_notification",
+      "stage": "localize"
+    },
+    {
+      "case": "executor_lock_lost",
+      "stage": "analysis"
+    },
+    {
+      "case": "executor_lock_lost",
+      "stage": "plan"
+    },
+    {
+      "case": "executor_lock_lost",
+      "stage": "image"
+    },
+    {
+      "case": "executor_lock_lost",
+      "stage": "localize"
+    },
+    {
+      "case": "transactional_enqueue_rollback",
+      "stage": "analysis"
+    },
+    {
+      "case": "transactional_enqueue_rollback",
+      "stage": "plan"
+    },
+    {
+      "case": "transactional_enqueue_rollback",
+      "stage": "image"
+    },
+    {
+      "case": "transactional_enqueue_rollback",
+      "stage": "localize"
+    },
+    {
+      "case": "executor_error_unfinished_intent",
+      "stage": "analysis"
+    },
+    {
+      "case": "executor_error_unfinished_intent",
+      "stage": "plan"
+    },
+    {
+      "case": "executor_error_unfinished_intent",
+      "stage": "image"
+    },
+    {
+      "case": "executor_error_unfinished_intent",
+      "stage": "plan"
+    },
+    {
+      "case": "executor_error_unfinished_intent",
+      "stage": "localize"
+    },
+    {
+      "case": "graceful_shutdown_open_sse",
+      "stage": "analysis"
+    },
+    {
+      "case": "graceful_shutdown_open_sse",
+      "stage": "plan"
+    },
+    {
+      "case": "graceful_shutdown_open_sse",
+      "stage": "image"
+    },
+    {
+      "case": "graceful_shutdown_open_sse",
+      "stage": "localize"
+    },
+    {
+      "case": "root_upload_checkpoint_recovery",
+      "stage": "analysis"
+    },
+    {
+      "case": "analyze_three_SIGKILL_checkpoints",
+      "stage": "analysis"
+    },
+    {
+      "case": "analyze_three_SIGKILL_checkpoints",
+      "stage": "image"
+    },
+    {
+      "case": "analyze_three_SIGKILL_checkpoints",
+      "stage": "localize"
+    },
+    {
+      "case": "regenerate_three_SIGKILL_checkpoints",
+      "stage": "analysis"
+    },
+    {
+      "case": "regenerate_three_SIGKILL_checkpoints",
+      "stage": "plan"
+    },
+    {
+      "case": "regenerate_three_SIGKILL_checkpoints",
+      "stage": "image"
+    },
+    {
+      "case": "regenerate_three_SIGKILL_checkpoints",
+      "stage": "localize"
+    },
+    {
+      "case": "analyze_unknown_analysis_retry",
+      "stage": "analysis"
+    },
+    {
+      "case": "analyze_unknown_analysis_retry",
+      "stage": "analysis"
+    },
+    {
+      "case": "analyze_unknown_analysis_retry",
+      "stage": "image"
+    },
+    {
+      "case": "analyze_unknown_analysis_retry",
+      "stage": "localize"
+    },
+    {
+      "case": "analyze_unknown_image_accept",
+      "stage": "analysis"
+    },
+    {
+      "case": "analyze_unknown_image_accept",
+      "stage": "image"
+    },
+    {
+      "case": "analyze_unknown_image_retry",
+      "stage": "analysis"
+    },
+    {
+      "case": "analyze_unknown_image_retry",
+      "stage": "image"
+    },
+    {
+      "case": "analyze_unknown_image_retry",
+      "stage": "image"
+    },
+    {
+      "case": "analyze_unknown_image_retry",
+      "stage": "localize"
+    },
+    {
+      "case": "analyze_unknown_image_cancel",
+      "stage": "analysis"
+    },
+    {
+      "case": "analyze_unknown_image_cancel",
+      "stage": "image"
+    },
+    {
+      "case": "analyze_unknown_localize_accept",
+      "stage": "analysis"
+    },
+    {
+      "case": "analyze_unknown_localize_accept",
+      "stage": "image"
+    },
+    {
+      "case": "analyze_unknown_localize_accept",
+      "stage": "localize"
+    },
+    {
+      "case": "regenerate_unknown_plan_retry",
+      "stage": "analysis"
+    },
+    {
+      "case": "regenerate_unknown_plan_retry",
+      "stage": "plan"
+    },
+    {
+      "case": "regenerate_unknown_plan_retry",
+      "stage": "plan"
+    },
+    {
+      "case": "regenerate_unknown_plan_retry",
+      "stage": "image"
+    },
+    {
+      "case": "regenerate_unknown_plan_retry",
+      "stage": "localize"
+    },
+    {
+      "case": "regenerate_unknown_image_retry",
+      "stage": "analysis"
+    },
+    {
+      "case": "regenerate_unknown_image_retry",
+      "stage": "plan"
+    },
+    {
+      "case": "regenerate_unknown_image_retry",
+      "stage": "image"
+    },
+    {
+      "case": "regenerate_unknown_image_retry",
+      "stage": "image"
+    },
+    {
+      "case": "regenerate_unknown_image_retry",
+      "stage": "localize"
+    },
+    {
+      "case": "regenerate_unknown_image_cancel",
+      "stage": "analysis"
+    },
+    {
+      "case": "regenerate_unknown_image_cancel",
+      "stage": "plan"
+    },
+    {
+      "case": "regenerate_unknown_image_cancel",
+      "stage": "image"
+    },
+    {
+      "case": "regenerate_unknown_localize_accept",
+      "stage": "analysis"
+    },
+    {
+      "case": "regenerate_unknown_localize_accept",
+      "stage": "plan"
+    },
+    {
+      "case": "regenerate_unknown_localize_accept",
+      "stage": "image"
+    },
+    {
+      "case": "regenerate_unknown_localize_accept",
+      "stage": "localize"
+    },
+    {
+      "case": "analyze_late_image_cancel",
+      "stage": "analysis"
+    },
+    {
+      "case": "analyze_late_image_cancel",
+      "stage": "image"
+    },
+    {
+      "case": "regenerate_late_image_cancel",
+      "stage": "analysis"
+    },
+    {
+      "case": "regenerate_late_image_cancel",
+      "stage": "plan"
+    },
+    {
+      "case": "regenerate_late_image_cancel",
+      "stage": "image"
+    },
+    {
+      "case": "root_missing_upload_after_checkpoint",
+      "stage": "analysis"
+    }
+  ],
+  "real_paid_provider_calls": 0
+}

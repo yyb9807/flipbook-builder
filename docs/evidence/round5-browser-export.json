@@ -1,0 +1,114 @@
+{
+  "round": 5,
+  "verified_at": "2026-10-18T07:25:40.941801+00:00",
+  "scope": "Second-confirmation actual ZIP downloaded through the browser UI, compared with the original JSON download. Static data/build inspection only; actual HTTP-player rendering is verified separately by the root task.",
+  "downloads": {
+    "json": {
+      "name": "水循环：蒸发、凝结与降水（第五轮验收）.json",
+      "bytes": 8513,
+      "sha256": "66d0c0d727fe01a3c46032f9dac65ae2efc72c12ad5fb404918e54d1cc4c9416"
+    },
+    "zip": {
+      "name": "水循环：蒸发、凝结与降水（第五轮验收）.zip",
+      "bytes": 72284,
+      "sha256": "2f064176e0697bb7efd85e5870280d232f08151a65d8667bc21b12b88dfff9b1"
+    }
+  },
+  "project": {
+    "node_count": 3,
+    "page_titles": [
+      "水循环知识页",
+      "蒸发",
+      "蒸发的影响因素"
+    ],
+    "section_connection_count": 10,
+    "linked_connections": 2,
+    "author_reference_count": 1,
+    "review_status": "unreviewed"
+  },
+  "checks": {
+    "publication_allowlist": true,
+    "node_count_three": true,
+    "expected_titles": true,
+    "expected_three_level_chain": true,
+    "bounded_node_fields": true,
+    "bounded_section_fields": true,
+    "bounded_hotspot_fields": true,
+    "bounded_metadata_fields": true,
+    "section_connections_without_image_geometry_or_scores": true,
+    "image_free_knowledge_pages": true,
+    "all_links_and_tree_references_consistent": true,
+    "author_addition_preserved": true,
+    "manual_section_preserved_and_linked": true,
+    "only_author_reference_preserved": true,
+    "all_reviews_unreviewed": true,
+    "server_model_and_input_provenance_only": true,
+    "no_forged_model_or_references": true,
+    "export_is_readonly": true,
+    "zip_expected_entries_only": true,
+    "zip_paths_safe": true,
+    "zip_project_matches_downloaded_json": true,
+    "zip_inline_content_matches_downloaded_json": true,
+    "zip_classic_player_local_assets": true,
+    "zip_integrity_crc_ok": true,
+    "no_secret_canary_or_key_shape": true,
+    "no_endpoint_or_execution_metadata": true
+  },
+  "all_passed": true,
+  "static_player_build_checks": {
+    "player_expected_bytes": true,
+    "player_contains_no_jsxDEV": true
+  },
+  "secret_scan": {
+    "scope": "All JSON plus every uncompressed ZIP entry",
+    "method": "Canary-prefix and API-key shape patterns plus execution/configuration field and local-endpoint denylist; matched values are never emitted",
+    "findings": 0
+  },
+  "zip_entries": [
+    {
+      "path": "index.html",
+      "bytes": 6419,
+      "sha256": "b29f959a30d78a010f967d6336f5a6ece4369feedafd75908458d0c9edd75aef"
+    },
+    {
+      "path": "player.js",
+      "bytes": 198984,
+      "sha256": "fa5bb8495b2e8e192e66e978d008ace2b0cc6e84cfb8a9d6d9a9fd662755cb36"
+    },
+    {
+      "path": "player.css",
+      "bytes": 10904,
+      "sha256": "581f864c0845af06c35420a155bec06b80b2aa744679ad507f62e69cbb87970b"
+    },
+    {
+      "path": "project.json",
+      "bytes": 8513,
+      "sha256": "66d0c0d727fe01a3c46032f9dac65ae2efc72c12ad5fb404918e54d1cc4c9416"
+    },
+    {
+      "path": "README.txt",
+      "bytes": 316,
+      "sha256": "73723cf807a98ff3794478e7245db1fa1f57aa6d34c711373ec735ddde2f056f"
+    }
+  ],
+  "http_preview_directory": "/tmp/flipbook-round5-export-preview",
+  "preview_directory_refreshed": {
+    "files_replaced": [
+      "README.txt",
+      "index.html",
+      "player.css",
+      "player.js",
+      "project.json"
+    ],
+    "all_files_byte_identical_to_new_zip": true
+  },
+  "limits": [
+    "Author reference is an explicitly unverified browser-acceptance example; no page was fetched and no fact verification is claimed.",
+    "Fake-provider content verifies workflow and content preservation, not production-model knowledge quality.",
+    "Opening index.html directly through file:// is not part of this static inspection.",
+    "Absence of jsxDEV and file-size agreement are static build checks, not evidence of executing the player."
+  ],
+  "temporary_http_preview_stopped": true,
+  "temporary_extract_directory_removed": true,
+  "runtime_acceptance": "round5-browser-runtime.json"
+}

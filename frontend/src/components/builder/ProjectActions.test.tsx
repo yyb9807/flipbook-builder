@@ -3,150 +3,147 @@ import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/re
 import { ProjectActions } from './ProjectActions'
 import { useProjectStore } from '../../store/projectStore'
 import { ToastHost } from '../shared/Toast'
+import type { Project } from '../../types'
+import { createOfflineZip, publicationSnapshot } from '../../utils/offlineExport'
 
-// Mock api 模块
-vi.mock('../../api/client', () => ({
-  api: {
-    exportProjectJson: vi.fn(),
-    exportProjectZip: vi.fn(),
-  },
-}))
-
-import { api } from '../../api/client'
-
-// Mock window.location for share link
-Object.defineProperty(window, 'location', {
-  value: { origin: 'http://localhost:3000' },
-  writable: true,
+vi.mock('../../utils/offlineExport', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../utils/offlineExport')>()
+  return {
+    ...actual,
+    publicationSnapshot: vi.fn(actual.publicationSnapshot),
+    createOfflineZip: vi.fn(),
+  }
 })
 
-// Mock createObjectURL（jsdom 不实现）
-beforeEach(() => {
-  global.URL.createObjectURL = vi.fn(() => 'blob:fake')
-  global.URL.revokeObjectURL = vi.fn()
-})
-
-const SAMPLE_PROJECT = {
-  project_id: 'proj_abc',
-  name: '测试项目',
-  root_node_id: null,
-  settings: {} as never,
+const SAMPLE_PROJECT: Project = {
+  project_id: 'proj_abc', name: '测试项目', root_node_id: null,
+  settings: { max_depth: 4, max_hotspots_per_page: 3, visual_style: 'atlas', language: 'zh', apiKey: 'private-key' } as Project['settings'],
   nodes: {},
 }
 
-describe('ProjectActions', () => {
-  beforeEach(() => {
-    useProjectStore.setState({ project: SAMPLE_PROJECT })
-    vi.clearAllMocks()
+async function readBlob(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(String(reader.result))
+    reader.onerror = () => reject(reader.error)
+    reader.readAsText(blob)
   })
-  afterEach(cleanup)
+}
 
-  it('无项目时不渲染', () => {
+function openMenu() {
+  const trigger = screen.getByRole('button', { name: '导出与分享' })
+  fireEvent.click(trigger)
+  return trigger
+}
+
+describe('ProjectActions publication contract', () => {
+  beforeEach(() => {
+    useProjectStore.setState({ project: SAMPLE_PROJECT, origin: 'local' })
+    vi.clearAllMocks()
+    globalThis.URL.createObjectURL = vi.fn(() => 'blob:download')
+    globalThis.URL.revokeObjectURL = vi.fn()
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
+    vi.mocked(createOfflineZip).mockResolvedValue(new Blob(['offline-player'], { type: 'application/zip' }))
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: vi.fn().mockResolvedValue(undefined) } })
+  })
+  afterEach(() => { cleanup(); vi.restoreAllMocks() })
+
+  it('does not render without an open project', () => {
     useProjectStore.setState({ project: null })
     const { container } = render(<ProjectActions />)
     expect(container.firstChild).toBeNull()
   })
 
-  it('点击「分享」按钮打开下拉菜单', async () => {
+  it('offers portable exports for local work without an instance link', () => {
     render(<ProjectActions />)
-    const trigger = screen.getByText('分享')
+    const trigger = openMenu()
+    expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByRole('menu', { name: '作品导出' })).toBeInTheDocument()
+    expect(screen.getByRole('menuitem', { name: /导出 JSON/ })).toBeInTheDocument()
+    expect(screen.getByRole('menuitem', { name: /导出离线 ZIP/ })).toBeInTheDocument()
+    expect(screen.queryByRole('menuitem', { name: /复制当前实例链接/ })).not.toBeInTheDocument()
+  })
+
+  it('closes the menu when its trigger is pressed again', () => {
+    render(<ProjectActions />)
+    const trigger = openMenu()
     fireEvent.click(trigger)
-    expect(await screen.findByText('复制分享链接')).toBeInTheDocument()
-    expect(screen.getByText('导出 JSON')).toBeInTheDocument()
-    expect(screen.getByText('导出离线 ZIP')).toBeInTheDocument()
+    expect(screen.queryByRole('menu')).not.toBeInTheDocument()
+    expect(trigger).toHaveAttribute('aria-expanded', 'false')
   })
 
-  it('再次点击「分享」关闭菜单', async () => {
+  it('moves focus through menu actions and returns it to the trigger on Escape', async () => {
     render(<ProjectActions />)
-    const trigger = screen.getByText('分享')
-    fireEvent.click(trigger)
-    await screen.findByText('复制分享链接')
-    fireEvent.click(trigger)
-    await waitFor(() => {
-      expect(screen.queryByText('复制分享链接')).not.toBeInTheDocument()
-    })
+    const trigger = openMenu()
+    const zip = screen.getByRole('menuitem', { name: /导出离线 ZIP/ })
+    const json = screen.getByRole('menuitem', { name: /导出 JSON/ })
+    await waitFor(() => expect(zip).toHaveFocus())
+    fireEvent.keyDown(zip, { key: 'ArrowDown' })
+    expect(json).toHaveFocus()
+    fireEvent.keyDown(json, { key: 'ArrowDown' })
+    expect(zip).toHaveFocus()
+    fireEvent.keyDown(zip, { key: 'Escape' })
+    expect(screen.queryByRole('menu')).not.toBeInTheDocument()
+    expect(trigger).toHaveFocus()
   })
 
-  it('复制分享链接 → 写入剪贴板 + toast', async () => {
-    const writeText = vi.fn().mockResolvedValue(undefined)
-    Object.defineProperty(navigator, 'clipboard', {
-      value: { writeText },
-      configurable: true,
-    })
-
-    render(
-      <>
-        <ProjectActions />
-        <ToastHost />
-      </>,
-    )
-    fireEvent.click(screen.getByText('分享'))
-    fireEvent.click(await screen.findByText('复制分享链接'))
-
-    await waitFor(() => {
-      expect(writeText).toHaveBeenCalledWith('http://localhost:3000/v/proj_abc')
-    })
-    expect(await screen.findByText(/分享链接已复制/)).toBeInTheDocument()
+  it('exposes the current instance link only for server projects and explains its scope', async () => {
+    useProjectStore.setState({ origin: 'server' })
+    render(<><ProjectActions /><ToastHost /></>)
+    openMenu()
+    fireEvent.click(screen.getByRole('menuitem', { name: /复制当前实例链接/ }))
+    await waitFor(() => expect(navigator.clipboard.writeText).toHaveBeenCalledWith(`${window.location.origin}/v/proj_abc`))
+    expect(await screen.findByText('当前实例链接已复制。访问者需能连接此实例。')).toBeInTheDocument()
+    expect(screen.queryByRole('menu')).not.toBeInTheDocument()
   })
 
-  it('剪贴板 API 失败时降级到 prompt', async () => {
-    Object.defineProperty(navigator, 'clipboard', {
-      value: { writeText: vi.fn().mockRejectedValue(new Error('not allowed')) },
-      configurable: true,
-    })
-    const promptSpy = vi.spyOn(window, 'prompt').mockReturnValue('')
-
+  it('offers a manual copy fallback when clipboard access is unavailable', async () => {
+    useProjectStore.setState({ origin: 'server' })
+    vi.mocked(navigator.clipboard.writeText).mockRejectedValue(new Error('not allowed'))
+    const prompt = vi.spyOn(window, 'prompt').mockReturnValue('')
     render(<ProjectActions />)
-    fireEvent.click(screen.getByText('分享'))
-    fireEvent.click(await screen.findByText('复制分享链接'))
-
-    await waitFor(() => {
-      expect(promptSpy).toHaveBeenCalledWith(
-        '复制此链接：',
-        'http://localhost:3000/v/proj_abc',
-      )
-    })
-    promptSpy.mockRestore()
+    openMenu()
+    fireEvent.click(screen.getByRole('menuitem', { name: /复制当前实例链接/ }))
+    await waitFor(() => expect(prompt).toHaveBeenCalledWith('复制此链接：', `${window.location.origin}/v/proj_abc`))
   })
 
-  it('导出 JSON → 调用 api 并触发下载', async () => {
-    vi.mocked(api.exportProjectJson).mockResolvedValue({ project_id: 'proj_abc' })
-
+  it('downloads the content allowlist as JSON without unknown settings or credentials', async () => {
     render(<ProjectActions />)
-    fireEvent.click(screen.getByText('分享'))
-    fireEvent.click(await screen.findByText('导出 JSON'))
-
-    await waitFor(() => {
-      expect(api.exportProjectJson).toHaveBeenCalledWith('proj_abc')
-    })
+    const trigger = openMenu()
+    fireEvent.click(screen.getByRole('menuitem', { name: /导出 JSON/ }))
+    await waitFor(() => expect(URL.createObjectURL).toHaveBeenCalledTimes(1))
+    expect(publicationSnapshot).toHaveBeenCalledWith(SAMPLE_PROJECT)
+    expect(createOfflineZip).not.toHaveBeenCalled()
+    const blob = vi.mocked(URL.createObjectURL).mock.calls[0][0] as Blob
+    const content = await readBlob(blob)
+    expect(JSON.parse(content).project_id).toBe('proj_abc')
+    expect(content).not.toContain('private-key')
+    expect(content).not.toContain('apiKey')
+    const anchor = vi.mocked(HTMLAnchorElement.prototype.click).mock.instances[0] as HTMLAnchorElement
+    expect(anchor.download).toBe('测试项目.json')
+    expect(trigger).toHaveFocus()
   })
 
-  it('导出 ZIP → 调用 api 并触发下载', async () => {
-    vi.mocked(api.exportProjectZip).mockResolvedValue(
-      new Blob(['fake'], { type: 'application/zip' }),
-    )
-
+  it('packages the in-memory local project into a portable ZIP', async () => {
     render(<ProjectActions />)
-    fireEvent.click(screen.getByText('分享'))
-    fireEvent.click(await screen.findByText('导出离线 ZIP'))
-
-    await waitFor(() => {
-      expect(api.exportProjectZip).toHaveBeenCalledWith('proj_abc')
-    })
+    openMenu()
+    fireEvent.click(screen.getByRole('menuitem', { name: /导出离线 ZIP/ }))
+    await waitFor(() => expect(URL.createObjectURL).toHaveBeenCalledTimes(1))
+    expect(createOfflineZip).toHaveBeenCalledWith(SAMPLE_PROJECT)
+    expect(publicationSnapshot).not.toHaveBeenCalled()
+    expect(URL.createObjectURL).toHaveBeenCalledWith(await vi.mocked(createOfflineZip).mock.results[0].value)
+    const anchor = vi.mocked(HTMLAnchorElement.prototype.click).mock.instances[0] as HTMLAnchorElement
+    expect(anchor.download).toBe('测试项目.zip')
   })
 
-  it('导出失败 → 错误 toast', async () => {
-    vi.mocked(api.exportProjectJson).mockRejectedValue(new Error('network down'))
-
-    render(
-      <>
-        <ProjectActions />
-        <ToastHost />
-      </>,
-    )
-    fireEvent.click(screen.getByText('分享'))
-    fireEvent.click(await screen.findByText('导出 JSON'))
-
-    expect(await screen.findByText(/导出失败.*network down/)).toBeInTheDocument()
+  it('shows an export error, avoids a broken download and restores the menu trigger', async () => {
+    vi.mocked(createOfflineZip).mockRejectedValue(new Error('image unavailable'))
+    render(<><ProjectActions /><ToastHost /></>)
+    const trigger = openMenu()
+    fireEvent.click(screen.getByRole('menuitem', { name: /导出离线 ZIP/ }))
+    expect(await screen.findByText('导出失败：image unavailable')).toBeInTheDocument()
+    expect(URL.createObjectURL).not.toHaveBeenCalled()
+    expect(screen.queryByRole('menu')).not.toBeInTheDocument()
+    expect(trigger).toHaveFocus()
   })
 })

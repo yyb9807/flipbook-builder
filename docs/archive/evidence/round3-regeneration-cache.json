@@ -1,0 +1,55 @@
+{
+  "scenarios": [
+    {
+      "scenario": "regenerate_same_prompt_new_image",
+      "passed": true,
+      "identical_prompt_regenerations": 2,
+      "actual_image_calls": 2,
+      "reused_cached_image": false,
+      "immutable_asset_urls": true
+    }
+  ],
+  "credential_audit": {
+    "tables_scanned": 20,
+    "cells_scanned": 604,
+    "checkpoint_cells_inspected": 25,
+    "base64_decoded_candidates_inspected": 115,
+    "raw_postgres_relation_files_scanned": 427,
+    "raw_postgres_relation_bytes_scanned": 9322496,
+    "worker_log_and_asset_files_clean": true,
+    "logical_sql_rows_clean": true,
+    "pg_dump_sql_clean": true,
+    "serialized_negative_control_detected": true
+  },
+  "all_provider_calls": [
+    {
+      "case": "regenerate_same_prompt_new_image",
+      "stage": "analysis"
+    },
+    {
+      "case": "regenerate_same_prompt_new_image",
+      "stage": "plan"
+    },
+    {
+      "case": "regenerate_same_prompt_new_image",
+      "stage": "image"
+    },
+    {
+      "case": "regenerate_same_prompt_new_image",
+      "stage": "localize"
+    },
+    {
+      "case": "regenerate_same_prompt_new_image",
+      "stage": "plan"
+    },
+    {
+      "case": "regenerate_same_prompt_new_image",
+      "stage": "image"
+    },
+    {
+      "case": "regenerate_same_prompt_new_image",
+      "stage": "localize"
+    }
+  ],
+  "real_paid_provider_calls": 0
+}

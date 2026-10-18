@@ -1,175 +1,27 @@
 import { useProjectStore } from '../../store/projectStore'
-import type { FlipNode } from '../../types'
+import { useCopy } from '../../i18n/workspace'
 import { Icon } from '../shared/Icon'
-import { useI18n } from '../../i18n'
+import { useNodeDraftStore } from '../../store/nodeDraftStore'
 
-interface Props {
-  /** 行 hover 时显示「↻ 重新生成此页」的回调；不传则不显示按钮。 */
-  onRegenerate?: (nodeId: string) => void
-}
-
-export function TreeNav({ onRegenerate }: Props = {}) {
-  const { t } = useI18n()
+export function TreeNav() {
   const project = useProjectStore((s) => s.project)
-  const activeNodeId = useProjectStore((s) => s.activeNodeId)
-  const navigateTo = useProjectStore((s) => s.navigateTo)
-  const navigateBack = useProjectStore((s) => s.navigateBack)
-  const navigationStack = useProjectStore((s) => s.navigationStack)
-
-  if (!project) return (
-    <div
-      style={{
-        background: 'var(--bg-elev)',
-        borderRadius: 16,
-        boxShadow: 'var(--shadow-card)',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        height: '100%',
-      }}
-    >
-      <div style={{ padding: '14px 16px 8px', borderBottom: '0.5px solid var(--separator)' }}>
-        <h3 style={{ margin: 0, fontWeight: 700, fontSize: 17, letterSpacing: '-0.02em' }}>{t('builder.tree.title')}</h3>
-      </div>
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'var(--label-tertiary)',
-          fontSize: 13,
-        }}
-      >
-        {t('builder.tree.empty')}
-      </div>
-    </div>
-  )
-
-  const totalPages = Object.keys(project.nodes).length
-  const maxDepth = Math.max(...Object.values(project.nodes).map((n: FlipNode) => n.depth), 0)
-
-  function renderNode(nodeId: string, d = 0): React.ReactNode {
-    const node = project!.nodes[nodeId]
-    if (!node) return null
-    const isActive = nodeId === activeNodeId
-
-    return (
-      <div key={nodeId}>
-        <div
-          className={`tree-node${isActive ? ' active' : ''}`}
-          onClick={() => navigateTo(nodeId)}
-        >
-          <div className="tree-thumb">
-            {node.image_url && (
-              <img
-                src={node.image_url}
-                alt=""
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            )}
-          </div>
-          <span className="tree-label">
-            {node.title.length > 14 ? node.title.slice(0, 14) + '…' : node.title}
-          </span>
-          <span className="tree-depth-tag">L{d}</span>
-          {onRegenerate && d > 0 && (
-            <button
-              type="button"
-              className="tree-regen"
-              aria-label={t('builder.tree.regenerateLabel', { name: node.title })}
-              title={t('builder.tree.regenerateTooltip')}
-              onClick={(e) => {
-                e.stopPropagation()
-                onRegenerate(nodeId)
-              }}
-            >
-              <Icon name="refresh" size={11} stroke={2} />
-            </button>
-          )}
-        </div>
-
-        {/* Children */}
-        {node.children.length > 0 && (
-          <div
-            style={{
-              marginLeft: 22,
-              borderLeft: '1px solid var(--separator-soft)',
-              paddingLeft: 10,
-            }}
-          >
-            {node.children.map((childId) => renderNode(childId, d + 1))}
-          </div>
-        )}
-      </div>
-    )
+  const active = useProjectStore((s) => s.activeNodeId)
+  const navigate = useProjectStore((s) => s.navigateTo)
+  const c = useCopy()
+  const drafts = useNodeDraftStore((s) => s.drafts[project?.project_id ?? ''])
+  if (!project) return null
+  function renderNode(id: string, visited = new Set<string>()): React.ReactNode {
+    if (!project) return null
+    const node = project.nodes[id]
+    if (!node || visited.has(id)) return null
+    const next = new Set(visited).add(id)
+    return <li key={id}><button className={active === id ? 'tree-page active' : 'tree-page'} aria-current={active === id ? 'page' : undefined} onClick={() => navigate(id)}>
+      <Icon name="json" size={15} /><span>{node.title || c('未命名页面', 'Untitled page')}</span>{drafts?.[id] && <span className="tree-draft">{c('草稿', 'Draft')}</span>}<span className="tree-page-depth">{node.depth + 1}</span>
+    </button>{node.children.length > 0 && <ul>{node.children.map((child) => renderNode(child, next))}</ul>}</li>
   }
-
-  const rootId = project.root_node_id
-
-  return (
-    <div
-      style={{
-        background: 'var(--bg-elev)',
-        borderRadius: 16,
-        boxShadow: 'var(--shadow-card)',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        height: '100%',
-      }}
-    >
-      {/* Header */}
-      <div
-        style={{
-          padding: '14px 16px 8px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          borderBottom: '0.5px solid var(--separator)',
-        }}
-      >
-        <h3 style={{ margin: 0, fontWeight: 700, fontSize: 17, letterSpacing: '-0.02em' }}>{t('builder.tree.title')}</h3>
-        {navigationStack.length > 1 && (
-          <button onClick={navigateBack} className="btn btn-sm">
-            <Icon name="arrow-left" size={11} />
-            {t('builder.tree.back')}
-          </button>
-        )}
-      </div>
-
-      {/* Tree body */}
-      <div style={{ flex: 1, padding: '4px 10px 12px', overflowY: 'auto' }}>
-        {rootId && renderNode(rootId)}
-      </div>
-
-      {/* Stats */}
-      <div
-        style={{
-          padding: 10,
-          borderTop: '0.5px solid var(--separator)',
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: 6,
-        }}
-      >
-        <div style={{ background: 'var(--gray-6)', borderRadius: 10, padding: '8px 12px' }}>
-          <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.1 }}>
-            {totalPages}
-          </div>
-          <div style={{ color: 'var(--label-secondary)', fontSize: 11, marginTop: 1, fontWeight: 500 }}>
-            {t('builder.tree.pages')}
-          </div>
-        </div>
-        <div style={{ background: 'var(--gray-6)', borderRadius: 10, padding: '8px 12px' }}>
-          <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.1 }}>
-            L{maxDepth}
-          </div>
-          <div style={{ color: 'var(--label-secondary)', fontSize: 11, marginTop: 1, fontWeight: 500 }}>
-            {t('builder.tree.depth')}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+  return <nav className="page-tree" aria-label={c('作品页面', 'Project pages')}>
+    <div className="panel-heading"><h2>{c('作品页面', 'Pages')}</h2><span>{Object.keys(project.nodes).length}</span></div>
+    <ul className="tree-root">{project.root_node_id && renderNode(project.root_node_id)}</ul>
+    <p className="panel-footnote">{c('通过热点连接页面，让读者沿着想法探索。', 'Connect pages with hotspots so readers can follow an idea.')}</p>
+  </nav>
 }

@@ -34,10 +34,23 @@ export const TRANSLATIONS = {
 
   // ── 设置页 ──
   'settings.navTitle': { zh: 'AI 配置', en: 'AI Settings' },
-  'settings.section.llm': { zh: '文本 LLM', en: 'Text LLM' },
+  'settings.page.title': { zh: '连接你的 AI 服务', en: 'Connect your AI services' },
+  'settings.page.description': {
+    zh: 'AI 负责理解内容与绘制插图。使用你自己的服务商和密钥；阅读、手动编辑和导出作品无需配置。',
+    en: 'AI helps understand content and create illustrations. Use your own provider and keys. Reading, manual editing, and exporting work without them.',
+  },
+  'settings.section.llm': { zh: '内容理解', en: 'Content understanding' },
   'settings.section.imggen': { zh: '图片生成', en: 'Image Generation' },
+  'settings.section.llmDescription': {
+    zh: '用于分析图片、整理主题和规划热点。分析上传图片时，请选择支持图像输入的模型。',
+    en: 'Analyzes images, organizes topics, and plans hotspots. Choose a model with image input support when analyzing uploaded images.',
+  },
+  'settings.section.imgDescription': {
+    zh: '用于绘制新页面的插图。可以与内容理解使用不同的服务商。',
+    en: 'Creates illustrations for new pages. You can use a different provider from content understanding.',
+  },
   'settings.status.ok': { zh: '已配置', en: 'Configured' },
-  'settings.status.missing': { zh: '缺 API Key', en: 'Missing API Key' },
+  'settings.status.missing': { zh: '待配置', en: 'Not configured' },
   'settings.field.provider': { zh: '服务商', en: 'Provider' },
   'settings.field.apiKey': { zh: 'API Key', en: 'API Key' },
   'settings.field.model': { zh: '模型', en: 'Model' },
@@ -58,11 +71,30 @@ export const TRANSLATIONS = {
   'settings.action.dirty': { zh: '有未保存更改', en: 'Unsaved changes' },
   'settings.action.savedHint': { zh: '✓ 已保存到本地', en: '✓ Saved locally' },
   'settings.action.privacyHint': {
-    zh: '密钥仅存浏览器，不上传服务器',
-    en: 'Keys stored locally in browser only',
+    zh: '默认仅在本次打开期间使用密钥',
+    en: 'Keys stay in memory by default',
   },
+  'settings.action.clearKeys': { zh: '清除已输入和保存的密钥', en: 'Clear entered and saved keys' },
+  'settings.action.keysCleared': { zh: '已从当前页面和此浏览器保存的配置中清除密钥。', en: 'Keys cleared from this page and this browser’s saved settings.' },
+  'settings.privacy.title': { zh: '密钥与隐私', en: 'Keys and privacy' },
+  'settings.privacy.description': {
+    zh: '密钥默认仅在当前页面内存中保存。生成或测试时，会经此自托管实例的后端转发到你选择的服务商；普通项目操作不发送密钥。',
+    en: 'Keys stay in page memory by default. Generation and tests send them through this self-hosted backend to your chosen provider. Ordinary project operations do not send keys.',
+  },
+  'settings.privacy.remember': { zh: '在此浏览器记住密钥', en: 'Remember keys in this browser' },
+  'settings.privacy.persistent': {
+    zh: '保存后将以明文写入浏览器本地存储。请只在你信任的个人设备上启用。',
+    en: 'Saving writes keys to browser storage as plain text. Enable this only on a personal device you trust.',
+  },
+  'settings.privacy.temporary': { zh: '刷新或关闭页面后需要重新填写。服务商地址和模型选择会保留。', en: 'Refresh or close the page to forget keys. Provider addresses and model choices are retained.' },
 
   'settings.test.failed': { zh: '测试失败：{error}', en: 'Test failed: {error}' },
+  'settings.test.ok': { zh: '连接成功', en: 'Connected' },
+  'settings.test.notOk': { zh: '未连接', en: 'Not connected' },
+  'settings.test.draftHint': {
+    zh: '测试使用当前填写的内容，不会自动保存。测试会向所选服务商发送请求，可能产生少量费用。切换服务商或修改地址时会清空对应密钥。',
+    en: 'Tests use your current draft without saving it. They contact the selected providers and may incur a small charge. Changing a provider or address clears its key.',
+  },
   'settings.test.unknownError': { zh: '测试失败', en: 'Test failed' },
   'settings.test.modelReply': { zh: '模型回复：{sample}', en: 'Model reply: {sample}' },
   'settings.test.keyChars': { zh: 'key {n} 字符', en: 'key {n} chars' },
@@ -71,8 +103,8 @@ export const TRANSLATIONS = {
 
   'settings.quickStart.title': { zh: '第一次来？三步配好', en: 'First time? 3 steps' },
   'settings.quickStart.steps': {
-    zh: '① 选服务商 → ② 粘贴 API Key → ③ 点击「测试连接」验证',
-    en: '① Pick provider → ② Paste API Key → ③ Click "Test connection"',
+    zh: '选择服务商，填写密钥和模型，测试成功后保存配置。已有服务商账户即可使用，无需为此工作台注册账号。',
+    en: 'Choose a provider, enter a key and model, test, then save. Use your existing provider account; this workspace needs no registration.',
   },
   'settings.quickStart.noKey': { zh: '没有 key？去注册：', en: 'No key yet? Sign up:' },
 

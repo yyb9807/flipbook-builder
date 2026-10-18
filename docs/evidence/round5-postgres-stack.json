@@ -1,0 +1,94 @@
+{
+  "base_url": "http://127.0.0.1:18080",
+  "provider": "controlled local HTTP fake; no paid model calls",
+  "checks": [
+    {
+      "check": "health through nginx",
+      "passed": true
+    },
+    {
+      "check": "built SPA and assets through nginx",
+      "passed": true
+    },
+    {
+      "check": "upload and real HTTP vision analysis",
+      "passed": true
+    },
+    {
+      "check": "root and two actual normalized hotspots persisted",
+      "passed": true
+    },
+    {
+      "check": "uploaded image served through nginx",
+      "passed": true
+    },
+    {
+      "check": "upload response security headers",
+      "passed": true
+    },
+    {
+      "check": "editable scene JSONB HTTP roundtrip",
+      "passed": true
+    },
+    {
+      "check": "node ownership enforced across projects",
+      "passed": true
+    },
+    {
+      "check": "partial generation retains successful child",
+      "passed": true
+    },
+    {
+      "check": "partial generation restores parent status",
+      "passed": true
+    },
+    {
+      "check": "retry creates only failed child and keeps first relation",
+      "passed": true
+    },
+    {
+      "check": "only the failed child provider call was retried",
+      "passed": true
+    },
+    {
+      "check": "structured page regeneration refuses destructive replacement",
+      "passed": true
+    },
+    {
+      "check": "generated knowledge has explicit connections and provenance",
+      "passed": true
+    },
+    {
+      "check": "mixed-owner hotspot batch atomically rolls back in Postgres",
+      "passed": true
+    },
+    {
+      "check": "export retains scene content and all nodes",
+      "passed": true
+    },
+    {
+      "check": "legacy ZIP export through nginx",
+      "passed": true
+    },
+    {
+      "check": "new multipart analysis entry through nginx",
+      "passed": true
+    },
+    {
+      "check": "new text analysis entry saves content without image credentials",
+      "passed": true
+    }
+  ],
+  "provider_calls": {
+    "analysis": 3,
+    "child_success": 1,
+    "child_retry": 2,
+    "text_analysis": 1
+  },
+  "temporary_projects_deleted": [
+    "proj_dvr9oh7sb1",
+    "proj_qct5of1y6k",
+    "proj_fyl0fqyjei",
+    "proj_0lx8x09int"
+  ]
+}

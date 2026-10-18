@@ -1,0 +1,77 @@
+{
+  "date": "2026-10-18",
+  "scope": "Source and documentation cleanup after round 5; prior round evidence remains historical.",
+  "removed": {
+    "dead_synchronous_generation_helpers": 8,
+    "dead_helper_tests": 8,
+    "unused_frontend_assets": 3,
+    "unused_dev_dependency": "@vitest/ui",
+    "retired_acceptance_cli": "verify_durable_generation.py",
+    "retired_prototype": "experiments/durable-jobs"
+  },
+  "checks": {
+    "backend_real_postgres_pytest": {
+      "passed": 249,
+      "failed": 0,
+      "seconds": 53.71,
+      "isolated_database_cleaned": true
+    },
+    "frontend_vitest": {
+      "files": 30,
+      "passed": 232,
+      "failed": 0
+    },
+    "ruff_backend_and_scripts": "passed",
+    "frontend_lint": "passed",
+    "frontend_typescript_production_build": "passed",
+    "player": {
+      "environments": [
+        "development",
+        "production"
+      ],
+      "bytes_each": 198984,
+      "startup": true,
+      "three_level_navigation": true,
+      "references_provenance_and_review": true
+    },
+    "process_scenarios": 7,
+    "demo_empty_start_stop": {
+      "passed": true,
+      "isolated_database_cleaned": true,
+      "audit_passed": true
+    },
+    "http_checks": 19,
+    "paid_model_calls": 0
+  },
+  "runtime": {
+    "compose_rebuilt": true,
+    "base_url": "http://127.0.0.1:18080",
+    "health": {
+      "status": "ok"
+    },
+    "remaining_server_projects": 0,
+    "backend_source_matches_running_container": {
+      "agents/knowledge.py": true,
+      "agents/input_analysis.py": true,
+      "agents/page_generation.py": true,
+      "content_metadata.py": true,
+      "hotspots.py": true,
+      "routers/nodes.py": true,
+      "routers/projects.py": true,
+      "sse.py": true,
+      "schema.sql": true,
+      "jobs/store.py": true,
+      "jobs/workflows.py": true,
+      "jobs/page_workflows.py": true,
+      "jobs/providers.py": true
+    }
+  },
+  "process_evidence": "cleanup-knowledge-process.json",
+  "http_evidence": "cleanup-postgres-stack.json",
+  "limits": [
+    "No new live browser acceptance in cleanup pass; round 5 browser evidence is retained.",
+    "No paid model quality assessment.",
+    "No real-browser file protocol or cross-browser claim.",
+    "Remote CI status is separate from these local results."
+  ]
+}

@@ -1,193 +1,80 @@
-# flipbook-builder
+# Flipbook Builder
 
-**[English](./README.en.md)** · 中文
+免账号、自托管的视觉知识工作台。把主题、图片与解释组织成可点击的分支作品，编辑和校正内容，再导出给读者。
 
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![GitHub](https://img.shields.io/badge/GitHub-yyb9807%2Fflipbook--builder-181717?logo=github)](https://github.com/yyb9807/flipbook-builder)
-[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![Postgres](https://img.shields.io/badge/Postgres-16-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
-[![i18n](https://img.shields.io/badge/i18n-zh%20%2F%20en-AF52DE)](#)
-[![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](#)
+[English](README.en.md) · [文档导航](docs/README.md) · [当前架构](docs/ARCHITECTURE.md) · [验证说明](docs/VERIFICATION.md)
 
-> **给任意一张图加上"无限往下点"的能力。** 像 [Flipbook](https://flipbook.page/)，但能存、能改、能导出。
+## 先体验，无需模型或后端
 
-[Flipbook](https://flipbook.page/) 那种"点哪去哪"的视觉漫游很爽，可惜只能看不能改、过完就过完。本项目把同一个交互做成了**可保存的结构**：
+使用 Node.js 24：
 
-- AI 自动按内容选 4 种构图（地图 / 图鉴 / 场景 / 剖面图）
-- 命名好的热点，可拖、可改标签、可删
-- 项目入 Postgres，跨设备同步
-- 导出离线 ZIP / JSON / 公开分享链接
-
-![demo](./flipbook-builder-demo.gif)
-
----
-
-## 架构
-
-```
-┌──────────── 浏览器 ────────────┐
-│  React 19 + Vite + Zustand    │   ← 状态、SSE、i18n（中/英）
-└────────────┬───────────────────┘
-             │ /api/*  /uploads/*
-┌────────────▼───────────────────┐
-│  nginx (静态 + 反代 + SSE)      │
-└────────────┬───────────────────┘
-             │
-┌────────────▼───────────────────┐    ┌──────────────────┐
-│  FastAPI + uvicorn             │ ─► │  Postgres 16     │
-│  • input_analysis              │    │  (项目/节点/热点) │
-│  • composition (map/plate/…)   │    └──────────────────┘
-│  • image_generation (含缓存)   │
-│  • hotspot_localization        │    ./data/
-│  • SSE 流式生成                 │ ─► uploads/  img_cache/
-└────────────────────────────────┘
-        │
-        ├─► Anthropic / OpenAI / OpenRouter（文本 + 视觉 LLM）
-        └─► DALL-E 3 / Flux / GPT-Image（图片生成）
+```sh
+cd frontend
+npm ci
+npm run dev
 ```
 
-### 多 Agent 流水线
+打开终端显示的地址（通常为 http://localhost:5173），即可：
 
-后端把"理解 → 规划 → 生成 → 标注"拆成 5 个职责单一的 agent，互相串成 SSE 流：
+- 浏览「一滴水的旅程」四页示例，创建可编辑副本。
+- 手动编写知识页，编辑标题、导读、内容区块和版式，直接添加子页。
+- 标注 PNG/JPEG/WebP 图片，拖动或用方向键校正热点。
+- 预览、导出离线 ZIP 或作品 JSON。
 
-```
-用户输入（图 / 文字 / 关键词）
-        │
-        ▼
-┌─────────────────────┐
-│ input_analysis      │  视觉 LLM 看图 → 输出 summary / scene_type / keywords
-└─────────┬───────────┘
-          │
-          ▼
-┌─────────────────────┐
-│ composition         │  按内容类型（地理/物种/事件/结构）路由 4 种 prompt 模板
-│   • map             │
-│   • plate (图鉴)    │  ← prose-style，DALL-E 3 友好
-│   • scene           │
-│   • diagram (剖面)  │
-└─────────┬───────────┘
-          │
-          ▼
-┌─────────────────────┐
-│ page_generation     │  LLM 写每个子页的 title / description / 子热点
-└─────────┬───────────┘
-          │
-          ▼
-┌─────────────────────┐
-│ image_generation    │  DALL-E 3 / Flux 出图 +  SHA256 缓存（相同 prompt 跳过 API）
-└─────────┬───────────┘
-          │
-          ▼
-┌─────────────────────┐
-│ hotspot_localization│  视觉 LLM 在出好的图上标可点击区域（normalized [0,1] bbox）
-└─────────────────────┘
-```
+本地作品保存在当前浏览器，清除网站数据会删除作品，请及时导出。手动本地图片限制为 2 MB。创作输入和页面内容草稿可跨页面及刷新保留；页面草稿保存后才能预览和导出。尚未创建的文件选择仅在本次会话保留。
 
-每个 agent 都继承同一个 `BaseLLMAgent`，统一处理 Anthropic / OpenAI 兼容协议、prompt caching、错误重试、SSE 进度推送。
+## 自托管完整 AI 流程
 
-**关键设计：**
-- **Prompt caching**：5 分钟内重复 system prompt 走缓存，并发生成 4 个子页时只第一次完整收费
-- **图片缓存**：(model, prompt) SHA256 命中本地磁盘，跳过 API
-- **构图路由 + prose prompt**：用 5-7 个描述词的散文，正向描述（避免 "MUST/NOT" —— DALL-E 3 反应不好）
-- **Provider 抽象**：用户在浏览器填 key 就能用 Anthropic / OpenAI / OpenRouter / DeepSeek / 任意 OpenAI 兼容中转
+需要 Docker Compose：
 
----
-
-## 部署
-
-### 一键启动（推荐）
-
-```bash
-git clone <repo>
-cd flipbook_builder
+```sh
+cp .env.example .env
 docker compose up -d --build
 ```
 
-打开 http://localhost:8080 → 右上角「配置」填 API Key → 上传图片开始。
+访问 http://localhost:8080。默认仅绑定本机；nginx 提供前端并代理 FastAPI，Postgres 保存服务器作品，图片位于 `data/`。
 
-### 服务说明
+进入「模型设置」配置内容模型。文字主题和新子页生成可编辑的知识正文，插图是明确可选项；上传图片则保留原图与真实图像热点。内容模型需要支持相应的文字/看图输入，选插图时还需图片服务配置。格式不合法会明确失败，不伪造正文或自动重新付费调用。
 
-| 容器 | 镜像 | 端口 | 作用 |
-|---|---|---|---|
-| `flipbook-frontend` | nginx:1.27-alpine | 8080→80 | 静态托管 + `/api` `/uploads` 反代 + SSE 长连接 |
-| `flipbook-backend` | python:3.13-slim | 内部 8000 | FastAPI + uvicorn |
-| `flipbook-db` | postgres:16-alpine | 5434→5432 | 项目数据持久化 |
+Key 默认只在页面内存保存；选择「在此浏览器记住密钥」后才明文写入浏览器存储。AI 请求将 Key 发到此实例后端，再调用所选供应商；普通作品、编辑和导出请求不带模型凭据。地址、模型和 Key 按组使用，不把客户端地址与部署者 Key 混配。设置中的测试使用未保存草稿，文字探活可能收费，图片测试不实际出图。
 
-数据卷：
-- `./data/` — 上传图片 + 图片缓存（宿主机持久化）
-- `postgres_data` — 数据库（docker volume）
+**这是免登录、无角色和无用户隔离的单共享实例，适合个人或受信任环境。** 默认用户自备 Key，也支持部署者提供默认配置。只读查看地址不构成权限隔离；公开读者应使用导出的静态作品。部署仅支持一个后端 worker/副本。
 
-### 常用命令
+## 编辑、恢复与来源
 
-```bash
-docker compose logs -f backend   # 查日志
-docker compose ps                # 状态
-docker compose down              # 停（保留数据）
-docker compose down -v           # 停 + 清空所有数据
+- **两种内容**：知识页的正文区块连接子页，图片热点按实际图像坐标导航。编辑器、在线阅读和离线播放器共用渲染核心。
+- **持久任务**：根页分析、子页生成和单页再生使用 Postgres/DBOS；刷新、断线和进入设置不会取消。完成的阶段可复用，临时 Key 丢失时等待显式补充；结果不明时暂停，重试前确认可能重复计费。
+- **保护编辑**：草稿与保存状态可见，成功分支逐页保留。活动任务期间作品暂锁；已有热点或结构化正文的页面不允许整页再生，以保护作者内容和关系。
+- **作者核对**：生成说明记录输入类型和模型，作者可添加参考资料与核对声明；正文、资料或热点文字变化会清除旧声明。资料由作者填写，系统不抓取、不逐句关联或自动核实事实，也不采纳模型编造的引用。
+
+![知识页离线阅读与作者资料](docs/images/round5-final-offline-source.jpg)
+
+## 阅读与导出
+
+| 方式 | 包含内容与运行条件 |
+|---|---|
+| 离线 ZIP | 共享播放器、图片与作品数据；解压整个文件夹后打开 `index.html`，无需后端、账号或 Key |
+| JSON | 作品内容、结构和来源；不包含图片二进制或模型配置 |
+| 当前实例链接 | 只读界面，需要实例在线；读取当前作品，不是固定版本的发布快照 |
+
+不要只移动 ZIP 中的 HTML。静态公开发布可上传整个解压目录。实际浏览器验收覆盖 HTTP 播放，独立播放器验证覆盖 JSDOM file URL；真实浏览器双击 `file://` 的跨浏览器验收仍待补充。
+
+## 开发与验证
+
+使用 Node.js 24、Python 3.13、Postgres 16。前端：
+
+```sh
+cd frontend
+npm run lint
+npm test
+npm run verify:player
+npm run build
 ```
 
-### 本地开发（不用容器）
+后端启动、API 与测试见[后端说明](backend/README.md)；项目模块和任务数据流见[当前架构](docs/ARCHITECTURE.md)。CI 执行前后端检查、真实 Postgres 测试和进程恢复验证，所有模型测试使用受控供应商，无付费调用。最近完整验收与可复跑命令见[验证说明](docs/VERIFICATION.md)。
 
-```bash
-# 后端
-cd backend && python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn main:app --port 8000 --reload
+备份数据库和 `data/`；`docker compose down -v` 会删除数据库卷。[历史计划与审查](docs/archive/README.md)用于追溯，不作为当前运行指南。
 
-# 前端
-cd frontend && npm install && npm run dev
-```
+## 贡献与许可
 
-需要本地有一个 Postgres 实例（默认连 `localhost:5434`，可用 `docker compose up db` 单起）。
-
----
-
-## 与同类项目客观对比
-
-参考过两个相关项目，但走的路线不同：
-
-| 维度 | [Flipbook](https://flipbook.page/) (Zain Shah) | [openflipbook](https://github.com/eren23/openflipbook) (eren23) | **本项目** |
-|---|---|---|---|
-| **形态** | 纯像素流，无 DOM | 同 Flipbook（Next.js 壳） | 结构化页面 + 可编辑热点 |
-| **生成模型** | LTX Studio 视频模型（实时流） | fal-ai LTX video（每页 ~$0.02） | DALL-E 3 / Flux / GPT-Image（按张） |
-| **交互** | 点击屏幕任意像素生成下一页 | 同左 | 点击 AI 识别并标注的具名热点 |
-| **构图策略** | 单一风格（漫游感） | 同左 | 4 种构图按内容自动路由（地图 / 图鉴 / 场景 / 剖面图） |
-| **可编辑** | ❌ 只读 | ❌ 只读 | ✅ 拖热点、改标签、删节点、勾选展开 |
-| **持久化** | 服务端 session | Mongo + Cloudflare R2 | Postgres + 本地磁盘卷 |
-| **导出 / 分享** | ❌ | 链接 (`/n/:id`) | ZIP 离线包 / JSON / 公开分享链接 |
-| **项目管理** | ❌ | ❌ | ✅ 项目列表、缩略图、删除、跨设备 |
-| **后端** | Modal Labs serverless GPU | Modal + R2 + Mongo | FastAPI + Postgres（自托管友好） |
-| **多语言** | 英文 | 英文 | 中 / 英 |
-| **定位** | 梦境式视觉漫游 | 同 Flipbook 的开源版 | 结构化的视觉知识工具 |
-
-简单说：Flipbook / openflipbook 像 **TikTok**（无尽刷流，强调氛围感），本项目像 **Notion**（结构化、可编辑、可导出，适合做知识资产）。
-
----
-
-## 未来迭代
-
-- **v0.2** — 子页预加载（在用户停留 L1 时悄悄生成 L2 候选）
-- **v0.3** — 翻页过渡用 LTX 之类的 image-to-video 模型，弥补静态图的呆板
-- **v0.4** — 知识工具：对当前节点提问、跨节点搜索、导出为 Anki 卡片
-- **v0.5** — 多人协作：实时光标 + 评论 + 节点 review
-- **v0.6** — 一键部署到 Vercel / Fly.io / 自托管 docker-compose（带 https）
-
----
-
-## 联系
-
-对这个项目的实现细节、合作方向或类似问题感兴趣的，欢迎交流：
-
-📧 yyb980716@gmail.com
-
-也欢迎直接提 Issue / PR。
-
----
-
-## License
-
-MIT — 在符合 LICENSE 条款的前提下随意 fork / 改造 / 商用。
-
-致谢：[Zain Shah](https://x.com/zainhda)（Flipbook 原作者）、[eren23](https://github.com/eren23)（openflipbook）以及启发"分层视觉知识"的 [David Macaulay](https://en.wikipedia.org/wiki/David_Macaulay) 与 DK Eyewitness 系列。
+欢迎可复现的问题报告与改进。请先阅读[贡献说明](CONTRIBUTING.md)和[安全说明](SECURITY.md)。项目采用 [MIT](LICENSE)；参考研究中的第三方项目保留各自许可。

@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-18",
+  "base_url": "http://127.0.0.1:18080",
+  "health": {
+    "status": "ok"
+  },
+  "frontend_assets": [
+    {
+      "asset": "/assets/_virtual_offline-player-Bo4yEYIc.js",
+      "bytes": 205590,
+      "sha256": "7397a129cba5a7279607422fa4197b0f5096e2b2e6ee0487300cf490e390683d",
+      "matches_local_build": true
+    },
+    {
+      "asset": "/assets/index-5bEU1PWR.js",
+      "bytes": 377663,
+      "sha256": "e634dfdaee3993ee8bf89b6b0f0a5ba2ee89f5d3035afac98f0c311e8d5d3c5a",
+      "matches_local_build": true
+    },
+    {
+      "asset": "/assets/index-SwNWNswH.css",
+      "bytes": 38576,
+      "sha256": "10f3c1d3bd16ce0de53f56002f4630e292c99ca00348abfb9ead3cc1e534bcdd",
+      "matches_local_build": true
+    },
+    {
+      "asset": "/assets/offlineExport-DAyp3Sqi.js",
+      "bytes": 15246,
+      "sha256": "8ab10a7b9b1ee08fabe1a42b982a8ec54b424790b4b3a89e0b89096b7c187977",
+      "matches_local_build": true
+    }
+  ],
+  "backend_changed_in_round4": false,
+  "remaining_test_projects": 0,
+  "http_smoke": "round4-postgres-stack.json",
+  "browser_proof": ".impeccable/screenshots/round4-final-official-stack.jpg",
+  "temporary_round4_demo_stopped": true,
+  "remaining_server_projects": 0
+}

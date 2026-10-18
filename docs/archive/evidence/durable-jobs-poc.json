@@ -1,0 +1,54 @@
+{
+  "dbos": "3.3.0",
+  "python": "3.14.6",
+  "platform": "Darwin",
+  "scenarios": [
+    {
+      "scenario": "two_SIGKILL_restarts_and_BYOK_reentry",
+      "step_executions": {
+        "commit": 1,
+        "image": 1,
+        "plan": 1
+      },
+      "remote_calls": 1,
+      "events_after_cursor": 4,
+      "raw_files_and_sql_dump_clean": true,
+      "tables_scanned": 19,
+      "checkpoint_cells_inspected": 5,
+      "base64_decoded_cells_inspected": 30
+    },
+    {
+      "scenario": "explicit_cancellation_survives_restart",
+      "remote_calls": 0,
+      "raw_files_and_sql_dump_clean": true,
+      "tables_scanned": 19,
+      "checkpoint_cells_inspected": 2,
+      "base64_decoded_cells_inspected": 7
+    },
+    {
+      "scenario": "remote_success_local_checkpoint_missing",
+      "state_after_restart": "waiting_confirmation",
+      "remote_calls": 1,
+      "publications": 0,
+      "exactly_once_claimed": false,
+      "raw_files_and_sql_dump_clean": true,
+      "tables_scanned": 19,
+      "checkpoint_cells_inspected": 2,
+      "base64_decoded_cells_inspected": 7
+    },
+    {
+      "scenario": "operation_id_idempotency",
+      "submissions": 5,
+      "remote_calls": 1,
+      "publications": 1,
+      "raw_files_and_sql_dump_clean": true,
+      "tables_scanned": 19,
+      "checkpoint_cells_inspected": 5,
+      "base64_decoded_cells_inspected": 10
+    },
+    {
+      "scenario": "base64_pickle_negative_control_detected",
+      "passed": true
+    }
+  ]
+}

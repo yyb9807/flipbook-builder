@@ -1,243 +1,75 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useProjectStore } from '../../store/projectStore'
-import { api } from '../../api/client'
 import { useToast } from '../shared/Toast'
 import { Icon } from '../shared/Icon'
-import { useI18n } from '../../i18n'
+import { useCopy } from '../../i18n/workspace'
+import { useNodeDraftStore } from '../../store/nodeDraftStore'
 
-/**
- * 顶栏右侧的项目操作菜单：分享、导出 JSON、导出 HTML。
- * 只在有项目时显示。
- */
 export function ProjectActions() {
-  const { t } = useI18n()
+  const c = useCopy()
   const project = useProjectStore((s) => s.project)
+  const origin = useProjectStore((s) => s.origin)
+  const hasDrafts = useNodeDraftStore((s) => Object.keys(s.drafts[project?.project_id ?? ''] ?? {}).length > 0)
   const [open, setOpen] = useState(false)
   const [busy, setBusy] = useState(false)
-  const { show: showToast, ToastEl } = useToast()
-
-  // 用 ref 拿到按钮位置，portal 出去后下拉菜单基于 viewport 坐标定位
-  const btnRef = useRef<HTMLButtonElement>(null)
-  const [pos, setPos] = useState<{ top: number; right: number } | null>(null)
-
+  const trigger = useRef<HTMLButtonElement>(null)
+  const menu = useRef<HTMLDivElement>(null)
+  const [position, setPosition] = useState({ top: 60, right: 18 })
+  const { show, ToastEl } = useToast()
+  function close() { setOpen(false); trigger.current?.focus() }
   useEffect(() => {
     if (!open) return
-    function update() {
-      const r = btnRef.current?.getBoundingClientRect()
-      if (!r) return
-      setPos({ top: r.bottom + 6, right: window.innerWidth - r.right })
-    }
+    function update() { const r = trigger.current?.getBoundingClientRect(); if (r) setPosition({ top: r.bottom + 8, right: Math.max(12, window.innerWidth - r.right) }) }
     update()
+    const frame = requestAnimationFrame(() => menu.current?.querySelector<HTMLButtonElement>('button')?.focus())
+    function key(event: KeyboardEvent) {
+      if (event.key === 'Escape') { event.preventDefault(); setOpen(false); trigger.current?.focus() }
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        const items = Array.from(menu.current?.querySelectorAll<HTMLButtonElement>('button:not(:disabled)') ?? [])
+        if (!items.length) return
+        event.preventDefault()
+        const index = items.indexOf(document.activeElement as HTMLButtonElement)
+        items[(index + (event.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length].focus()
+      }
+    }
     window.addEventListener('resize', update)
-    window.addEventListener('scroll', update, true)
-    return () => {
-      window.removeEventListener('resize', update)
-      window.removeEventListener('scroll', update, true)
-    }
+    window.addEventListener('keydown', key)
+    return () => { cancelAnimationFrame(frame); window.removeEventListener('resize', update); window.removeEventListener('keydown', key) }
   }, [open])
-
   if (!project) return null
-
-  function close() {
-    setOpen(false)
-  }
-
-  async function copyShareLink() {
-    const url = `${window.location.origin}/v/${project!.project_id}`
-    try {
-      await navigator.clipboard.writeText(url)
-      showToast(t('builder.actions.linkCopied'), 'success')
-    } catch {
-      // 浏览器不允许 clipboard 时降级 prompt
-      window.prompt(t('builder.actions.copyPrompt'), url)
-    }
+  async function share() {
+    const url = window.location.origin + '/v/' + project!.project_id
+    try { await navigator.clipboard.writeText(url); show(c('当前实例链接已复制。访问者需能连接此实例。', 'Instance link copied. Readers need access to this instance.'), 'success') }
+    catch { window.prompt(c('复制此链接：', 'Copy this link:'), url) }
     close()
   }
-
-  async function exportJson() {
-    if (busy) return
+  async function exportProject(kind: 'json' | 'zip') {
+    if (busy || !project) return
     setBusy(true)
     try {
-      const data = await api.exportProjectJson(project!.project_id)
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
-      triggerDownload(blob, `${safeFileName(project!.name)}.json`)
-      showToast(t('builder.actions.jsonExported'), 'success')
-    } catch (e) {
-      showToast(t('builder.actions.exportFailed', { error: (e as Error).message }), 'error')
-    } finally {
-      setBusy(false)
-      close()
-    }
+      const { publicationSnapshot, createOfflineZip } = await import('../../utils/offlineExport')
+      const blob = kind === 'zip' ? await createOfflineZip(project) : new Blob([JSON.stringify(publicationSnapshot(project), null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const anchor = document.createElement('a')
+      anchor.href = url
+      anchor.download = (project.name.replace(/[\\/:*?"<>|]/g, '_').slice(0, 60) || 'flipbook') + '.' + kind
+      document.body.appendChild(anchor); anchor.click(); anchor.remove()
+      setTimeout(() => URL.revokeObjectURL(url), 1000)
+      show(c('作品已导出', 'Project exported'), 'success')
+    } catch (e) { show(c('导出失败：', 'Export failed: ') + (e as Error).message, 'error') }
+    finally { setBusy(false); close() }
   }
-
-  async function exportZip() {
-    if (busy) return
-    setBusy(true)
-    try {
-      const blob = await api.exportProjectZip(project!.project_id)
-      triggerDownload(blob, `${safeFileName(project!.name)}.zip`)
-      showToast(t('builder.actions.zipExported'), 'success')
-    } catch (e) {
-      showToast(t('builder.actions.exportFailed', { error: (e as Error).message }), 'error')
-    } finally {
-      setBusy(false)
-      close()
-    }
-  }
-
-  return (
-    <div style={{ position: 'relative' }}>
-      <button
-        ref={btnRef}
-        onClick={() => setOpen((v) => !v)}
-        title={t('builder.actions.shareTooltip')}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: 5,
-          padding: '5px 12px',
-          background: 'var(--gray-6)',
-          border: 'none',
-          borderRadius: 999,
-          fontSize: 12.5,
-          fontWeight: 500,
-          color: 'var(--label-secondary)',
-          cursor: 'pointer',
-          whiteSpace: 'nowrap',
-          fontFamily: 'var(--sans)',
-        }}
-      >
-        <Icon name="share" size={12} stroke={2} />
-        {t('builder.actions.share')}
-      </button>
-
-      {open && pos && createPortal(
-        <>
-          {/* 点击外部关闭。portal 到 body，避免被任何祖先的 transform/backdrop-filter 困住。 */}
-          <div
-            onClick={close}
-            style={{ position: 'fixed', inset: 0, zIndex: 200 }}
-          />
-          <div
-            style={{
-              position: 'fixed',
-              top: pos.top,
-              right: pos.right,
-              minWidth: 240,
-              background: 'var(--bg-elev)',
-              borderRadius: 12,
-              boxShadow: '0 12px 36px rgba(0,0,0,0.16), 0 2px 8px rgba(0,0,0,0.06)',
-              padding: 6,
-              zIndex: 201,
-              animation: 'popIn 0.14s ease',
-            }}
-          >
-            <MenuItem
-              icon={<Icon name="link" size={14} stroke={2} />}
-              label={t('builder.actions.copyLink')}
-              hint={t('builder.actions.copyLinkHint')}
-              onClick={copyShareLink}
-            />
-            <MenuItem
-              icon={<Icon name="json" size={14} stroke={2} />}
-              label={t('builder.actions.exportJson')}
-              hint={t('builder.actions.exportJsonHint')}
-              onClick={exportJson}
-              disabled={busy}
-            />
-            <MenuItem
-              icon={<Icon name="zip" size={14} stroke={2} />}
-              label={t('builder.actions.exportZip')}
-              hint={t('builder.actions.exportZipHint')}
-              onClick={exportZip}
-              disabled={busy}
-            />
-          </div>
-        </>,
-        document.body,
-      )}
-      {ToastEl}
-    </div>
-  )
+  return <div>
+    <button className="topbar-pill" ref={trigger} aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((value) => !value)}><Icon name="share" />{busy ? c('打包中…', 'Preparing…') : c('导出与分享', 'Export & share')}</button>
+    {open && createPortal(<>
+      <div className="menu-backdrop" onClick={close} />
+      <div role="menu" aria-label={c('作品导出', 'Export project')} ref={menu} className="project-menu" style={position}>
+        {origin === 'server' && <button role="menuitem" onClick={() => void share()}><Icon name="link" /><span><strong>{c('复制当前实例链接', 'Copy instance link')}</strong><small>{c('需要实例在线，非独立发布', 'Requires this instance to stay online')}</small></span></button>}
+        {hasDrafts && <p className="menu-draft-note">{c('有未保存的页面草稿。请先在内容面板保存，再导出。', 'Save page drafts in the content panel before exporting.')}</p>}
+        <button role="menuitem" disabled={busy || hasDrafts} onClick={() => void exportProject('zip')}><Icon name="zip" /><span><strong>{c('导出离线 ZIP', 'Export offline ZIP')}</strong><small>{c('包含图片与播放器，解压即可阅读', 'Includes images and player. Open after extraction.')}</small></span></button>
+        <button role="menuitem" disabled={busy || hasDrafts} onClick={() => void exportProject('json')}><Icon name="json" /><span><strong>{c('导出 JSON', 'Export JSON')}</strong><small>{c('作品结构与内容，不包含密钥', 'Project data, without credentials')}</small></span></button>
+      </div>
+    </>, document.body)}{ToastEl}
+  </div>
 }
-
-function MenuItem({
-  icon,
-  label,
-  hint,
-  onClick,
-  disabled,
-}: {
-  icon: React.ReactNode
-  label: string
-  hint?: string
-  onClick: () => void
-  disabled?: boolean
-}) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      style={{
-        width: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 10,
-        padding: '8px 10px',
-        background: 'transparent',
-        border: 'none',
-        borderRadius: 8,
-        cursor: disabled ? 'wait' : 'pointer',
-        textAlign: 'left',
-        opacity: disabled ? 0.5 : 1,
-        transition: 'background 0.12s',
-        fontFamily: 'var(--sans)',
-      }}
-      onMouseEnter={(e) => {
-        if (!disabled) e.currentTarget.style.background = 'var(--gray-6)'
-      }}
-      onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-    >
-      <span
-        style={{
-          width: 28,
-          height: 28,
-          borderRadius: 7,
-          background: 'var(--gray-6)',
-          color: 'var(--label-secondary)',
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-        }}
-      >
-        {icon}
-      </span>
-      <span style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-        <span style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--label)' }}>{label}</span>
-        {hint && (
-          <span style={{ fontSize: 11.5, color: 'var(--label-tertiary)', marginTop: 1 }}>
-            {hint}
-          </span>
-        )}
-      </span>
-    </button>
-  )
-}
-
-function safeFileName(s: string): string {
-  return s.replace(/[\\/:*?"<>|]/g, '_').slice(0, 60) || 'flipbook'
-}
-
-function triggerDownload(blob: Blob, filename: string) {
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = filename
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  URL.revokeObjectURL(url)
-}
-

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" role="img" aria-labelledby="title desc">
+  <title id="title">水循环示意 / The water cycle</title>
+  <desc id="desc">阳光使水蒸发，水蒸气凝结成云，降水回到地表。Sunlight powers evaporation, vapour condenses, and precipitation returns water to the surface.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0l6 3-6 3" fill="none" stroke="#315e60" stroke-width="1.5"/></marker>
+    <clipPath id="frame"><rect width="960" height="360" rx="12"/></clipPath>
+  </defs>
+  <g clip-path="url(#frame)">
+    <path fill="#edf5f3" d="M0 0h960v360H0z"/>
+    <circle cx="128" cy="83" r="31" fill="#e7bd63"/>
+    <g stroke="#d8aa4c" stroke-width="2" stroke-linecap="round"><path d="M128 36V24m0 118v-12M81 83H69m118 0h-12M95 50l-9-9m84 84-9-9M95 116l-9 9m84-84-9 9"/></g>
+    <path d="M526 282l98-126 65 70 57-85 118 141" fill="#bdd3c6"/>
+    <path d="M660 282l86-141 118 141" fill="#88b3a0"/>
+    <path d="M728 169l18-28 22 27-14-5-11 9-7-9" fill="#f9fbf9"/>
+    <path d="M0 269c106-15 173-9 260 12s166 31 269 6 141-14 211 1 153 23 220 12v60H0z" fill="#6c9d83"/>
+    <path d="M0 280c83-8 158-3 239 16s127 34 175 64H0z" fill="#79afb8"/>
+    <g fill="none" stroke="#d0e6e7" stroke-width="2" stroke-linecap="round"><path d="M29 307h72m20 0h29m-87 24h108m57 0h38m-83 18h81"/></g>
+    <path d="M744 274c-75 19-116 16-158 27s-67 27-87 59h-49c32-42 63-62 117-69 61-7 103-8 158-20" fill="#8dbdc3"/>
+    <path d="M233 241c-14-51-2-103 59-129" fill="none" stroke="#315e60" stroke-width="2.5" stroke-dasharray="6 6" marker-end="url(#arrow)"/>
+    <path d="M372 90c40-13 78-16 118-6" fill="none" stroke="#315e60" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <path d="M650 93c40 2 63 19 82 45" fill="none" stroke="#315e60" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <path d="M325 115c-23 0-27-28-7-36-1-29 42-39 54-13 25-8 42 21 24 37-8 7-15 12-34 12z" fill="#fff" stroke="#a8c5bd" stroke-width="1.5"/>
+    <path d="M519 109c-31 0-39-39-11-52 7-33 55-40 73-11 33-15 66 16 53 43 22 14 8 41-17 41h-75c-14 0-22-7-23-21z" fill="#fff" stroke="#a8c5bd" stroke-width="1.5"/>
+    <g stroke="#6499a4" stroke-width="3" stroke-linecap="round"><path d="M541 157l-9 18m39-18-9 18m39-18-9 18m-35 10-9 18m39-18-9 18"/></g>
+    <g font-family="-apple-system,BlinkMacSystemFont,Arial,sans-serif" font-size="16" font-weight="600" text-anchor="middle">
+      <g transform="translate(202 184)"><circle r="18" fill="#fff" stroke="#8daf9d"/><text y="6" fill="#315e60">1</text></g>
+      <g transform="translate(448 62)"><circle r="18" fill="#fff" stroke="#8daf9d"/><text y="6" fill="#315e60">2</text></g>
+      <g transform="translate(632 193)"><circle r="18" fill="#fff" stroke="#8daf9d"/><text y="6" fill="#315e60">3</text></g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,226 @@
+{
+  "date": "2026-10-18",
+  "status": "final desktop and mobile UI acceptance complete",
+  "api": "http://127.0.0.1:8000",
+  "database": "flipbook_acceptance_b9e74d63cbbf",
+  "provider": "Local HTTP fake. Temporary key only in memory/terminal; no paid calls.",
+  "provider_model": "browser_page_recovery_demo",
+  "real_paid_provider_calls": 0,
+  "fixtures": [
+    {
+      "id": "job_un3x9cszcx",
+      "kind": "analyze",
+      "status": "waiting_credentials",
+      "phase": "image",
+      "project_id": "proj_5qsfx7fzm9",
+      "target_node_id": "node_3dz4wyqhcx",
+      "name": "Browser root analysis recovery",
+      "root_node_id": null,
+      "error": null,
+      "warnings": [],
+      "saved_nodes": 0
+    },
+    {
+      "id": "job_hyign9kqux",
+      "kind": "regenerate",
+      "status": "waiting_credentials",
+      "phase": "image",
+      "project_id": "proj_8jue4tlu5g",
+      "target_node_id": "node_x6okvwh7jl",
+      "name": "Browser page regeneration recovery",
+      "root_node_id": "node_x6okvwh7jl",
+      "error": null,
+      "warnings": [],
+      "saved_nodes": 1
+    },
+    {
+      "id": "job_n73wi55jg3",
+      "kind": "regenerate",
+      "status": "waiting_confirmation",
+      "phase": "image",
+      "project_id": "proj_g7sfb1r2xy",
+      "target_node_id": "node_avk1ejfgr0",
+      "name": "Browser regeneration unknown cancel",
+      "root_node_id": "node_avk1ejfgr0",
+      "error": null,
+      "warnings": [],
+      "saved_nodes": 1
+    },
+    {
+      "id": "job_91381g0ti3",
+      "kind": "analyze",
+      "status": "partial",
+      "phase": "done",
+      "project_id": "proj_5r1h0c82af",
+      "target_node_id": "node_46ru7gxy08",
+      "name": "设计验收：封面未完成，文字已保留",
+      "root_node_id": "node_46ru7gxy08",
+      "error": null,
+      "warnings": [
+        "封面图片未完成，已保留分析文字"
+      ],
+      "saved_nodes": 1
+    },
+    {
+      "id": "job_lb973pabqw",
+      "kind": "analyze",
+      "status": "failed",
+      "phase": "done",
+      "project_id": "proj_plm20grptb",
+      "target_node_id": "node_kmaexq6i20",
+      "name": "设计验收：模型拒绝，生成失败",
+      "root_node_id": null,
+      "error": {
+        "code": "provider_http_400",
+        "message": "模型服务拒绝请求，请检查配置、额度或模型参数"
+      },
+      "warnings": [],
+      "saved_nodes": 0
+    },
+    {
+      "id": "job_74cmfgaamp",
+      "kind": "analyze",
+      "status": "succeeded",
+      "phase": "done",
+      "project_id": "proj_kf6nzlbd9e",
+      "target_node_id": "node_3nz2uyr1tv",
+      "name": "设计验收：已完成的文字页面",
+      "root_node_id": "node_3nz2uyr1tv",
+      "error": null,
+      "warnings": [],
+      "saved_nodes": 1
+    }
+  ],
+  "application_provider_invocation_log_counts": {
+    "analysis": 6,
+    "plan": 2,
+    "image": 2,
+    "localize": 0,
+    "image_cache_hit": 0
+  },
+  "fake_provider_memory_counts_observed_via_stdin": {
+    "analysis": 6,
+    "plan": 2,
+    "image": 2
+  },
+  "provider_call_note": "All 10 requests prepared the initial fixtures. Root reported UI inspection was read-only for server jobs; export comes from local example copy/edit/branch workflow. No generation request was added during UI review. Counts cross-checked against the live demo stdin calls output.",
+  "local_export": {
+    "filename": "一滴水的旅程 · 我的副本.zip",
+    "bytes": 72871,
+    "sha256": "d89703fbc707be50bf24e7a18c735ee56c8b9e62cb7040ae1825d70da7beb15a",
+    "entries": [
+      "index.html",
+      "player.js",
+      "player.css",
+      "project.json",
+      "README.txt",
+      "images/image-1.svg"
+    ],
+    "project_name": "一滴水的旅程 · 我的副本",
+    "nodes": 5,
+    "original_root_branches_preserved": [
+      "蒸发",
+      "凝结",
+      "降水"
+    ],
+    "added_branch": {
+      "parent_title": "蒸发",
+      "section_title": "不只有海洋",
+      "target_node_id": "ab80bbcd-00d1-4906-9193-bf98ca9aed7c",
+      "hotspot_and_scene_target_match": true,
+      "parent_child_array_match": true,
+      "new_explanation": "湖泊、土壤和植物也参与水循环。这里是本轮界面验收添加的示例说明。"
+    },
+    "all_graph_references_resolve": true,
+    "all_uncompressed_entries_current_demo_key_clean": true
+  },
+  "credential_audit": {
+    "tables_scanned": 20,
+    "cells_scanned": 1347,
+    "checkpoint_cells_inspected": 54,
+    "base64_decoded_candidates_inspected": 214,
+    "raw_postgres_relation_files_scanned": 418,
+    "raw_postgres_relation_bytes_scanned": 9494528,
+    "worker_log_and_asset_files_clean": true,
+    "logical_sql_rows_clean": true,
+    "pg_dump_sql_clean": true,
+    "serialized_negative_control_detected": true
+  },
+  "validation_boundary": "Actual ZIP file contents and links verified; no file:// browser execution or paid model evaluation. No 36-scenario suite was rerun for this UI-only round.",
+  "final_browser_review": {
+    "source": "Root agent CUA visible UI and DOM geometry, reported after final bounded mobile fixes; screenshots independently inventoried here.",
+    "mobile_viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "selected_group": "内容区块 2：不只有海洋",
+    "current_page_bar_y": {
+      "top": 64,
+      "bottom": 132
+    },
+    "save_button": {
+      "top": 132,
+      "bottom": 174,
+      "opacity": 1,
+      "background": "rgb(226, 233, 228)"
+    },
+    "mobile_scroll_width": 390,
+    "horizontal_overflow": false,
+    "partial_warning": {
+      "canvas_prompt_visible": true,
+      "view_generation_warning_button_clicked": true,
+      "warning_and_next_edit_instruction_visible": true,
+      "duplicate_warning": false
+    },
+    "desktop_console_errors": [],
+    "desktop_console_warnings": [],
+    "final_screenshots": [
+      {
+        "path": ".impeccable/screenshots/round4-final-mobile-selected.jpg",
+        "width": 390,
+        "height": 844,
+        "bytes": 29367,
+        "sha256": "7e57fa08a7ed29c5ceb6c8793e448220ac7c1c7223291e292d41be52fb814752"
+      },
+      {
+        "path": ".impeccable/screenshots/round4-final-desktop-branches.jpg",
+        "width": 1280,
+        "height": 720,
+        "bytes": 60263,
+        "sha256": "0d0ac9ca6a34cd12883553b5624e4e1fa23664edf1555eb789abac6831937f3d"
+      },
+      {
+        "path": ".impeccable/screenshots/round4-final-mobile-warning.jpg",
+        "width": 390,
+        "height": 844,
+        "bytes": 26583,
+        "sha256": "88ec451cd2d43a3cc13e260472bef429e9e2c0e114a88abe059a960d4037ebae"
+      },
+      {
+        "path": ".impeccable/screenshots/round4-final-mobile-warning-details.jpg",
+        "width": 390,
+        "height": 844,
+        "bytes": 25984,
+        "sha256": "e6ef61019b4eaa0f7c9a3f391c56e3b543b2dd4546fad6d35280822424242f71"
+      }
+    ],
+    "provider_counts_after_final_UI": {
+      "analysis": 6,
+      "plan": 2,
+      "image": 2,
+      "localize": 0,
+      "image_cache_hit": 0
+    },
+    "UI_added_paid_or_fake_generation_requests": 0
+  },
+  "cleanup": {
+    "requested": true,
+    "scope": "Only this round page-demo process, its random independent database and temporary runtime assets; formal Docker stack and exported ZIP/screenshots retained.",
+    "completed": true,
+    "session_stopped": true,
+    "independent_database_dropped": true,
+    "temporary_runtime_removed": true,
+    "formal_docker_stack_untouched": true,
+    "export_and_screenshots_retained": true
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "scenarios": [
+    {
+      "scenario": "analyze_analysis_unknown_and_asset_missing",
+      "passed": true,
+      "SIGKILL": true,
+      "remote_stage_calls": 1,
+      "additional_automatic_calls": 0,
+      "recovery_guard_kept_locked": true,
+      "retry_accept_forbidden": true,
+      "explicit_cancel_released_lock": true,
+      "original_page_preserved": false
+    },
+    {
+      "scenario": "analyze_localize_unknown_and_asset_missing",
+      "passed": true,
+      "SIGKILL": true,
+      "remote_stage_calls": 1,
+      "additional_automatic_calls": 0,
+      "recovery_guard_kept_locked": true,
+      "retry_accept_forbidden": true,
+      "explicit_cancel_released_lock": true,
+      "original_page_preserved": false
+    },
+    {
+      "scenario": "regenerate_localize_unknown_and_asset_missing",
+      "passed": true,
+      "SIGKILL": true,
+      "remote_stage_calls": 1,
+      "additional_automatic_calls": 0,
+      "recovery_guard_kept_locked": true,
+      "retry_accept_forbidden": true,
+      "explicit_cancel_released_lock": true,
+      "original_page_preserved": true
+    }
+  ],
+  "credential_audit": {
+    "tables_scanned": 20,
+    "cells_scanned": 640,
+    "checkpoint_cells_inspected": 29,
+    "base64_decoded_candidates_inspected": 98,
+    "raw_postgres_relation_files_scanned": 427,
+    "raw_postgres_relation_bytes_scanned": 9379840,
+    "worker_log_and_asset_files_clean": true,
+    "logical_sql_rows_clean": true,
+    "pg_dump_sql_clean": true,
+    "serialized_negative_control_detected": true
+  },
+  "all_provider_calls": [
+    {
+      "case": "analyze_analysis_unknown_and_asset_missing",
+      "stage": "analysis"
+    },
+    {
+      "case": "analyze_localize_unknown_and_asset_missing",
+      "stage": "analysis"
+    },
+    {
+      "case": "analyze_localize_unknown_and_asset_missing",
+      "stage": "image"
+    },
+    {
+      "case": "analyze_localize_unknown_and_asset_missing",
+      "stage": "localize"
+    },
+    {
+      "case": "regenerate_localize_unknown_and_asset_missing",
+      "stage": "analysis"
+    },
+    {
+      "case": "regenerate_localize_unknown_and_asset_missing",
+      "stage": "plan"
+    },
+    {
+      "case": "regenerate_localize_unknown_and_asset_missing",
+      "stage": "image"
+    },
+    {
+      "case": "regenerate_localize_unknown_and_asset_missing",
+      "stage": "localize"
+    }
+  ],
+  "real_paid_provider_calls": 0
+}

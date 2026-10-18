@@ -2,6 +2,9 @@
 .env
 .env.local
 .env.*.local
+.env.*
+!.env.example
+!*/.env.example
 */.env
 backend/.env
 frontend/.env
@@ -65,6 +68,7 @@ Thumbs.db
 # ── Claude / 其他工具缓存 ──
 .claude/
 claude-design/
+.impeccable/
 
 # ── Docker ──
 .docker/

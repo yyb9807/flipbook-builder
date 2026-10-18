@@ -1,0 +1,295 @@
+{
+  "date": "2026-10-18",
+  "api": "http://127.0.0.1:8000",
+  "frontend": "http://localhost:5173",
+  "database": "flipbook_acceptance_946dc4a2a6c6",
+  "provider": "local in-memory HTTP fake; same model across four projects",
+  "real_paid_provider_calls": 0,
+  "cases": [
+    {
+      "id": "job_bg63qza159",
+      "project_id": "proj_8kz42o7dqe",
+      "node_id": "node_5d5w834xop",
+      "status": "succeeded",
+      "result": {
+        "nodes": [
+          {
+            "id": "node_9dsjuckgtp",
+            "depth": 1,
+            "title": "分支甲",
+            "status": "generated",
+            "children": [],
+            "hotspots": [
+              {
+                "id": "hs_riksxfiyja",
+                "size": {
+                  "width": 0.25,
+                  "height": 0.3
+                },
+                "label": "可继续探索",
+                "score": null,
+                "position": {
+                  "x": 0.2,
+                  "y": 0.2
+                },
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "image_url": "/uploads/proj_8kz42o7dqe/node_9dsjuckgtp_592954d650df473fb4dafe805741af0f.png",
+            "parent_id": "node_5d5w834xop",
+            "hotspot_id": "hs_v4ygii7utl",
+            "description": "browser_recovery_demo / 分支甲",
+            "source_type": "image",
+            "scene_document": null
+          }
+        ],
+        "warnings": [],
+        "failed_hotspot_ids": []
+      },
+      "case": "refresh_reenter_credentials",
+      "saved_nodes": 2,
+      "attempts": [
+        {
+          "stage": "image",
+          "attempt_no": 0,
+          "state": "completed"
+        },
+        {
+          "stage": "localize",
+          "attempt_no": 0,
+          "state": "completed"
+        },
+        {
+          "stage": "plan",
+          "attempt_no": 0,
+          "state": "completed"
+        }
+      ]
+    },
+    {
+      "id": "job_xirhbx62ha",
+      "project_id": "proj_ov012lmif7",
+      "node_id": "node_u2id6irah8",
+      "status": "succeeded",
+      "result": {
+        "nodes": [
+          {
+            "id": "node_20dgl1tx4w",
+            "depth": 1,
+            "title": "分支甲",
+            "status": "generated",
+            "children": [],
+            "hotspots": [],
+            "image_url": null,
+            "parent_id": "node_u2id6irah8",
+            "hotspot_id": "hs_i2wxh6c52i",
+            "description": "browser_recovery_demo / 分支甲",
+            "source_type": "image",
+            "scene_document": null
+          }
+        ],
+        "warnings": [
+          "「分支甲」保留文字页面，插图尚未完成"
+        ],
+        "failed_hotspot_ids": []
+      },
+      "case": "accept_existing_text",
+      "saved_nodes": 2,
+      "attempts": [
+        {
+          "stage": "image",
+          "attempt_no": 0,
+          "state": "accepted"
+        },
+        {
+          "stage": "plan",
+          "attempt_no": 0,
+          "state": "completed"
+        }
+      ]
+    },
+    {
+      "id": "job_229x0i7lqm",
+      "project_id": "proj_dgkrcd6beq",
+      "node_id": "node_lswvjriro6",
+      "status": "succeeded",
+      "result": {
+        "nodes": [
+          {
+            "id": "node_qw6hxw8cuq",
+            "depth": 1,
+            "title": "分支甲",
+            "status": "generated",
+            "children": [],
+            "hotspots": [
+              {
+                "id": "hs_hdgmhngrh3",
+                "size": {
+                  "width": 0.25,
+                  "height": 0.3
+                },
+                "label": "可继续探索",
+                "score": null,
+                "position": {
+                  "x": 0.2,
+                  "y": 0.2
+                },
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "image_url": "/uploads/proj_dgkrcd6beq/node_qw6hxw8cuq_0bce1bbc689045d491ce1a0d118bd954.png",
+            "parent_id": "node_lswvjriro6",
+            "hotspot_id": "hs_8ev1gwkd35",
+            "description": "browser_recovery_demo / 分支甲",
+            "source_type": "image",
+            "scene_document": null
+          }
+        ],
+        "warnings": [],
+        "failed_hotspot_ids": []
+      },
+      "case": "explicit_retry_charge_confirmation",
+      "saved_nodes": 2,
+      "attempts": [
+        {
+          "stage": "image",
+          "attempt_no": 0,
+          "state": "retry_authorized"
+        },
+        {
+          "stage": "image",
+          "attempt_no": 1,
+          "state": "completed"
+        },
+        {
+          "stage": "localize",
+          "attempt_no": 0,
+          "state": "completed"
+        },
+        {
+          "stage": "plan",
+          "attempt_no": 0,
+          "state": "completed"
+        }
+      ]
+    },
+    {
+      "id": "job_49yi9jf90y",
+      "project_id": "proj_ruaox5auju",
+      "node_id": "node_405b08ay8j",
+      "status": "cancelled",
+      "result": {
+        "nodes": [],
+        "warnings": [],
+        "failed_hotspot_ids": []
+      },
+      "case": "cancel_unknown",
+      "saved_nodes": 1,
+      "attempts": [
+        {
+          "stage": "image",
+          "attempt_no": 0,
+          "state": "started"
+        },
+        {
+          "stage": "plan",
+          "attempt_no": 0,
+          "state": "completed"
+        }
+      ]
+    },
+    {
+      "id": "job_p7ba5o7szm",
+      "status": "succeeded",
+      "project_id": "proj_9psywsr78m",
+      "attempts": [
+        {
+          "stage": "image",
+          "attempt_no": 0,
+          "state": "retry_authorized"
+        },
+        {
+          "stage": "image",
+          "attempt_no": 1,
+          "state": "completed"
+        },
+        {
+          "stage": "localize",
+          "attempt_no": 0,
+          "state": "completed"
+        },
+        {
+          "stage": "plan",
+          "attempt_no": 0,
+          "state": "completed"
+        }
+      ],
+      "saved_nodes": 2,
+      "case": "unique_prompt_explicit_network_retry",
+      "independent_fake_provider_memory_counts": {
+        "image": 2,
+        "localize": 1
+      },
+      "counter_source": "Observed stdin calls command from unified fake-provider host session 59967, before image=1 and after UI confirmation image=2; no source/store mutation used to resolve the job."
+    }
+  ],
+  "application_provider_invocation_log_counts": {
+    "analysis": 4,
+    "plan": 4,
+    "image": 4,
+    "localize": 2,
+    "image_cache_hit": 1
+  },
+  "count_evidence_note": "Per-job durable intents/attempts plus application one-attempt provider logs, not an independent packet capture. Four plans were each completed once. The UI retry consumed explicit confirmation and completed attempt 1 from the identical-prompt image cache; it did not make another network image call. Independent process-fault acceptance uses unique case/model values to avoid cache overlap.",
+  "zip": {
+    "filename": "Acceptance _ browser_recovery_demo.zip",
+    "bytes": 69424,
+    "sha256": "51d5139ea487710e0444edc366206421bbbc40a1597b001ce9a6ff0712dd85e4",
+    "entries": [
+      "index.html",
+      "player.js",
+      "player.css",
+      "project.json",
+      "README.txt",
+      "images/image-1.png",
+      "images/image-2.png"
+    ],
+    "nodes": 2,
+    "all_uncompressed_entries_credential_clean": true
+  },
+  "credential_audit": {
+    "tables_scanned": 20,
+    "cells_scanned": 1217,
+    "checkpoint_cells_inspected": 41,
+    "base64_decoded_candidates_inspected": 115,
+    "raw_postgres_relation_files_scanned": 416,
+    "raw_postgres_relation_bytes_scanned": 9347072,
+    "worker_log_and_asset_files_clean": true,
+    "logical_sql_rows_clean": true,
+    "pg_dump_sql_clean": true,
+    "serialized_negative_control_detected": true
+  },
+  "browser_actions": "Root agent used CUA visible UI to open, refresh, re-enter credentials, save/edit, preview, export, accept, charge-confirmed retry, and cancel. This verification only reads resulting API/DB/files.",
+  "offline_browser_boundary": "ZIP entries verified; file:// browser double-click execution not re-tested.",
+  "credential_audit_after_fifth_case": {
+    "tables_scanned": 20,
+    "cells_scanned": 1598,
+    "checkpoint_cells_inspected": 54,
+    "base64_decoded_candidates_inspected": 158,
+    "raw_postgres_relation_files_scanned": 417,
+    "raw_postgres_relation_bytes_scanned": 9396224,
+    "worker_log_and_asset_files_clean": true,
+    "logical_sql_rows_clean": true,
+    "pg_dump_sql_clean": true,
+    "serialized_negative_control_detected": true
+  },
+  "existing_workflow_compatibility": {
+    "children_v1_source_sha256": "d6adadee7590dda392312ec94224f30232145ae5230e70aeb217220a1caf6fcd",
+    "round2_container_source_sha256": "d6adadee7590dda392312ec94224f30232145ae5230e70aeb217220a1caf6fcd",
+    "application_version": "children-v1",
+    "workflow_name": "children-v1",
+    "scope": "Same existing child workflow code and application version; not a guarantee of arbitrary cross-version migrations."
+  }
+}

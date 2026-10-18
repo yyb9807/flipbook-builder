@@ -9,8 +9,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from agents.base import BaseLLMAgent, get_imggen_config, get_llm_config
-from database import apply_schema, create_pool
-from routers import nodes, projects
+from database import create_pool
+from request_limits import RequestBodyLimitMiddleware
+from routers import jobs, nodes, projects
 
 load_dotenv()
 
@@ -19,17 +20,32 @@ load_dotenv()
 async def lifespan(app: FastAPI):
     dsn = os.environ["DATABASE_URL"]
     app.state.pool = await create_pool(dsn)
-    await apply_schema(app.state.pool)
-    yield
-    await app.state.pool.close()
+    from jobs.service import JobService
+
+    service = JobService(app.state.pool, dsn)
+    app.state.jobs = service
+    try:
+        # Acquire executor ownership before schema migration or DBOS recovery.
+        # The application schema is additive and must exist before workflows start.
+        await service.start()
+        yield
+    finally:
+        try:
+            await service.stop()
+        finally:
+            await app.state.pool.close()
+            app.state.jobs = None
 
 
 app = FastAPI(title="Flipbook Builder API", lifespan=lifespan)
+app.add_middleware(RequestBodyLimitMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[os.getenv("CORS_ORIGIN", "*")],
-    allow_credentials=True,
+    allow_origins=[origin.strip() for origin in os.getenv(
+        "CORS_ORIGIN", "http://localhost:5173,http://127.0.0.1:5173"
+    ).split(",") if origin.strip()],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -39,8 +55,18 @@ uploads_dir = Path(__file__).parent.parent / "data" / "uploads"
 uploads_dir.mkdir(parents=True, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 
+
+@app.middleware("http")
+async def security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    if request.url.path.startswith("/uploads/"):
+        response.headers["Content-Security-Policy"] = "default-src 'none'; sandbox"
+    return response
+
 app.include_router(projects.router, prefix="/api")
 app.include_router(nodes.router, prefix="/api")
+app.include_router(jobs.router, prefix="/api")
 
 
 @app.get("/api/health")
@@ -94,9 +120,7 @@ async def test_config(request: Request):
             if r.status_code == 200:
                 result["imggen"]["ok"] = True
             elif r.status_code == 404:
-                # 有些中转没 /models 端点，但 key 可能仍有效——视为软通过
-                result["imggen"]["ok"] = True
-                result["imggen"]["error"] = "endpoint /models 不存在（可能仍可用）"
+                result["imggen"]["error"] = "服务未提供 /models，无法验证此配置；没有执行图片生成"
             else:
                 result["imggen"]["error"] = f"HTTP {r.status_code}: {r.text[:200]}"
         except Exception as e:

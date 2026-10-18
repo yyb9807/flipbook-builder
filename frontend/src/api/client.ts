@@ -1,7 +1,8 @@
-import { useSettingsStore } from '../store/settingsStore'
+import { useSettingsStore, type ModelSettings } from '../store/settingsStore'
+import type { TestConfigResult } from '../types/api'
+import type { GenerationJob, PendingAnalysis, PendingChildren, PendingRegeneration } from '../types/jobs'
 
-function getLLMHeaders(): Record<string, string> {
-  const s = useSettingsStore.getState()
+function getModelHeaders(s: ModelSettings = useSettingsStore.getState()): Record<string, string> {
   return {
     'x-llm-base-url': s.llmBaseUrl,
     'x-llm-api-key': s.llmApiKey,
@@ -12,8 +13,6 @@ function getLLMHeaders(): Record<string, string> {
   }
 }
 
-export type SseEvent = Record<string, unknown>
-
 // SSE requests bypass Vite proxy to avoid connection timeout issues with long-running requests.
 // 优先级：VITE_API_BASE 环境变量 → 开发环境用 localhost:8000 → 生产环境用同源（部署时由反向代理转发）
 const SSE_BACKEND: string = (() => {
@@ -23,57 +22,103 @@ const SSE_BACKEND: string = (() => {
   return '' // 生产环境使用相对路径，由反向代理把 /api 转到后端
 })()
 
-/** 构建请求 headers：注入 LLM 配置 + 自动判断 Content-Type（FormData 时浏览器会自己加 boundary）。 */
-function buildHeaders(options: RequestInit): Record<string, string> {
-  const headers: Record<string, string> = {
-    ...getLLMHeaders(),
-    ...(options.headers as Record<string, string> | undefined),
-  }
+/** Only model operations receive credentials; CRUD and exports never need them. */
+function buildHeaders(options: RequestInit, modelSettings?: ModelSettings): Headers {
+  const headers = new Headers(modelSettings ? getModelHeaders(modelSettings) : undefined)
+  new Headers(options.headers).forEach((value, key) => headers.set(key, value))
   if (!(options.body instanceof FormData)) {
-    headers['Content-Type'] = 'application/json'
+    headers.set('Content-Type', 'application/json')
   }
   return headers
 }
 
-async function fetchOrThrow(url: string, options: RequestInit): Promise<Response> {
-  const res = await fetch(url, { ...options, headers: buildHeaders(options) })
+async function fetchOrThrow(url: string, options: RequestInit, modelSettings?: ModelSettings): Promise<Response> {
+  const res = await fetch(url, { ...options, headers: buildHeaders(options, modelSettings) })
   if (!res.ok) {
     const text = await res.text()
-    throw new Error(text || `HTTP ${res.status}`)
+    let message = text || `HTTP ${res.status}`
+    try { const body = JSON.parse(text); if (typeof body.detail === 'string') message = body.detail } catch { /* Non-JSON provider/proxy responses remain readable. */ }
+    const error = new Error(message) as Error & { status: number }
+    error.status = res.status
+    throw error
   }
   return res
 }
 
-async function* sseStream(url: string, options: RequestInit): AsyncGenerator<SseEvent> {
-  const res = await fetchOrThrow(`${SSE_BACKEND}/api${url}`, options)
-  const reader = res.body!.getReader()
-  const decoder = new TextDecoder()
-  let buffer = ''
-
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
-    buffer += decoder.decode(value, { stream: true })
-    const lines = buffer.split('\n')
-    buffer = lines.pop() ?? ''
-    for (const line of lines) {
-      if (line.startsWith('data: ')) {
-        try {
-          yield JSON.parse(line.slice(6)) as SseEvent
-        } catch {
-          // skip malformed
-        }
-      }
-    }
-  }
-}
-
-async function apiFetch<T>(url: string, options: RequestInit = {}): Promise<T> {
-  const res = await fetchOrThrow(`/api${url}`, options)
+async function apiFetch<T>(url: string, options: RequestInit = {}, modelSettings?: ModelSettings): Promise<T> {
+  const res = await fetchOrThrow(`/api${url}`, options, modelSettings)
   return res.json()
 }
 
+/** Standard SSE framing, including split UTF-8 chunks, CRLF and multi-line data. */
+export async function* readJobEvents(response: Response): AsyncGenerator<GenerationJob> {
+  if (!response.body) throw new Error('任务事件流不可用')
+  const reader = response.body.getReader()
+  const decoder = new TextDecoder()
+  let buffer = ''
+  let data: string[] = []
+  let eventId = ''
+  function payload(): GenerationJob | null {
+    if (!data.length) return null
+    const parsed = JSON.parse(data.join('\n')) as GenerationJob
+    if (eventId && /^\d+$/.test(eventId)) parsed.last_event_id = Number(eventId)
+    data = []
+    eventId = ''
+    return parsed
+  }
+  try {
+    while (true) {
+      const { done, value } = await reader.read()
+      buffer += done ? decoder.decode() : decoder.decode(value, { stream: true })
+      const lines = buffer.split('\n')
+      buffer = lines.pop() ?? ''
+      if (done && buffer) { lines.push(buffer); buffer = '' }
+      for (const raw of lines) {
+        const line = raw.replace(/\r$/, '')
+        if (!line) { const job = payload(); if (job) yield job }
+        else if (line.startsWith('data:')) data.push(line.slice(5).replace(/^ /, ''))
+        else if (line.startsWith('id:')) eventId = line.slice(3).trim()
+      }
+      if (done) { const job = payload(); if (job) yield job; break }
+    }
+  } finally { await reader.cancel().catch(() => {}); reader.releaseLock() }
+}
+
 export const api = {
+  createGenerationJob: (pending: PendingChildren, settings: ModelSettings) =>
+    apiFetch<GenerationJob>(`/projects/${pending.project_id}/nodes/${pending.node_id}/generation-jobs`, {
+      method: 'POST', body: JSON.stringify({ operation_id: pending.operation_id, selected_keywords: pending.selected_keywords, ...(pending.generate_images !== undefined ? { generate_images: pending.generate_images } : {}) }),
+    }, settings),
+  createAnalysisJob: (pending: PendingAnalysis, settings: ModelSettings, file?: File) => {
+    const form = new FormData()
+    form.append('operation_id', pending.operation_id)
+    form.append('generate_images', String(pending.generate_images))
+    if (pending.text) form.append('text', pending.text)
+    if (pending.keywords) form.append('keywords', pending.keywords)
+    if (file) form.append('file', file)
+    if (pending.file) form.append('file_sha256', pending.file.sha256)
+    return apiFetch<GenerationJob>(`/projects/${pending.project_id}/analysis-jobs`, { method: 'POST', body: form }, settings)
+  },
+  createRegenerationJob: (pending: PendingRegeneration, settings: ModelSettings) =>
+    apiFetch<GenerationJob>(`/projects/${pending.project_id}/nodes/${pending.node_id}/regeneration-jobs`, {
+      method: 'POST', body: JSON.stringify({ operation_id: pending.operation_id, generate_images: pending.generate_images }),
+    }, settings),
+  listGenerationJobs: (projectId: string, signal?: AbortSignal, activeOnly = true, operationId?: string) =>
+    apiFetch<{ jobs: GenerationJob[] }>(`/projects/${projectId}/jobs?active=${activeOnly}${operationId ? '&operation_id=' + encodeURIComponent(operationId) : ''}`, { signal }),
+  getGenerationJob: (jobId: string, signal?: AbortSignal) => apiFetch<GenerationJob>(`/jobs/${jobId}`, { signal }),
+  generationJobEvents: async function* (jobId: string, after: number, signal?: AbortSignal) {
+    const response = await fetchOrThrow(`${SSE_BACKEND}/api/jobs/${jobId}/events?after=${after}`, { signal, headers: { Accept: 'text/event-stream', 'Last-Event-ID': String(after) } })
+    yield* readJobEvents(response)
+  },
+  provideGenerationCredentials: (jobId: string, settings: ModelSettings) =>
+    apiFetch<GenerationJob>(`/jobs/${jobId}/credentials`, { method: 'POST' }, settings),
+  retryGenerationJob: (jobId: string, confirmationId: string) =>
+    apiFetch<GenerationJob>(`/jobs/${jobId}/retry`, { method: 'POST', body: JSON.stringify({ confirmation_id: confirmationId }) }),
+  acceptGenerationJob: (jobId: string, confirmationId: string) =>
+    apiFetch<GenerationJob>(`/jobs/${jobId}/accept`, { method: 'POST', body: JSON.stringify({ confirmation_id: confirmationId }) }),
+  cancelGenerationJob: (jobId: string) => apiFetch<GenerationJob>(`/jobs/${jobId}/cancel`, { method: 'POST' }),
+  createHotspot: (projectId: string, nodeId: string, hotspot: { label: string; pos_x: number; pos_y: number; width: number; height: number }) =>
+    apiFetch(`/projects/${projectId}/nodes/${nodeId}/hotspots`, { method: 'POST', body: JSON.stringify(hotspot) }),
   createProject: (name: string, settings?: object) =>
     apiFetch('/projects', {
       method: 'POST',
@@ -99,16 +144,11 @@ export const api = {
   deleteProject: (projectId: string) =>
     apiFetch(`/projects/${projectId}`, { method: 'DELETE' }),
 
-  analyzeUpload: (projectId: string, file?: File, text?: string, keywords?: string) => {
-    const form = new FormData()
-    if (file) form.append('file', file)
-    if (text) form.append('text', text)
-    if (keywords) form.append('keywords', keywords)
-    return apiFetch(`/projects/${projectId}/analyze`, {
-      method: 'POST',
-      body: form,
-    })
-  },
+  updateNode: (projectId: string, nodeId: string, updates: { title?: string; description?: string; scene_document?: unknown; content_metadata?: unknown }) =>
+    apiFetch(`/projects/${projectId}/nodes/${nodeId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(updates),
+    }),
 
   updateHotspots: (projectId: string, nodeId: string, hotspots: object[]) =>
     apiFetch(`/projects/${projectId}/nodes/${nodeId}/hotspots`, {
@@ -116,48 +156,8 @@ export const api = {
       body: JSON.stringify({ hotspots }),
     }),
 
-  generateChildren: (projectId: string, nodeId: string, selectedKeywords: string[] = []) =>
-    apiFetch(`/projects/${projectId}/nodes/${nodeId}/generate-children`, {
-      method: 'POST',
-      body: JSON.stringify({ selected_keywords: selectedKeywords }),
-    }),
-
-  generateChildrenStream: (
-    projectId: string,
-    nodeId: string,
-    selectedKeywords: string[] = [],
-    signal?: AbortSignal,
-  ) =>
-    sseStream(`/projects/${projectId}/nodes/${nodeId}/generate-children`, {
-      method: 'POST',
-      body: JSON.stringify({ selected_keywords: selectedKeywords }),
-      signal,
-    }),
-
-  analyzeUploadStream: (
-    projectId: string,
-    file?: File,
-    text?: string,
-    keywords?: string,
-    signal?: AbortSignal,
-  ) => {
-    const form = new FormData()
-    if (file) form.append('file', file)
-    if (text) form.append('text', text)
-    if (keywords) form.append('keywords', keywords)
-    return sseStream(`/projects/${projectId}/analyze`, { method: 'POST', body: form, signal })
-  },
-
-  regenerateNode: (projectId: string, nodeId: string) =>
-    apiFetch(`/projects/${projectId}/nodes/${nodeId}/regenerate`, {
-      method: 'POST',
-    }),
-
-  testConfig: () =>
-    apiFetch<{
-      llm: { ok: boolean; key_length: number; model: string; base_url: string; error: string | null; latency_ms: number | null; sample?: string }
-      imggen: { ok: boolean; key_length: number; model: string; base_url: string; error: string | null; latency_ms: number | null }
-    }>('/test-config', { method: 'POST' }),
+  testConfig: (draft: ModelSettings = useSettingsStore.getState()) =>
+    apiFetch<TestConfigResult>('/test-config', { method: 'POST' }, draft),
 
   /** 导出项目结构 + 节点 + 热点的完整 JSON（不含图片二进制） */
   exportProjectJson: async (projectId: string): Promise<unknown> => {
