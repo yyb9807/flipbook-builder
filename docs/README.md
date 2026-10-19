@@ -18,17 +18,17 @@ Flipbook Builder 是免账号、用户自备 API Key 的视觉知识工作台，
 
 ## 当前实施与验收
 
-第九轮用本地 Qwen3-VL 2B 量化模型完成原行为与候选各 18 次真实生成，并完成产品浏览器全流程。两侧各 6/6 案例未通过逐项 Agent 评审，人工仍未审；候选没有默认启用。2026-10-19 的结果、复测命令与边界见[验证说明](VERIFICATION.md)，不能把功能验收通过当作内容质量达标。
+第十轮完成模型无关的可选修订、独立冻结保留集及功能验收。默认 `legacy-v1`；`grounded-v2` / `focused-v3` 均需显式启用。六组受控回放执行与自动检查通过，Agent/人工仍未审、真实模型调用 0，不代表质量提升。
 
-- [第九轮计划](ROUND_9_PLAN.md) / [实施报告](ROUND_9_IMPLEMENTATION.md)：真实模型基线、失败证据与实验默认关闭的决定
-- [桌面质量报告](images/round9-desktop-quality.jpg) / [移动只读阅读](images/round9-mobile-reader.jpg)
-- [机器证据](evidence/)
+- [计划](ROUND_10_PLAN.md) / [实施报告](ROUND_10_IMPLEMENTATION.md)：冻结顺序、设计取舍与真实浏览器流程
+- [验证说明](VERIFICATION.md)：434 项后端、163 项及 27 个评估 subtests、299 项前端、进程恢复与停库独立阅读结果
+- [候选冻结记录](evidence/round10-candidate-freeze.json) / [验收汇总](evidence/round10-verification.json)
 
-独立只读固定发布和页面历史的原始验收保留在[第七轮报告](archive/ROUND_7_IMPLEMENTATION.md)与[第六轮报告](archive/ROUND_6_IMPLEMENTATION.md)。参考资料由作者填写，系统没有自动抓取、逐句引用或事实核验。
+参考资料由作者填写，系统没有自动抓取、逐句引用或事实核验。历史真实模型失败与早期产品验收从[历史索引](archive/README.md)查阅。
 
 ## 后续优先级
 
-1. 验证更合适的生成与定位能力，增加未参与提示词优化的保留样例，并进行人工校准；证明正文、热点与跨页质量后再决定是否启用候选。当前本地 2B 模型的失败不能推及其他模型。
+1. 用户选择兼容服务后，显式设置预算，在冻结保留集上开展真实生成和独立 Agent/人工评审；证明正文、热点与跨页质量后再决定是否启用实验。保留集不得用于继续调参或改写真值。
 2. 自动来源检索与逐句关联：先定义来源合约，再引入检索实现。
 3. 跨浏览器与真实辅助技术验收，以及发布大作品的容量/长期负载评估。
 
@@ -36,4 +36,4 @@ Flipbook Builder 是免账号、用户自备 API Key 的视觉知识工作台，
 
 ## 历史记录
 
-[历史索引](archive/README.md)保留最初的审查、研究与第一至八轮验收，评估工具的起点见[第八轮报告](archive/ROUND_8_IMPLEMENTATION.md)。它们记录当时的实现和测试数字，不能作为当前功能或可运行命令的说明。旧 SQLite PoC 与不适配知识页合约的 36 场景 CLI 已退役；当前进程验证入口是 `scripts/verify_knowledge_generation.py`、`scripts/verify_version_history.py` 和 `scripts/verify_publications.py`。
+[历史索引](archive/README.md)保留最初的审查、研究与第一至九轮验收，评估工具的起点见[第八轮报告](archive/ROUND_8_IMPLEMENTATION.md)。它们记录当时的实现和测试数字，不能作为当前功能或可运行命令的说明。旧 SQLite PoC 与不适配知识页合约的 36 场景 CLI 已退役；当前进程验证入口是 `scripts/verify_knowledge_generation.py`、`scripts/verify_version_history.py` 和 `scripts/verify_publications.py`。

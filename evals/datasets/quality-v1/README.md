@@ -50,12 +50,15 @@ cases fail Agent acceptance; the candidate also changed code validity from 48
 hours after issue to 48 hours after submission, a critical clock-anchor error.
 Actual branch paths differed, so `comparable=false`, review scores were not
 directly comparable, and no winner was selected. The candidate was blocked from
-default admission. New production tasks retain legacy v1 behavior unless the
-server explicitly sets `KNOWLEDGE_GENERATION_REVISION=grounded-v2`; saved tasks
-use their frozen revision. The current evaluation runner actively tests that
-experimental revision, so its output is not a measurement of the production
-default. See the [run manual](../../../docs/MODEL_QUALITY.md),
-[Round 9 report](../../../docs/ROUND_9_IMPLEMENTATION.md) and
+default admission. Those experiments explicitly tested `grounded-v2`, rather
+than the production default. Current evaluation runs default to `legacy-v1`;
+`grounded-v2` and `focused-v3` require explicit `--generation-revision` selection.
+The server keeps both experiments off unless explicitly enabled, and saved tasks
+use their frozen revision. Round 10 adds no concrete model integration; its six
+controlled replays are functional checks, with Agent and human quality unreviewed.
+The original material, anchors, boxes, selectors, recordings and suite digest
+remain unchanged. See the [run manual](../../../docs/MODEL_QUALITY.md),
+[Round 9 report](../../../docs/archive/ROUND_9_IMPLEMENTATION.md) and
 [machine evidence](../../../docs/evidence/round9-verification.json).
 
 The optional local runner is [`scripts/serve_quality_model.py`](../../../scripts/serve_quality_model.py)
@@ -63,7 +66,7 @@ with a separate [MLX runtime lock](../../runtime/mlx-vlm-0.7.8-python3.12-macos-
 not a backend dependency. It requires the pinned weight revision and verified
 manifest, binds only to loopback, caps each service process at 42 generation
 requests, disables compaction/caches/retries, and terminates the process when a
-request exceeds 120 seconds. The run manual records the identity and operational
+request exceeds 120 seconds. The [Round 9 report](../../../docs/archive/ROUND_9_IMPLEMENTATION.md) records its identity and operational
 contract; capability probes, failed attempts and explicit restarts remain part of
 the experiment record.
 

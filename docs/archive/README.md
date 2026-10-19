@@ -13,8 +13,11 @@
 | 第六轮：页面历史与分支保护恢复 | [计划](ROUND_6_PLAN.md) | [实施与浏览器验收](ROUND_6_IMPLEMENTATION.md)、[验证汇总](evidence/round6-verification.json)、[历史进程](evidence/round6-history-process.json) |
 | 第七轮：独立只读固定发布 | [计划](ROUND_7_PLAN.md) | [实施与浏览器验收](ROUND_7_IMPLEMENTATION.md)、[验证汇总](evidence/round7-verification.json)、[停库隔离](evidence/round7-isolation.json) |
 | 第八轮：固定样例与模型质量评估 | [计划](ROUND_8_PLAN.md) | [实施与报告浏览器验收](ROUND_8_IMPLEMENTATION.md)、[验证汇总](evidence/round8-verification.json) |
+| 第九轮：真实生成基线与默认关闭决定 | [计划](ROUND_9_PLAN.md) | [实施、实际失败及评审](ROUND_9_IMPLEMENTATION.md)、[原位机器证据](../evidence/round9-verification.json) |
 
 [历史机器证据](evidence/)保留第一至第八轮及清理基线的原始结果，不改写历史测量值。第五轮原始后端测试为 257/257；随后删除废弃 helper 及其 8 个测试，清理基线为后端 249/249、前端 232/232。第六轮完整基线为后端 268/268、前端 262/262、历史进程 10/10、生成进程 7/7、整栈 HTTP 19/19 与双环境播放器通过。第七轮完整基线为后端 290/290、前端 299/299、发布与历史进程各 10/10、生成进程 7/7、整栈 HTTP 19/19 与独立 reader 停库隔离通过。第八轮评估器首次完整验收 89/89，清理后 94/94；只有离线回放与受控供应商验收，真实模型质量仍未审。当前结果统一见[验证说明](../VERIFICATION.md)。
+
+第九轮报告已归档，但其机器 JSON、调用账本和源码补丁仍在 `docs/evidence/` 原位置，所有字节保持不变；截图也不移动。它们属于历史证据，不能按所在目录判断为当前运行结果。
 
 JSON 中的旧入口、相对路径、临时文件名、地址和截图路径是当时的测量上下文，不是当前仓库文件清单；归档时不改写它们。第五轮两张有代表性的最终截图见[浏览器记录](ROUND_5_BROWSER_ACCEPTANCE.md)，第六轮历史恢复、第七轮固定发布和第八轮评估报告截图见各轮实施记录。截图文件仍在 `docs/images/`。
 

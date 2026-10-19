@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "id": "lunar-geometry-en",
+  "version": "1.0.0",
+  "language": "en",
+  "title": "Lunar phases: illumination, reference geometry, and conditions",
+  "input": {
+    "kind": "text",
+    "text": "This original summary explains lunar phases using NASA's public science accounts. It is a mechanism brief, not an observation record or a forecast.\nLight and viewpoint: moonlight is reflected sunlight. Outside a lunar eclipse, the Sun illuminates roughly half of the Moon; ordinary phases change because an Earth observer sees a changing portion of that sunlit half as the Moon orbits. Ordinary phases are not produced by Earth's shadow.\nTwo different cycles: the Moon completes an orbit around Earth in about 27.3 days, but one new Moon to the next takes about 29.5 days. These are approximate durations of different cycles, not rival measurements of one identical interval.\nMoving Sun direction: while the Moon completes an orbit, Earth and Moon also move around the Sun. Restoring the new-Moon geometry therefore requires more motion than completing that orbit alone.\nPhases and eclipses: a lunar eclipse requires the Moon to enter Earth's shadow at full Moon. Full Moon alone does not guarantee an eclipse because the lunar orbit is tilted relative to Earth's orbital plane.\nNo date, observing location, measured brightness, weather, or ephemeris is supplied. Do not infer today's phase, an exact next-phase time, a local viewing direction, or an eclipse date. A deeper explanation may compare reference geometry and necessary versus sufficient conditions without adding an observation."
+  },
+  "source": {
+    "kind": "primary-source-summary",
+    "text": "This original summary explains lunar phases using NASA's public science accounts. It is a mechanism brief, not an observation record or a forecast.\nLight and viewpoint: moonlight is reflected sunlight. Outside a lunar eclipse, the Sun illuminates roughly half of the Moon; ordinary phases change because an Earth observer sees a changing portion of that sunlit half as the Moon orbits. Ordinary phases are not produced by Earth's shadow.\nTwo different cycles: the Moon completes an orbit around Earth in about 27.3 days, but one new Moon to the next takes about 29.5 days. These are approximate durations of different cycles, not rival measurements of one identical interval.\nMoving Sun direction: while the Moon completes an orbit, Earth and Moon also move around the Sun. Restoring the new-Moon geometry therefore requires more motion than completing that orbit alone.\nPhases and eclipses: a lunar eclipse requires the Moon to enter Earth's shadow at full Moon. Full Moon alone does not guarantee an eclipse because the lunar orbit is tilted relative to Earth's orbital plane.\nNo date, observing location, measured brightness, weather, or ephemeris is supplied. Do not infer today's phase, an exact next-phase time, a local viewing direction, or an eclipse date. A deeper explanation may compare reference geometry and necessary versus sufficient conditions without adding an observation.",
+    "license": "MIT",
+    "notes": "Original contributor-authored bilingual prose. Public references support the scientific relationships; no external page is needed at generation time. This source text is exactly the visible text input. No production prompt, live run, review output, or optimization plan was consulted.",
+    "references": [
+      {
+        "id": "nasa-phases",
+        "title": "NASA Science — Moon Phases",
+        "checked_on": "2026-10-19",
+        "url": "https://science.nasa.gov/moon/moon-phases/"
+      },
+      {
+        "id": "nasa-questions",
+        "title": "NASA Science — Top Moon Questions",
+        "checked_on": "2026-10-19",
+        "url": "https://science.nasa.gov/moon/top-moon-questions/"
+      },
+      {
+        "id": "nasa-eclipses",
+        "title": "NASA Science — Eclipses and the Moon",
+        "checked_on": "2026-10-19",
+        "url": "https://science.nasa.gov/moon/eclipses/"
+      }
+    ]
+  },
+  "branch_steps": [
+    {
+      "preferred_labels": [
+        "Two different cycles",
+        "Two cycles",
+        "Orbital and phase cycles"
+      ]
+    },
+    {
+      "preferred_labels": [
+        "Moving Sun direction",
+        "Changing Sun direction",
+        "Changing reference direction"
+      ]
+    }
+  ],
+  "fact_checks": [
+    {
+      "id": "reflected-light",
+      "claim": "Moonlight is reflected sunlight, and ordinary phase depends on the visible portion of the sunlit half.",
+      "evidence_excerpt": "moonlight is reflected sunlight. Outside a lunar eclipse, the Sun illuminates roughly half of the Moon; ordinary phases change because an Earth observer sees a changing portion of that sunlit half as the Moon orbits.",
+      "source_id": "nasa-phases",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    },
+    {
+      "id": "different-cycles",
+      "claim": "About 27.3 days is an orbital loop and about 29.5 days is new Moon to new Moon; the approximations and cycle identities must be preserved.",
+      "evidence_excerpt": "the Moon completes an orbit around Earth in about 27.3 days, but one new Moon to the next takes about 29.5 days.",
+      "source_id": "nasa-questions",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "moving-geometry",
+      "claim": "Earth-Moon motion around the Sun makes restoring new-Moon geometry require additional motion beyond the orbital loop.",
+      "evidence_excerpt": "while the Moon completes an orbit, Earth and Moon also move around the Sun. Restoring the new-Moon geometry therefore requires more motion than completing that orbit alone.",
+      "source_id": "nasa-questions",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "eclipse-condition",
+      "claim": "Ordinary phases are not Earth shadow; full Moon is necessary for a lunar eclipse but insufficient on its own.",
+      "evidence_excerpt": "a lunar eclipse requires the Moon to enter Earth's shadow at full Moon. Full Moon alone does not guarantee an eclipse because the lunar orbit is tilted relative to Earth's orbital plane.",
+      "source_id": "nasa-eclipses",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    }
+  ],
+  "forbidden_claims": [
+    {
+      "id": "phase-earth-shadow",
+      "claim": "Earth's shadow creates ordinary lunar phases.",
+      "reason": "This confuses viewing geometry with eclipse shadowing.",
+      "severity": "critical"
+    },
+    {
+      "id": "cycle-swap",
+      "claim": "New Moon to new Moon is 27.3 days and an orbit is 29.5 days, or each duration is exact and invariant.",
+      "reason": "The cycle identities and approximate qualifiers must survive.",
+      "severity": "critical"
+    },
+    {
+      "id": "every-full-eclipse",
+      "claim": "Every full Moon produces a lunar eclipse.",
+      "reason": "This drops orbital tilt and the need to enter the shadow.",
+      "severity": "critical"
+    },
+    {
+      "id": "invented-observation",
+      "claim": "The brief establishes today's phase or an exact local eclipse time and viewing direction.",
+      "reason": "No date, location, or ephemeris is supplied.",
+      "severity": "major"
+    }
+  ],
+  "unknown_limits": [
+    "Today's phase, exact next-phase time, eclipse date, local viewing direction, measured brightness, and weather."
+  ],
+  "dimension_notes": {
+    "body": "Assess whether the explanation expresses the supplied relationships correctly and provides useful substance. A matching word is not evidence that the claim is true. Root anchors are mandatory on the overview; conditional anchors apply only when that fact is discussed.",
+    "hotspots": "Judge the promise made by each actual entry label against what its destination explains. For images, separately judge target identity and overlap with visible support. Good geometry cannot rescue the wrong referent.",
+    "cross_page": "Follow the chosen root label into the child, then the chosen child label into the grandchild. Each page should add a useful distinction, condition, or implication while preserving quantities, event anchors, qualifications, and evidence limits. Paraphrase alone is not added depth; invented worked examples are not required.",
+    "instruction": "Use the case language. Separate supplied facts, clearly stated inference, invented test conventions, and missing information. Evaluation anchors and controlled replays are reviewer resources and must never be appended to generation input."
+  }
+}

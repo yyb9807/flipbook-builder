@@ -31,6 +31,8 @@ class RunConfig:
     timeout_seconds: float = 300
     max_prompt_bytes: int = 262144
     branch_selection: str = "strict-preferred-label"
+    generation_revision: str = "legacy-v1"
+    max_image_hotspots: int = 3
 
     def validate(self):
         if any(not isinstance(value, str) for value in (self.mode, self.base_url, self.model, self.api_key, self.branch_selection)):
@@ -48,6 +50,10 @@ class RunConfig:
             raise ValueError("invalid_run_configuration")
         if self.branch_selection not in {"strict-preferred-label", "first-hotspot"}:
             raise ValueError("invalid_branch_selection")
+        if not isinstance(self.generation_revision, str) or self.generation_revision not in {"legacy-v1", "grounded-v2", "focused-v3"}:
+            raise ValueError("invalid_generation_revision")
+        if type(self.max_image_hotspots) is not int or not 1 <= self.max_image_hotspots <= 12:
+            raise ValueError("invalid_max_image_hotspots")
         if self.mode == "live" and (self.api_key in self.model or self.api_key in self.base_url):
             raise ValueError("credential_in_provider_identity")
         if (type(self.max_calls) is not int or not 1 <= self.max_calls <= 1000
@@ -58,7 +64,8 @@ class RunConfig:
 
     def public(self):
         return {name: getattr(self, name) for name in (
-            "mode", "base_url", "model", "max_calls", "max_output_tokens", "timeout_seconds", "max_prompt_bytes", "branch_selection")}
+            "mode", "base_url", "model", "max_calls", "max_output_tokens", "timeout_seconds", "max_prompt_bytes", "branch_selection",
+            "generation_revision", "max_image_hotspots")}
 
 
 class CallGuard:

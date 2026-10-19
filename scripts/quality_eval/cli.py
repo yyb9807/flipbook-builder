@@ -45,7 +45,7 @@ def _configuration(args):
         if saved["mode"] == "live" and not args.live:
             raise ValueError("live_resume_requires_explicit_live_flag")
         values = {**saved}
-        for argument in ("base_url", "model", "max_calls", "max_output_tokens", "timeout_seconds", "branch_selection"):
+        for argument in ("base_url", "model", "max_calls", "max_output_tokens", "timeout_seconds", "branch_selection", "generation_revision", "max_image_hotspots"):
             if getattr(args, argument) is not None:
                 values[argument] = getattr(args, argument)
     else:
@@ -54,7 +54,7 @@ def _configuration(args):
             raise ValueError("live_requires_provider_model_and_explicit_call_token_time_budgets")
         values = RunConfig().public()
         values["mode"] = "live" if args.live else "replay"
-        for argument in ("base_url", "model", "max_calls", "max_output_tokens", "timeout_seconds", "branch_selection"):
+        for argument in ("base_url", "model", "max_calls", "max_output_tokens", "timeout_seconds", "branch_selection", "generation_revision", "max_image_hotspots"):
             if getattr(args, argument) is not None:
                 values[argument] = getattr(args, argument)
     if values["mode"] == "live":
@@ -81,6 +81,10 @@ def parser():
     run.add_argument("--timeout-seconds", type=float)
     run.add_argument("--branch-selection", choices=("strict-preferred-label", "first-hotspot"),
                      help="Strict fixture labels by default; first-hotspot explores actual output without label hints.")
+    run.add_argument("--generation-revision", choices=("legacy-v1", "grounded-v2", "focused-v3"),
+                     help="New runs default to legacy-v1; resume preserves the frozen revision unless explicitly overridden.")
+    run.add_argument("--max-image-hotspots", type=int,
+                     help="Retain at most 1–12 actual image hotspots; new runs default to 3 and resume preserves the frozen limit.")
     template = commands.add_parser("review-template", help="Export a blank, run-bound grading template.")
     template.add_argument("run_dir", type=Path)
     template.add_argument("--output", type=Path)

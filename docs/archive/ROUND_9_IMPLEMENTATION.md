@@ -1,5 +1,7 @@
 # 第九轮：真实模型基线、候选实验与发布决定
 
+> 历史记录（2026-10-19）。本文保留第九轮真实测量与当时的实现；当前配置、命令及结果见[质量评估手册](../MODEL_QUALITY.md)和[验证说明](../VERIFICATION.md)。机器证据、源码补丁与截图仍保留原位置。
+
 完成于 2026-10-19。实施前基线为 `71535c9`；先制定[计划](ROUND_9_PLAN.md)，再冻结评估方法、运行原生产行为、依据实际问题实现候选，最后执行同额度实测和完整产品验收。
 
 ## 结论
@@ -11,13 +13,13 @@
 - 默认新任务继续原 v1 行为。只有服务器显式设置 `KNOWLEDGE_GENERATION_REVISION=grounded-v2`，新任务才冻结实验修订及扩展上下文；原有任务按已保存输入执行。
 - 最终默认配置的后端 314 项、评估器 148 项、前端 299 项测试和生成恢复/历史/发布/整栈验收通过。真实浏览器完成三层生成、编辑、恢复、导出和固定发布。这些是功能证据，不是内容质量通过。
 
-[机器证据](evidence/round9-verification.json)保存完整身份、摘要、逐例判断、调用账本和验收结果。
+[机器证据](../evidence/round9-verification.json)保存完整身份、摘要、逐例判断、调用账本和验收结果。
 
 ## 真实运行与评审方法
 
 当前没有项目模型 Key 或既有本地模型服务，因此使用本机 Apple Silicon / 24 GiB 内存运行开源视觉模型 [`mlx-community/Qwen3-VL-2B-Instruct-4bit`](https://huggingface.co/mlx-community/Qwen3-VL-2B-Instruct-4bit)。这是一个 2B、4bit 的本地量化模型，不能据此判断其他模型或服务商。模型发布页标注 Apache-2.0；运行框架为 [MLX-VLM](https://github.com/Blaizzy/mlx-vlm)，没有增加应用后端依赖。
 
-权重 revision 固定为 `9c4f5209e57b31f4b9dfba735de3fb983739c9cc`，权重文件 SHA-256 为 `4750d95a2162829e127a94e83ac350d498d02070aab216c4687da48804a06ffb`。16 个文件共 1,798,023,774 字节，逐文件摘要见[权重清单](evidence/round9-model-manifest.json)。独立环境使用 Python 3.12.13、MLX-VLM 0.7.8、MLX/Metal 0.32.4；完整版本在[可选运行环境](../evals/runtime/mlx-vlm-0.7.8-python3.12-macos-arm64.txt)。权重和虚拟环境位于临时缓存，未进入 Git。
+权重 revision 固定为 `9c4f5209e57b31f4b9dfba735de3fb983739c9cc`，权重文件 SHA-256 为 `4750d95a2162829e127a94e83ac350d498d02070aab216c4687da48804a06ffb`。16 个文件共 1,798,023,774 字节，逐文件摘要见[权重清单](../evidence/round9-model-manifest.json)。独立环境使用 Python 3.12.13、MLX-VLM 0.7.8、MLX/Metal 0.32.4；完整版本在[可选运行环境](../../evals/runtime/mlx-vlm-0.7.8-python3.12-macos-arm64.txt)。权重和虚拟环境位于临时缓存，未进入 Git。
 
 固定 `quality-v1` 素材、事实、禁止结论、图片标注和回放内容没有改变。两次真实运行都沿模型实际输出的首个热点展开，不将评测标签或答案写入生成请求。实际路径不同，比较结果为 `comparable=false`、`review_scores_comparable=false`，没有总分差或优胜者。数据集摘要保持 `c58fc124…2e5dd`，冻结评估器摘要保持 `56587b7e…a1c7f4`。
 
@@ -32,7 +34,7 @@
 | 正文与跨页 | 孙页反复解释父页；水循环把沸腾夸大为“所有分子均达到逃逸能级” | 强调成立条件、具体机制和新增解释；候选仍复述，图片英文孙页直接复制父节，并出现新的科学/几何错误 |
 | 图片热点 | 粗框未覆盖真实对象，三角形入口位于蓝方形附近 | 移除示例数值坐标，要求独立测量完整轮廓四边；原始预测框仍未达到固定图片定位门槛，未向真值修正 |
 
-原始规范化输出及逐项证据均保留：[基线输出](evidence/round9-baseline-run.json)、[基线评审](evidence/round9-baseline-review.json)、[候选输出](evidence/round9-candidate-run.json)、[候选评审](evidence/round9-candidate-review.json)。它们仅含固定公开测试素材，不包含真实用户作品或 Key。
+原始规范化输出及逐项证据均保留：[基线输出](../evidence/round9-baseline-run.json)、[基线评审](../evidence/round9-baseline-review.json)、[候选输出](../evidence/round9-candidate-run.json)、[候选评审](../evidence/round9-candidate-review.json)。它们仅含固定公开测试素材，不包含真实用户作品或 Key。
 
 四维顺序为正文 / 热点 / 跨页 / 指令，每维 0–4；以下是**各侧独立判断**，实际路径不同，不能作为配对分数差或统计排名：
 
@@ -51,9 +53,9 @@
 
 显式实验任务在项目锁内一次冻结上下文，恢复时不重读后来的页面。配图失败而正文成功的 `partial` 根任务仍保留原始素材。新旧任务都保留既有 DBOS 工作流名称、步骤、调用一次保护和正文解析合约；没有修订标记的任务保持原请求字节。默认关闭时不查询扩展来源、不添加修订或扩展上下文字段。非法实验配置返回明确 503，已有操作的幂等回执不受配置切换影响。
 
-当前评估 runner 固定测试 `grounded-v2` 实验；它与默认生产 admission 的选择有区别，详见[运行手册](MODEL_QUALITY.md)。最终默认代码没有通过上述候选获得内容质量认可，也不能把默认浏览器流程成功称为模型达标。
+当前评估 runner 固定测试 `grounded-v2` 实验；它与默认生产 admission 的选择有区别，详见[运行手册](../MODEL_QUALITY.md)。最终默认代码没有通过上述候选获得内容质量认可，也不能把默认浏览器流程成功称为模型达标。
 
-实际候选 producer 为 `5e5496df…d6bc6`，最终包含默认关闭开关的 producer 为 `238dd8f5…360f`；差异仅为 `page_context.py` 与 `store.py`。未改写历史运行摘要。为保留实际源码，提供从最终代码重建[原生产基线](evidence/round9-baseline-source.patch)和[实际候选](evidence/round9-experiment-source.patch)的两个独立补丁，均在临时副本正反应用、逐文件和完整 producer 校验通过。它们是研究证据，只应在独立副本中单独应用，不能混用两份补丁或应用到正在编辑的项目。
+实际候选 producer 为 `5e5496df…d6bc6`，最终包含默认关闭开关的 producer 为 `238dd8f5…360f`；差异仅为 `page_context.py` 与 `store.py`。未改写历史运行摘要。为保留实际源码，提供从最终代码重建[原生产基线](../evidence/round9-baseline-source.patch)和[实际候选](../evidence/round9-experiment-source.patch)的两个独立补丁，均在临时副本正反应用、逐文件和完整 producer 校验通过。它们是研究证据，只应在独立副本中单独应用，不能混用两份补丁或应用到正在编辑的项目。
 
 ## 调用、用量与异常账本
 
@@ -67,7 +69,7 @@
 | 浏览器默认产品验收 | 4 | 1,658 | 1,553 |
 | 合计 | 42 | 27,179 | 16,760 |
 
-两侧实验分别预留 66,400 输出 token；预留量不是实际用量。生成器 API 费用为 0，硬件/能源成本未计量；Codex 内容评审不属于这份本地生成器 token 账本。逐条 admission/finished、请求与响应摘要、实际用量与时间见[服务事件](evidence/round9-model-events.jsonl)，本轮同一事件文件跨重启累计恰好 42 次接收，无未知或中断的模型请求。
+两侧实验分别预留 66,400 输出 token；预留量不是实际用量。生成器 API 费用为 0，硬件/能源成本未计量；Codex 内容评审不属于这份本地生成器 token 账本。逐条 admission/finished、请求与响应摘要、实际用量与时间见[服务事件](../evidence/round9-model-events.jsonl)，本轮同一事件文件跨重启累计恰好 42 次接收，无未知或中断的模型请求。
 
 首次候选目录在连接已退出的服务时失败，评估器保守保留一个 `outcome_unknown` 意图及 4,000 预留 token，没有改检查点或恢复重发。服务账本此前只有 20 次完整接收/完成，端口拒绝连接，确认该意图没有到达模型；主代理重启同参数、同额度文件，显式新建完整候选运行。客户端候选意图因此为 19 次、预留合计 70,400；实际候选推理仍为 18 次。第一次服务退出原因未查明，没有把它写成模型超时。
 
@@ -90,9 +92,9 @@
 
 桌面与请求 390px 视口检查了实际作品及质量报告，没有文档横向溢出。报告页面的原生滚动条使内容宽度为 375px，证据记录请求尺寸与实际内容尺寸，没有把截图像素冒充另一项测试。没有手动校正模型热点，也没有把作者核对勾为已审。
 
-- [桌面质量报告](images/round9-desktop-quality.jpg) / [移动质量报告](images/round9-mobile-quality.jpg)
-- [带分支的版本恢复](images/round9-desktop-history.jpg) / [移动只读阅读](images/round9-mobile-reader.jpg)
-- [真实图片定位问题](images/round9-desktop-image.jpg)
+- [桌面质量报告](../images/round9-desktop-quality.jpg) / [移动质量报告](../images/round9-mobile-quality.jpg)
+- [带分支的版本恢复](../images/round9-desktop-history.jpg) / [移动只读阅读](../images/round9-mobile-reader.jpg)
+- [真实图片定位问题](../images/round9-desktop-image.jpg)
 
 凭据扫描使用合成 Key，覆盖逻辑行、序列化检查点、原始关系文件、日志和资产；未执行独立 `pg_dump`。跨浏览器、真实辅助技术、自然图片泛化、长期负载和任意跨版本任务迁移仍未完整验证。GitHub Actions 保持移除状态。
 

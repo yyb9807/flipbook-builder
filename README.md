@@ -71,9 +71,9 @@ Key 默认只在页面内存保存；选择「在此浏览器记住密钥」后�
 
 使用 Node.js 24、Python 3.13、Postgres 16。[前端说明](frontend/README.md)介绍共享渲染器、浏览器状态与构建；[后端说明](backend/README.md)提供本地启动、配置和 API 合约；[当前架构](docs/ARCHITECTURE.md)描述模块与任务数据流。
 
-所有检查命令、最近本地结果和未覆盖范围统一见[验证说明](docs/VERIFICATION.md)。自动化回归使用受控供应商，真实质量实验使用独立本地模型，没有生成器付费 API 调用；仓库不配置 GitHub Actions CI/CD。
+所有检查命令、最近本地结果和未覆盖范围统一见[验证说明](docs/VERIFICATION.md)。最新功能验收使用受控供应商，真实模型调用为 0；仓库不配置 GitHub Actions CI/CD。
 
-[模型质量评估](docs/MODEL_QUALITY.md)提供中英文固定样例、三层正文与热点检查、区分 Agent/人工的逐项评审和运行对比。默认离线回放；真实供应商需显式配置与额度，未审结果不会显示为模型达标。[第九轮真实基线](docs/ROUND_9_IMPLEMENTATION.md)中，本地 2B 模型的原行为与候选均未达标，候选保持默认关闭，人工质量仍未审。
+[模型质量评估](docs/MODEL_QUALITY.md)提供中英文开发集、独立保留集和分开的 Agent/人工评审。默认离线回放与 `legacy-v1`，`grounded-v2` / `focused-v3` 显式可选，服务端实验默认关闭。受控回放不证明真实质量提升；最新未审状态与实现边界见[第十轮报告](docs/ROUND_10_IMPLEMENTATION.md)。
 
 备份数据库和 `data/`；`docker compose down -v` 会删除数据库卷。[历史计划与审查](docs/archive/README.md)用于追溯，不作为当前运行指南。
 

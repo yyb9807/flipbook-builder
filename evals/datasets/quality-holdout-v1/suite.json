@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "id": "quality-holdout-v1",
+  "version": "1.0.0",
+  "title": "Independently curated bilingual holdout for content, grounding, and continuity",
+  "created_on": "2026-10-19",
+  "license": "MIT",
+  "description": "Six previously unused cases: two original text families plus one original five-target visual scene, each in Chinese and English, with three stages per case. Controlled replays validate offline plumbing; they are not real model outputs or quality scores.",
+  "independent_visual_scenes": 1,
+  "stages": [
+    "root",
+    "child",
+    "grandchild"
+  ],
+  "case_files": [
+    "cases/map-desk-zh.json",
+    "cases/map-desk-en.json",
+    "cases/lunar-geometry-zh.json",
+    "cases/lunar-geometry-en.json",
+    "cases/occluded-layout-zh.json",
+    "cases/occluded-layout-en.json"
+  ],
+  "recordings_path": "replay.json",
+  "recording_origin": "contributor-authored-controlled-replay",
+  "limitations": [
+    "A six-case holdout with three content families is a small regression sample, not a statistical model ranking.",
+    "Chinese and English image cases share one scene; they are not two independent visual scenes.",
+    "Five unequal, irregularly placed targets and partial occlusion broaden geometry coverage but do not establish natural-photo performance.",
+    "Controlled replay is contributor-authored and must never be represented as live-model quality evidence.",
+    "Do not expose review anchors, geometry records, replays, or authoring code to generation. Freeze model and implementation candidates before inspecting holdout inputs."
+  ]
+}

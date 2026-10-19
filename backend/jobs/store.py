@@ -229,7 +229,7 @@ class JobStore:
                 context_inputs = self.context_inputs(conn, project, node)
                 for hotspot, child in zip(hotspots, frozen["children"], strict=True):
                     child["context"] = build_page_context(
-                        **context_inputs, selected_label=hotspot["label"],
+                        **context_inputs, generation_revision=revision, selected_label=hotspot["label"],
                         selected_body=section_context.get(hotspot["id"], "") or node["description"],
                         covered_topics=[s.get("title", "") for s in (parent_scene or {}).get("sections", [])
                                         if s.get("hotspot_id") != hotspot["id"]],
@@ -322,7 +322,7 @@ class JobStore:
                                "parent_title": parent["title"] if parent else "", "parent_description": parent["description"] if parent else "",
                                "subject": {"hotspot_id": f"node:{node_id}", "node_id": node_id, "label": label}})
                 if revision:
-                    frozen["generation_context"] = build_page_context(**self.context_inputs(conn, project, node),
+                    frozen["generation_context"] = build_page_context(**self.context_inputs(conn, project, node), generation_revision=revision,
                         selected_label=label, selected_body=node["description"], covered_topics=[])
                 conn.execute(text("UPDATE nodes SET status='generating' WHERE id=:nid"), {"nid": node_id})
             summary = {"source_type": frozen["source_type"], "input_sha256": payload["identity"].get("input_sha256", digest),

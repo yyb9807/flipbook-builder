@@ -56,7 +56,11 @@ DATABASE_URL=postgresql://flipbook:flipbook@localhost:5434/flipbook_test python 
 - 同一作品的新活动任务互斥。编辑、热点写入与删除在 project → node → job 一致锁顺序下检查活动任务，返回409时需先完成或取消任务。升级前已存在的不同节点并行任务继续恢复，不通过新增唯一索引或擅自取消来清理。独立 PoC 与旧 36 场景 CLI 已退役，仅保留历史记录；当前进程验证使用 `scripts/verify_knowledge_generation.py`。
 - 新前端离线导出复用共享 React 播放器。后端 `export.zip` 保留兼容，安全嵌入数据并降级展示结构化页面的文字和链接；JSON 导出保留原始结构化数据。JSON/ZIP 都不包含页面历史。
 
-`KNOWLEDGE_GENERATION_REVISION` 默认不设置，继续原生成提示词和上下文。只有显式设为 `grounded-v2`，新任务才冻结实验修订及有界原始素材/分支上下文；这项候选在[第九轮真实评估](../docs/ROUND_9_IMPLEMENTATION.md)未达标，不建议作为默认配置。其他非空值使新任务接收返回 503；已有操作的幂等回执先返回，已保存任务按冻结输入恢复。Compose 默认不传入该实验变量，试验需明确覆盖 backend 的 environment。MLX 本地评估环境不属于后端运行依赖。
+`KNOWLEDGE_GENERATION_REVISION` 未设置或留空时继续原行为（评估 CLI 中称为 `legacy-v1`）。仅显式设置 `grounded-v2` 或 `focused-v3` 才启用实验：新任务在接收时冻结修订、有界原始素材与分支上下文，恢复不读后来页面或环境。其他非空值（包括 `legacy-v1`）令新任务返回 503；原操作幂等回执优先返回。Compose 默认不传实验变量，显式试验需覆盖 backend environment，恢复默认应移除或留空。
+
+两项实验均默认关闭，不预置或按名称判断具体模型。`focused-v3` 图片协议为 `bbox_2d=[left,top,right,bottom]`、0–1000 相对坐标；转换后才进入现有 xywh 流程，拒绝混合字段、非法、倒置、越界和非有限框，不猜格式、不后验修框或补请求。旧修订保持原协议和请求字节。任务格式标记、DBOS 名称、旧步骤顺序与 markerless 兼容保持不变。
+
+评估 CLI 独立于服务环境，使用同一生产 Agent；修订、热点上限、源码/评估器摘要和恢复身份等参数见[质量评估手册](../docs/MODEL_QUALITY.md)。本轮受控结果不构成真实质量通过，当前数字与流程证据见[验证说明](../docs/VERIFICATION.md)。
 
 ## 页面历史接口与并发
 
@@ -125,4 +129,4 @@ Snapshot 的 `kind` 为 `children`、`analyze` 或 `regenerate`，旧记录默�
 
 旧 `/generate-children` 保留持久任务的 SSE 适配器，请使用稳定 `x-operation-id`。**旧 `/analyze` 与 `/regenerate` 地址均升级为202任务协议，分别不再返回原 SSE 和同步终态节点**；旧客户端需查询任务或迁移到新接口，仍支持 `x-operation-id`。旧 `children-v1` workflow 的名称与步骤序列保留，新入口使用独立 `root-analysis-v1` / `regenerate-v1` 名称；本轮没有宣称解决跨版本任意代码迁移。
 
-浏览器与真实进程验收见[第七轮报告](../docs/archive/ROUND_7_IMPLEMENTATION.md)和[当前验证说明](../docs/VERIFICATION.md)；[第六轮报告](../docs/archive/ROUND_6_IMPLEMENTATION.md)及更早记录保留为当时合约的历史证据。
+当前浏览器、进程恢复及整栈验收统一见[验证说明](../docs/VERIFICATION.md)；更早结果从[历史索引](../docs/archive/README.md)查阅。

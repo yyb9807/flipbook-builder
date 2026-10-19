@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="700" viewBox="0 0 1000 700">
+<rect width="1000" height="700" fill="#F4F0E7"/>
+<path fill="#8054B5" fill-rule="evenodd" d="M 270.5 175.5 A 105.5 105.5 0 1 0 59.5 175.5 A 105.5 105.5 0 1 0 270.5 175.5 Z M 218.5 175.5 A 53.5 53.5 0 1 1 111.5 175.5 A 53.5 53.5 0 1 1 218.5 175.5 Z"/>
+<rect x="770" y="65" width="111" height="266" rx="55" fill="#ECA23B"/>
+<polygon points="290,340 520,190 700,440 445,615" fill="#2B7DAA"/>
+<polygon points="892,480 910,522 957,526 921,557 932,605 892,580 850,605 862,557 826,526 874,522" fill="#4F9C77"/>
+<rect x="95" y="385" width="321" height="86" fill="#E86C58"/>
+</svg>

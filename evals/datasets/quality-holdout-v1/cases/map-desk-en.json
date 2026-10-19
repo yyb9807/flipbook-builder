@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "id": "map-desk-en",
+  "version": "1.0.0",
+  "language": "en",
+  "title": "Fictional map digitization: conditions and clocks",
+  "input": {
+    "kind": "text",
+    "text": "Aurora Map Digitization Desk is an invented service for this closed-world test. Use only the following rules; they are not real service policy.\nIntake and batch size: a batch contains at most 5 paper map sheets. Customer upload of a request is not the intake event. Intake occurs when an operator scans the batch ticket.\nInspection clock: the format inspection must finish within 16 minutes after that operator scan. This inspection window is not a promise that the output is ready in 16 minutes.\nRelease and retention: output may be released only after BOTH the map review and the output checksum check have passed. Passing just one check is insufficient. A failed checksum blocks release. The 36-hour output-retention window starts when the checksum check passes, even if map review is still pending; it does not start at the request, intake, or first download. Downloading does not restart this window.\nRetention clock: once that 36-hour window ends, the stored output is deleted. The brief defines no extension, recovery, retry process, fee, rush option, scanning resolution, opening hours, location, calendar date, or handling of a job whose map review remains pending at deletion. Preserve these gaps rather than promising an outcome. Explain a deeper branch through the conditions and clocks without inventing a customer's case."
+  },
+  "source": {
+    "kind": "synthetic-closed-world",
+    "text": "Aurora Map Digitization Desk is an invented service for this closed-world test. Use only the following rules; they are not real service policy.\nIntake and batch size: a batch contains at most 5 paper map sheets. Customer upload of a request is not the intake event. Intake occurs when an operator scans the batch ticket.\nInspection clock: the format inspection must finish within 16 minutes after that operator scan. This inspection window is not a promise that the output is ready in 16 minutes.\nRelease and retention: output may be released only after BOTH the map review and the output checksum check have passed. Passing just one check is insufficient. A failed checksum blocks release. The 36-hour output-retention window starts when the checksum check passes, even if map review is still pending; it does not start at the request, intake, or first download. Downloading does not restart this window.\nRetention clock: once that 36-hour window ends, the stored output is deleted. The brief defines no extension, recovery, retry process, fee, rush option, scanning resolution, opening hours, location, calendar date, or handling of a job whose map review remains pending at deletion. Preserve these gaps rather than promising an outcome. Explain a deeper branch through the conditions and clocks without inventing a customer's case.",
+    "license": "MIT",
+    "notes": "Original contributor-authored bilingual prose. Public references support the scientific relationships; no external page is needed at generation time. This source text is exactly the visible text input. No production prompt, live run, review output, or optimization plan was consulted.",
+    "references": [
+      {
+        "id": "authored-brief",
+        "title": "Original closed-world map-digitization service; not a real organization",
+        "checked_on": "2026-10-19"
+      }
+    ]
+  },
+  "branch_steps": [
+    {
+      "preferred_labels": [
+        "Release and retention",
+        "Release conditions and retention",
+        "Output release"
+      ]
+    },
+    {
+      "preferred_labels": [
+        "Retention clock",
+        "Retention window",
+        "Retention timing"
+      ]
+    }
+  ],
+  "fact_checks": [
+    {
+      "id": "batch-maximum",
+      "claim": "The maximum is 5 paper map sheets per batch; it is neither a minimum nor a daily limit.",
+      "evidence_excerpt": "a batch contains at most 5 paper map sheets",
+      "source_id": "authored-brief",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    },
+    {
+      "id": "inspection-start",
+      "claim": "The 16-minute inspection window starts at the operator scan and is not an output-ready promise.",
+      "evidence_excerpt": "the format inspection must finish within 16 minutes after that operator scan. This inspection window is not a promise that the output is ready in 16 minutes.",
+      "source_id": "authored-brief",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "release-conjunction",
+      "claim": "Release requires both map review and checksum check to pass; either alone is insufficient.",
+      "evidence_excerpt": "output may be released only after BOTH the map review and the output checksum check have passed. Passing just one check is insufficient.",
+      "source_id": "authored-brief",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    },
+    {
+      "id": "retention-start",
+      "claim": "The 36-hour window starts on checksum pass even while review is pending, and download does not reset it.",
+      "evidence_excerpt": "The 36-hour output-retention window starts when the checksum check passes, even if map review is still pending; it does not start at the request, intake, or first download. Downloading does not restart this window.",
+      "source_id": "authored-brief",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "end-state",
+      "claim": "Stored output is deleted at the end of the retention window rather than kept permanently.",
+      "evidence_excerpt": "once that 36-hour window ends, the stored output is deleted.",
+      "source_id": "authored-brief",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    }
+  ],
+  "forbidden_claims": [
+    {
+      "id": "inspection-as-delivery",
+      "claim": "Output release is guaranteed within 16 minutes.",
+      "reason": "This turns an inspection deadline into a delivery guarantee.",
+      "severity": "critical"
+    },
+    {
+      "id": "retention-shift",
+      "claim": "The 36 hours start only after both checks pass or after first download.",
+      "reason": "The retention clock is independently anchored to checksum pass.",
+      "severity": "critical"
+    },
+    {
+      "id": "one-check-release",
+      "claim": "Passing either check permits release, or a failed checksum still permits release.",
+      "reason": "This breaks the conjunction and failed-check gate.",
+      "severity": "critical"
+    },
+    {
+      "id": "invented-recovery",
+      "claim": "Deleted outputs are guaranteed recoverable, or pending review automatically extends retention.",
+      "reason": "Recovery, extensions, and the pending-review outcome are undefined.",
+      "severity": "major"
+    }
+  ],
+  "unknown_limits": [
+    "Extensions, recovery, retries, fees, rush processing, resolution, hours, location, dates, and the disposition of a job still awaiting review at deletion."
+  ],
+  "dimension_notes": {
+    "body": "Assess whether the explanation expresses the supplied relationships correctly and provides useful substance. A matching word is not evidence that the claim is true. Root anchors are mandatory on the overview; conditional anchors apply only when that fact is discussed.",
+    "hotspots": "Judge the promise made by each actual entry label against what its destination explains. For images, separately judge target identity and overlap with visible support. Good geometry cannot rescue the wrong referent.",
+    "cross_page": "Follow the chosen root label into the child, then the chosen child label into the grandchild. Each page should add a useful distinction, condition, or implication while preserving quantities, event anchors, qualifications, and evidence limits. Paraphrase alone is not added depth; invented worked examples are not required.",
+    "instruction": "Use the case language. Separate supplied facts, clearly stated inference, invented test conventions, and missing information. Evaluation anchors and controlled replays are reviewer resources and must never be appended to generation input."
+  }
+}

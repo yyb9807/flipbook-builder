@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "frozen_at": "2026-10-19T05:33:47.547047+00:00",
+  "scope": "Provider-neutral optional focused-v3; no concrete model integration or real inference.",
+  "generation_revision": "focused-v3",
+  "default_generation_revision": "legacy-v1",
+  "producer_sha256": "4ac1b7089ee046a0074c7ebecc60bb1b1e9fe8960d35671e38a4db341b777c6f",
+  "evaluator_sha256": "56587b7e688c4e8b7388564e2930101bdeea8364e1c478be0c633eebd6a1c7f4",
+  "source_hashes": {
+    "backend/agents/base.py": "718bdeb0271dd29b9bbc13e0ea9a27181e3245cd4a2c2470b9fec3ec57ab31ea",
+    "backend/agents/input_analysis.py": "e60578de04c39ca79cc27c09a86b3783ee71145960ef167fbc64f59e3d4ca934",
+    "backend/agents/page_generation.py": "9a444e621e07a0d4c50e2e25f4eb1e8fe92297b8c822b2d9241e4d3a12cffb70",
+    "backend/agents/knowledge.py": "2471e97aa3c9c7fdf73d015b27f03de4c1d74d3e5db444e77c119a64b0ebbb6b",
+    "backend/agents/composition.py": "2c40fdea662015beb43a9e2cb72e0bfdd89ba973b49b73b0437205fbf3f7a632",
+    "backend/agents/hotspot_localization.py": "82d3fe4c03670da7500637d8246df11d17010b74f41a92de28ad494d64174065",
+    "backend/agents/page_context.py": "2dd65c129c792151d679895163444136a4c44e3e73bc90f6185ce19e0b224179",
+    "backend/agents/image_boxes.py": "fc3da72a7beafbf805b3189af619e4eec3940cf4478df303808479ce4d9908e9",
+    "backend/jobs/providers.py": "9a404ecc982010afb56818a865e58974dd3f3248fd6cf2e7732c59237a708071",
+    "backend/jobs/page_workflows.py": "d054f5e5913c5eaca08b6d60bad0c36c39cae020a17b878f792b1eeabd4b6e06",
+    "backend/jobs/store.py": "2bfd9024d609da38f144c9aa14b80a72452128783e99cfe49c856e7add6f428c",
+    "backend/utils.py": "4ad7878ec0a4fa518a24bede6879caf4eb59c5efad2b9adb54738417133516ab"
+  },
+  "development_suite_sha256": "c58fc124ea4212795bcec5c6f5a9f954387654db121469400e7249321292e5dd",
+  "holdout_suite_sha256_declared_by_independent_curator": "a8ba1f95f5b8dc494d71c174c9475b49cbed36eb74c85687a47b82a8a493576e",
+  "holdout_curator_frozen_at": "2026-10-19T05:15:12+00:00",
+  "implementers_have_not_inspected_holdout_content": true,
+  "holdout_not_used_for_prompt_or_adapter_design": true,
+  "candidate_independent_code_audit": "No unresolved P1/P2; this is not model content approval.",
+  "real_model_calls": 0,
+  "post_freeze_prompt_tuning_permitted": false
+}

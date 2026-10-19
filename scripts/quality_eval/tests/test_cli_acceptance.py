@@ -14,7 +14,9 @@ from pathlib import Path
 import pytest
 
 from scripts.quality_eval.cli import main
+from scripts.quality_eval.dataset import load_suite, suite_digest
 from scripts.quality_eval.production import RunConfig
+from scripts.quality_eval.runner import FOCUSED_REPLAY_ADAPTER
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -26,6 +28,10 @@ ENTRY = ROOT / "scripts/evaluate_quality.py"
     (["run", "--resume"], "checkpoint.json", {"identity": {"config": None}}, "invalid_checkpoint_configuration"),
     (["run", "--resume"], "checkpoint.json", {"identity": {"config": {**RunConfig().public(), "model": None}}},
      "invalid_run_configuration"),
+    (["run", "--resume"], "checkpoint.json", {"identity": {"config": {**RunConfig().public(), "generation_revision": "grounded-v3"}}},
+     "invalid_generation_revision"),
+    (["run", "--resume"], "checkpoint.json", {"identity": {"config": {**RunConfig().public(), "max_image_hotspots": True}}},
+     "invalid_max_image_hotspots"),
 ])
 def test_cli_rejects_malformed_local_artifacts_without_traceback(tmp_path, capsys, arguments, filename, value, error):
     (tmp_path / filename).write_text(json.dumps(value))
@@ -80,13 +86,17 @@ def local_provider(*, unknown=False):
         thread.join(timeout=5)
 
 
-def invoke_live(directory, provider, *, calls=18, resume=False):
+def invoke_live(directory, provider, *, calls=18, resume=False, revision=None, max_image_hotspots=None):
     arguments = ["run", "--live", "--api-key-env", "QUALITY_ACCEPTANCE_KEY"]
     if resume:
         arguments += ["--resume", str(directory)]
     else:
         arguments += ["--output", str(directory), "--base-url", provider["url"], "--model", "synthetic-loopback-only",
                       "--max-calls", str(calls), "--max-output-tokens", "66400", "--timeout-seconds", "30"]
+    if revision is not None:
+        arguments += ["--generation-revision", revision]
+    if max_image_hotspots is not None:
+        arguments += ["--max-image-hotspots", str(max_image_hotspots)]
     process = subprocess.run([sys.executable, str(ENTRY), *arguments], cwd=ROOT,
                              env={**os.environ, "QUALITY_ACCEPTANCE_KEY": provider["key"]},
                              capture_output=True, text=True, timeout=45, check=False)
@@ -158,6 +168,11 @@ def test_complete_offline_cli_does_not_use_network_or_deployment_keys(tmp_path):
     for directory in (baseline, candidate):
         run = json.loads((directory / "run.json").read_text())
         assert run["mode"] == "replay"
+        assert run["policy"]["generation_revision"] == "legacy-v1"
+        assert run["policy"]["max_image_hotspots"] == 3
+        checkpoint = json.loads((directory / "checkpoint.json").read_text())
+        assert checkpoint["identity"]["config"]["generation_revision"] == "legacy-v1"
+        assert checkpoint["identity"]["config"]["max_image_hotspots"] == 3
         assert len(run["cases"]) == 6
         assert sum(len(case["project"]["nodes"]) for case in run["cases"]) == 18
         assert all(case["status"] == "completed" for case in run["cases"])
@@ -168,9 +183,36 @@ def test_complete_offline_cli_does_not_use_network_or_deployment_keys(tmp_path):
             assert canary not in path.read_text()
 
 
-def test_complete_cli_uses_real_http_adapter_with_synthetic_provider(tmp_path):
+def test_focused_cli_replay_declares_adapter_without_changing_fixed_suite(tmp_path):
+    recordings = ROOT / "evals/datasets/quality-v1/replay.json"
+    original = recordings.read_bytes()
+    digest = suite_digest(load_suite())
+    directory = tmp_path / "focused"
+    assert main(["run", "--generation-revision", "focused-v3", "--max-image-hotspots", "5", "--output", str(directory)]) == 0
+    run = json.loads((directory / "run.json").read_text())
+    assert run["policy"]["generation_revision"] == "focused-v3"
+    assert run["policy"]["recording_adapter"] == FOCUSED_REPLAY_ADAPTER
+    for case in run["cases"]:
+        root = case["project"]["nodes"][case["project"]["root_node_id"]]
+        for call in case["calls"]:
+            if root["source_type"] == "image" and call["stage"] == "root":
+                assert call["recording_adapter"] == FOCUSED_REPLAY_ADAPTER
+                assert len(call["original_recording_response_sha256"]) == 64
+                assert len(call["recording_response_sha256"]) == 64
+            else:
+                assert call["recording_adapter"] == "none"
+    assert main(["run", "--resume", str(directory)]) == 0
+    assert json.loads((directory / "run.json").read_text())["run_sha256"] == run["run_sha256"]
+    assert recordings.read_bytes() == original
+    assert suite_digest(load_suite()) == digest == run["suite_sha256"]
+
+
+@pytest.mark.parametrize("revision", [None, "grounded-v2"])
+def test_complete_cli_uses_real_http_adapter_with_synthetic_provider(tmp_path, revision):
     with local_provider() as provider:
-        process = invoke_live(tmp_path / "http", provider)
+        directory = tmp_path / "http"
+        maximum = 5 if revision else 3
+        process = invoke_live(directory, provider, revision=revision, max_image_hotspots=5 if revision else None)
         assert process.returncode == 0, process.stdout + process.stderr
         assert len(provider["calls"]) == 18
         assert all(call["authorized"] and call["path"] == "/v1/chat/completions" for call in provider["calls"])
@@ -179,7 +221,28 @@ def test_complete_cli_uses_real_http_adapter_with_synthetic_provider(tmp_path):
         child_prompt = str(provider["calls"][1]["body"]["messages"][-1]["content"])
         assert root["sections"][0]["body"] in child_prompt
         assert root["sections"][1]["body"] not in child_prompt
-        assessment = json.loads((tmp_path / "http/assessment.json").read_text())
+        run = json.loads((directory / "run.json").read_text())
+        effective_revision = revision or "legacy-v1"
+        assert run["policy"]["generation_revision"] == effective_revision
+        assert run["policy"]["max_image_hotspots"] == maximum
+        checkpoint = json.loads((directory / "checkpoint.json").read_text())
+        assert checkpoint["identity"]["config"]["generation_revision"] == effective_revision
+        assert checkpoint["identity"]["config"]["max_image_hotspots"] == maximum
+        assert all(case["project"]["settings"]["max_hotspots_per_page"] == maximum for case in run["cases"])
+        assert all(step["parent_context_kind"] == effective_revision for case in run["cases"] for step in case["branch_path"])
+        assert invoke_live(directory, provider, resume=True).returncode == 0
+        assert len(provider["calls"]) == 18
+        assert json.loads((directory / "run.json").read_text())["run_sha256"] == run["run_sha256"]
+        changed_revision = "legacy-v1" if revision else "grounded-v2"
+        changed = invoke_live(directory, provider, resume=True, revision=changed_revision)
+        assert changed.returncode == 2
+        assert "resume_configuration_or_sources_changed" in changed.stderr
+        assert len(provider["calls"]) == 18
+        changed_limit = invoke_live(directory, provider, resume=True, max_image_hotspots=3 if maximum == 5 else 5)
+        assert changed_limit.returncode == 2
+        assert "resume_configuration_or_sources_changed" in changed_limit.stderr
+        assert len(provider["calls"]) == 18
+        assessment = json.loads((directory / "assessment.json").read_text())
         assert assessment["human_quality"] == "not_reviewed"
         assert assessment["overall_quality_score"] is None
 

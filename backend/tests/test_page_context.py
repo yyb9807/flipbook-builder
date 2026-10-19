@@ -5,12 +5,18 @@ from unittest.mock import AsyncMock
 import pytest
 
 from agents.base import LLMConfig
-from agents.page_context import GENERATION_REVISION, build_page_context, configured_generation_revision
+from agents.page_context import (
+    FOCUSED_GENERATION_REVISION,
+    GENERATION_REVISION,
+    build_page_context,
+    configured_generation_revision,
+)
 from jobs import page_workflows, providers
 from jobs.providers import ProviderFailure
 from tests.knowledge_fixtures import knowledge_result
 from tests.test_durable_jobs import HEADERS, wait_job
-from tests.test_durable_pages import IMAGE_KEYS, NO_KEYS, analyze
+from tests.test_durable_pages import IMAGE_KEYS, NO_KEYS, analyze, regenerate
+from utils import gen_id
 
 
 def context(**overrides):
@@ -42,10 +48,11 @@ def test_image_overview_is_not_promoted_to_original_user_material():
     assert value["root_page"]["is_original_source"] is False
 
 
-async def test_partial_root_keeps_original_source_and_children_use_admission_snapshot(client, project, monkeypatch):
+@pytest.mark.parametrize("generation_revision", [GENERATION_REVISION, FOCUSED_GENERATION_REVISION])
+async def test_partial_root_keeps_original_source_and_children_use_admission_snapshot(client, project, monkeypatch, generation_revision):
     from main import app
 
-    monkeypatch.setenv("KNOWLEDGE_GENERATION_REVISION", GENERATION_REVISION)
+    monkeypatch.setenv("KNOWLEDGE_GENERATION_REVISION", generation_revision)
     original = "This fictional museum has no supplied opening hours or booking policy."
 
     async def root(stage, *args):
@@ -57,6 +64,8 @@ async def test_partial_root_keeps_original_source_and_children_use_admission_sna
     response = await analyze(client, project, headers=IMAGE_KEYS, data={"text": original, "generate_images": "true"})
     root_job = await wait_job(client, response.json()["job_id"])
     assert root_job["status"] == "partial", root_job
+    root_input = await app.state.jobs.store.input(response.json()["job_id"])
+    assert root_input["generation_revision"] == generation_revision
     node_id = root_job["node_id"]
     node = (await client.get(f"/api/projects/{project}")).json()["nodes"][node_id]
     hotspot = node["hotspots"][0]
@@ -70,10 +79,12 @@ async def test_partial_root_keeps_original_source_and_children_use_admission_sna
     frozen = await app.state.jobs.store.input(job_id)
     saved = frozen["children"][0]["context"]
     value = json.loads(saved)
-    assert frozen["generation_revision"] == GENERATION_REVISION
+    assert frozen["generation_revision"] == generation_revision
+    assert value["context_version"] == generation_revision
     assert value["source"]["text"] == original and value["source"]["kind"] == "user_text"
     assert value["selected_section"]["body"] == node["scene_document"]["sections"][0]["body"]
     # An external change cannot replace admission-time inputs when credentials arrive.
+    monkeypatch.setenv("KNOWLEDGE_GENERATION_REVISION", "unrecognized-after-admission")
     async with app.state.pool.acquire() as conn:
         await conn.execute("UPDATE nodes SET title='Changed later',description='Changed later' WHERE id=$1", node_id)
 
@@ -102,10 +113,13 @@ async def test_markerless_provider_uses_legacy_selected_body_without_revision(mo
     await providers.perform("plan", config, frozen, {"label": "Topic", "context": "Legacy body"}, None, None, "synthetic")
     assert call.call_args.kwargs["parent_description"] == "Legacy body"
     assert "generation_revision" not in call.call_args.kwargs
-    call.reset_mock()
-    frozen["generation_revision"] = GENERATION_REVISION
-    await providers.perform("plan", config, frozen, {"label": "Topic", "context": context()}, None, None, "synthetic")
-    assert call.call_args.kwargs["generation_revision"] == GENERATION_REVISION
+    for revision in (GENERATION_REVISION, FOCUSED_GENERATION_REVISION):
+        call.reset_mock()
+        frozen["generation_revision"] = revision
+        saved_context = context(generation_revision=revision)
+        await providers.perform("plan", config, frozen, {"label": "Topic", "context": saved_context}, None, None, "synthetic")
+        assert call.call_args.kwargs["generation_revision"] == revision
+        assert call.call_args.kwargs["parent_description"] == saved_context
 
 
 async def test_markerless_root_and_regeneration_keep_original_arguments(monkeypatch):
@@ -122,13 +136,64 @@ async def test_markerless_root_and_regeneration_keep_original_arguments(monkeypa
     await page_workflows.perform_page("plan", object(), frozen)
     assert generation.call_args.kwargs["parent_description"] == "Legacy page description"
     assert "generation_revision" not in generation.call_args.kwargs
-    frozen.update(generation_revision=GENERATION_REVISION, generation_context=context())
-    await page_workflows.perform_page("plan", object(), frozen)
+    for revision in (GENERATION_REVISION, FOCUSED_GENERATION_REVISION):
+        frozen.update(generation_revision=revision, generation_context=context(generation_revision=revision))
+        await page_workflows.perform_page("plan", object(), frozen)
+        assert generation.call_args.kwargs["parent_description"] == frozen["generation_context"]
+        assert generation.call_args.kwargs["generation_revision"] == revision
+        await page_workflows.perform_page("analyze", object(), frozen)
+        assert analysis.call_args.kwargs["generation_revision"] == revision
+
+
+@pytest.mark.parametrize("revision", [GENERATION_REVISION, FOCUSED_GENERATION_REVISION])
+async def test_image_analysis_uses_frozen_revision_without_current_host_setting(monkeypatch, revision):
+    from agents.input_analysis import InputAnalysisAgent
+
+    call = AsyncMock(return_value={"summary": "Visible image", "hotspots": []})
+    monkeypatch.setattr(InputAnalysisAgent, "analyze_image", call)
+    monkeypatch.setattr(page_workflows, "asset_bytes", lambda *_args: b"synthetic-image")
+    monkeypatch.setenv("KNOWLEDGE_GENERATION_REVISION", "unrecognized-after-admission")
+    await page_workflows.perform_page("analyze", object(), {
+        "settings": {"language": "en"}, "source_type": "image", "content_format": "image-v1",
+        "generation_revision": revision, "asset_url": "/synthetic.png", "asset_sha256": "unused",
+    })
+    call.assert_awaited_once()
+    assert call.call_args.kwargs["generation_revision"] == revision
+    assert call.call_args.args[1] == "en"
+
+
+@pytest.mark.parametrize("revision", [GENERATION_REVISION, FOCUSED_GENERATION_REVISION])
+async def test_regeneration_freezes_context_and_revision_before_credentials(client, project, monkeypatch, revision):
+    from agents.page_generation import PageGenerationAgent
+    from main import app
+
+    node_id = gen_id("node_")
+    async with app.state.pool.acquire() as conn:
+        await conn.execute("INSERT INTO nodes(id,project_id,title,description,status) VALUES($1,$2,'Saved title','Saved source boundary','draft')",
+                           node_id, project)
+        await conn.execute("UPDATE projects SET root_node_id=$1 WHERE id=$2", node_id, project)
+    monkeypatch.setenv("KNOWLEDGE_GENERATION_REVISION", revision)
+    created = await regenerate(client, project, node_id, headers=NO_KEYS)
+    assert created.status_code == 202, created.text
+    job_id = created.json()["job_id"]
+    await wait_job(client, job_id, lambda row: row["status"] == "waiting_credentials")
+    frozen = await app.state.jobs.store.input(job_id)
+    context_value = json.loads(frozen["generation_context"])
+    assert frozen["generation_revision"] == context_value["context_version"] == revision
+    assert context_value["selected_section"]["body"] == "Saved source boundary"
+    generation = AsyncMock(return_value=knowledge_result())
+    monkeypatch.setattr(PageGenerationAgent, "generate", generation)
+    monkeypatch.setenv("KNOWLEDGE_GENERATION_REVISION", "unrecognized-after-admission")
+    resumed = await client.post(f"/api/jobs/{job_id}/credentials", headers=HEADERS)
+    assert resumed.status_code == 200
+    assert (await wait_job(client, job_id))["status"] == "succeeded"
+    generation.assert_awaited_once()
+    assert generation.call_args.kwargs["generation_revision"] == revision
     assert generation.call_args.kwargs["parent_description"] == frozen["generation_context"]
-    assert generation.call_args.kwargs["generation_revision"] == GENERATION_REVISION
+    assert (await app.state.jobs.store.input(job_id))["generation_context"] == frozen["generation_context"]
 
 
-@pytest.mark.parametrize("value", [None, "", "  ", GENERATION_REVISION, "unrecognized"])
+@pytest.mark.parametrize("value", [None, "", "  ", GENERATION_REVISION, FOCUSED_GENERATION_REVISION, "unrecognized"])
 def test_experimental_generation_requires_explicit_supported_configuration(monkeypatch, value):
     if value is None:
         monkeypatch.delenv("KNOWLEDGE_GENERATION_REVISION", raising=False)
@@ -138,7 +203,7 @@ def test_experimental_generation_requires_explicit_supported_configuration(monke
         with pytest.raises(ValueError, match="KNOWLEDGE_GENERATION_REVISION"):
             configured_generation_revision()
     else:
-        assert configured_generation_revision() == (GENERATION_REVISION if value == GENERATION_REVISION else None)
+        assert configured_generation_revision() == (value if value in {GENERATION_REVISION, FOCUSED_GENERATION_REVISION} else None)
 
 
 async def test_invalid_experiment_configuration_rejects_new_admission_before_provider(client, project, monkeypatch):

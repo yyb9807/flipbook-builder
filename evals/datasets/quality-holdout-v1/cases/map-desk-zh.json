@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "id": "map-desk-zh",
+  "version": "1.0.0",
+  "language": "zh",
+  "title": "虚构地图数字化：条件与时钟",
+  "input": {
+    "kind": "text",
+    "text": "极光地图数字化台是为本封闭测试虚构的服务，只能使用下述规则，不可当成真实服务政策。\n接收与批次：每批最多包含 5 张纸质地图。客户上传申请不算接收；操作员扫描批次单时才算接收。\n检查时钟：格式检查必须在操作员扫描后的 16 分钟内完成。这段检查窗口不保证输出会在 16 分钟内准备就绪。\n交付与保留：地图内容审核和输出校验和检查必须两项都通过，输出才可以交付。只通过其中一项不够，校验和失败会阻止交付。输出的 36 小时保留窗口从校验和检查通过时开始，即使地图内容审核仍待完成；不从申请、接收或首次下载开始。下载不会重启保留窗口。\n保留时钟：36 小时窗口结束后，存储的输出将被删除。材料未规定延期、恢复、重试流程、费用、加急选项、扫描分辨率、开放时间、地点、日历日期，以及删除时内容审核仍待完成的作业如何处理。必须保留这些未知，不可承诺结果。深入分支可解释条件和时钟，不必编造客户个案。"
+  },
+  "source": {
+    "kind": "synthetic-closed-world",
+    "text": "极光地图数字化台是为本封闭测试虚构的服务，只能使用下述规则，不可当成真实服务政策。\n接收与批次：每批最多包含 5 张纸质地图。客户上传申请不算接收；操作员扫描批次单时才算接收。\n检查时钟：格式检查必须在操作员扫描后的 16 分钟内完成。这段检查窗口不保证输出会在 16 分钟内准备就绪。\n交付与保留：地图内容审核和输出校验和检查必须两项都通过，输出才可以交付。只通过其中一项不够，校验和失败会阻止交付。输出的 36 小时保留窗口从校验和检查通过时开始，即使地图内容审核仍待完成；不从申请、接收或首次下载开始。下载不会重启保留窗口。\n保留时钟：36 小时窗口结束后，存储的输出将被删除。材料未规定延期、恢复、重试流程、费用、加急选项、扫描分辨率、开放时间、地点、日历日期，以及删除时内容审核仍待完成的作业如何处理。必须保留这些未知，不可承诺结果。深入分支可解释条件和时钟，不必编造客户个案。",
+    "license": "MIT",
+    "notes": "Original contributor-authored bilingual prose. Public references support the scientific relationships; no external page is needed at generation time. This source text is exactly the visible text input. No production prompt, live run, review output, or optimization plan was consulted.",
+    "references": [
+      {
+        "id": "authored-brief",
+        "title": "Original closed-world map-digitization service; not a real organization",
+        "checked_on": "2026-10-19"
+      }
+    ]
+  },
+  "branch_steps": [
+    {
+      "preferred_labels": [
+        "交付与保留",
+        "交付条件与保留",
+        "输出交付"
+      ]
+    },
+    {
+      "preferred_labels": [
+        "保留时钟",
+        "保留窗口",
+        "保留计时"
+      ]
+    }
+  ],
+  "fact_checks": [
+    {
+      "id": "batch-maximum",
+      "claim": "每批上限为 5 张纸质地图，不是必须凑满 5 张或每日上限。",
+      "evidence_excerpt": "每批最多包含 5 张纸质地图",
+      "source_id": "authored-brief",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    },
+    {
+      "id": "inspection-start",
+      "claim": "16 分钟检查窗口从操作员扫描批次单开始，并不保证交付。",
+      "evidence_excerpt": "格式检查必须在操作员扫描后的 16 分钟内完成。这段检查窗口不保证输出会在 16 分钟内准备就绪。",
+      "source_id": "authored-brief",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "release-conjunction",
+      "claim": "交付要求内容审核和校验和检查两项都通过；一项通过不够。",
+      "evidence_excerpt": "地图内容审核和输出校验和检查必须两项都通过，输出才可以交付。只通过其中一项不够",
+      "source_id": "authored-brief",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    },
+    {
+      "id": "retention-start",
+      "claim": "36 小时从校验和通过起计，即使审核未完成；不因下载重启。",
+      "evidence_excerpt": "输出的 36 小时保留窗口从校验和检查通过时开始，即使地图内容审核仍待完成；不从申请、接收或首次下载开始。下载不会重启保留窗口。",
+      "source_id": "authored-brief",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "end-state",
+      "claim": "保留窗口结束后删除存储输出，不能把它说成永久保留。",
+      "evidence_excerpt": "36 小时窗口结束后，存储的输出将被删除。",
+      "source_id": "authored-brief",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    }
+  ],
+  "forbidden_claims": [
+    {
+      "id": "inspection-as-delivery",
+      "claim": "16 分钟内保证输出交付。",
+      "reason": "检查期限不等于交付承诺。",
+      "severity": "critical"
+    },
+    {
+      "id": "retention-shift",
+      "claim": "两项都通过或首次下载后才开始计 36 小时。",
+      "reason": "保留时钟独立锚定校验和检查通过。",
+      "severity": "critical"
+    },
+    {
+      "id": "one-check-release",
+      "claim": "任意一项检查通过就能交付，或校验和失败仍可交付。",
+      "reason": "这破坏双条件及失败门槛。",
+      "severity": "critical"
+    },
+    {
+      "id": "invented-recovery",
+      "claim": "删除后必可恢复，或待审核作业自动延期。",
+      "reason": "恢复、延期与待审核的处理没有定义。",
+      "severity": "major"
+    }
+  ],
+  "unknown_limits": [
+    "延期、恢复、重试、费用、加急、分辨率、开放时间、地点、具体日期，以及删除时仍待审核的作业如何处理。"
+  ],
+  "dimension_notes": {
+    "body": "判断解释是否准确表达材料中的关系且有实质内容。出现相同词语不等于语义正确。标为根页的事实必须在总览交代；条件事实仅在提及时逐页核对。",
+    "hotspots": "依据实际入口标签对读者作出的内容承诺评审目标页。图像热点另行检查目标身份和可见区域覆盖；矩形位置正确不能补救标签指错对象。",
+    "cross_page": "沿根页选中标签追踪子页，再沿子页标签追踪孙页。每层应增加有用的区分、条件或推论，并保持数量、计时事件、限定和证据边界。换一种说法不等于深入，不要求编造具体案例。",
+    "instruction": "保持案例语言，区分材料事实、明确标注的推论、虚构测试规则与缺失信息。评审锚点和受控回放只供评审使用，禁止追加到生成输入。"
+  }
+}

@@ -1,0 +1,573 @@
+{
+  "schema_version": 1,
+  "suite_id": "quality-holdout-v1",
+  "origin": "contributor-authored-controlled-replay",
+  "responses": {
+    "map-desk-en": {
+      "root": {
+        "title": "A fictional map-digitization process",
+        "description": "Keep intake, checks, release, and deletion on their stated event anchors.",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "Intake and batch size",
+            "body": "The invented desk accepts batches of at most 5 paper map sheets. A customer uploading a request does not start intake. Intake occurs at the operator scan of the batch ticket, so a request and a received batch are different states."
+          },
+          {
+            "title": "Inspection clock",
+            "body": "Format inspection must finish within 16 minutes of the operator scan. That deadline concerns inspection only. It cannot be carried across to a promise that the final output is ready or releasable within the same time."
+          },
+          {
+            "title": "Release and retention",
+            "body": "Release needs both map review and output checksum check to pass. A failed checksum blocks release. Independently, the 36-hour retention window begins on checksum pass, even if review is pending; downloading cannot reset it. Stored output is deleted when that window ends, and recovery or extensions are unspecified."
+          }
+        ],
+        "subject_en": "Source-grounded educational explanation",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "main distinction",
+          "conditions and relationships",
+          "evidence limits"
+        ]
+      },
+      "child": {
+        "title": "Release permission and retention are separate",
+        "description": "The selected branch contains a two-check gate and a clock with a different trigger.",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "Release gate",
+            "body": "Map review and checksum verification are separate conditions joined by AND. Neither approval alone grants permission to release. A failed checksum blocks release rather than merely shortening retention. Inspection completion should not be substituted for either stated release condition."
+          },
+          {
+            "title": "Retention clock",
+            "body": "Checksum pass starts the 36-hour retention window even while map review remains pending. This means the retention clock can be running before release becomes permitted. The first download is neither its start nor a reset, so download activity does not create a fresh window."
+          },
+          {
+            "title": "Unspecified outcomes",
+            "body": "Deletion follows the end of the retention window. The rules do not settle how to handle a job whose map review is still pending at that moment. Explaining the independence of permission and retention is useful; promising an automatic extension or a recovery route would fill a missing policy."
+          }
+        ],
+        "subject_en": "Source-grounded educational explanation",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "main distinction",
+          "conditions and relationships",
+          "evidence limits"
+        ]
+      },
+      "grandchild": {
+        "title": "Reasoning about the retention clock",
+        "description": "Use event identity and elapsed duration without inventing a customer timeline.",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "Start event",
+            "body": "The checksum pass is the event that creates the retention start. Intake, application, review approval, and download are different events and cannot silently replace it. Even if review is still pending, the supplied retention trigger remains checksum pass."
+          },
+          {
+            "title": "Elapsed window",
+            "body": "The window lasts 36 hours from that trigger. A later download does not move the start forward, so repeated downloads cannot be used to infer repeated 36-hour extensions. An exact calendar deadline would require a supplied timestamp, which this material does not contain."
+          },
+          {
+            "title": "End and limits",
+            "body": "The stored output is deleted when the window ends. The release gate still requires both approvals; it does not itself guarantee delivery before deletion. The disposition of a pending-review job, extensions, and recovery are undefined and must remain open questions."
+          }
+        ],
+        "subject_en": "Source-grounded educational explanation",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "main distinction",
+          "conditions and relationships",
+          "evidence limits"
+        ]
+      }
+    },
+    "map-desk-zh": {
+      "root": {
+        "title": "虚构地图数字化流程",
+        "description": "把接收、检查、交付和删除分别锚定到材料定义的事件。",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "接收与批次",
+            "body": "这项虚构服务每批最多处理 5 张纸质地图。客户上传申请并不等于接收；操作员扫描批次单才是接收事件。因此不能把提交申请和批次已被接收当成同一状态。"
+          },
+          {
+            "title": "检查时钟",
+            "body": "格式检查应在操作员扫描后的 16 分钟内完成。这个时限只约束检查，不能扩展成最终输出会在同样时间内准备好或获准交付的承诺。"
+          },
+          {
+            "title": "交付与保留",
+            "body": "交付要求地图内容审核和输出校验和检查都通过；校验和失败会阻止交付。36 小时保留窗口独立地从校验和通过起计，即使审核仍待完成，下载也不会重启。窗口结束会删除存储输出，恢复和延期没有规定。"
+          }
+        ],
+        "subject_en": "Source-grounded educational explanation",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "main distinction",
+          "conditions and relationships",
+          "evidence limits"
+        ]
+      },
+      "child": {
+        "title": "交付许可与保留期限分别判断",
+        "description": "这个分支同时包含双条件门槛和另有触发事件的时钟。",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "交付门槛",
+            "body": "内容审核与校验和检查是两个独立条件，用“并且”连接。一项通过不能授予交付许可。校验和失败的结果是阻止交付，不能改写成只缩短保留期限；格式检查完成也不能替代这两个条件。"
+          },
+          {
+            "title": "保留时钟",
+            "body": "校验和通过就启动 36 小时保留窗口，即使内容审核尚未完成。由此可区分“保留已开始”和“交付已获准”：前者可以先发生。首次下载既不是起点也不是重置按钮，下载活动不能创造新窗口。"
+          },
+          {
+            "title": "尚未定义的结果",
+            "body": "保留窗口结束后删除存储输出，但规则没有解决删除时仍待审核的作业如何处置。说明许可与保留互相独立有助于理解；承诺自动延期或恢复途径则会补造政策。"
+          }
+        ],
+        "subject_en": "Source-grounded educational explanation",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "main distinction",
+          "conditions and relationships",
+          "evidence limits"
+        ]
+      },
+      "grandchild": {
+        "title": "沿事件理解保留时钟",
+        "description": "不编造客户时间线，也能解释起点、经过时长与终点。",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "起点事件",
+            "body": "校验和检查通过才建立保留起点。申请、接收、内容审核通过和下载是别的事件，不能悄悄替换它。即使内容审核仍待完成，已定义的触发事件仍然是校验和通过。"
+          },
+          {
+            "title": "经过窗口",
+            "body": "从该触发事件起经过 36 小时才到窗口终点。之后下载不会把起点向后移动，所以重复下载不能被解释为重复获得 36 小时延期。计算具体日历截止时刻还需要起点时间戳，而材料没有给出。"
+          },
+          {
+            "title": "终点与边界",
+            "body": "窗口结束后存储输出被删除。交付仍须两项都通过，这个门槛本身并不保证在删除前完成交付。对待审核作业的后续处理、延期和恢复都没有定义，应继续保留未知。"
+          }
+        ],
+        "subject_en": "Source-grounded educational explanation",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "main distinction",
+          "conditions and relationships",
+          "evidence limits"
+        ]
+      }
+    },
+    "lunar-geometry-en": {
+      "root": {
+        "title": "The geometry behind lunar phases",
+        "description": "Separate sunlight, orbital repetition, and eclipse conditions.",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "Light and viewpoint",
+            "body": "Moonlight reflects sunlight. Outside an eclipse, roughly half the Moon is sunlit, while an Earth observer sees a changing portion of that half during the orbit. Ordinary phases describe this change in view rather than a shadow of Earth moving across the Moon."
+          },
+          {
+            "title": "Two different cycles",
+            "body": "An orbit around Earth takes about 27.3 days; new Moon to new Moon takes about 29.5. The durations refer to different repetitions. Earth and Moon move around the Sun during an orbit, so restoring new-Moon geometry takes further motion."
+          },
+          {
+            "title": "Phases and eclipses",
+            "body": "A lunar eclipse requires entry into Earth's shadow at full Moon. Full Moon by itself is insufficient because the lunar orbit is tilted relative to Earth's orbital plane. This mechanism brief contains no date, location, or ephemeris from which to predict a local event."
+          }
+        ],
+        "subject_en": "Source-grounded educational explanation",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "main distinction",
+          "conditions and relationships",
+          "evidence limits"
+        ]
+      },
+      "child": {
+        "title": "Why the two cycles differ",
+        "description": "A completed orbit and a repeated phase answer different geometric questions.",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "Orbital loop",
+            "body": "About 27.3 days describes one orbit around Earth. About 29.5 days describes a return from one new Moon to the next. The difference is meaningful because the two endpoints ask for different repetitions, and both figures remain approximate."
+          },
+          {
+            "title": "Moving Sun direction",
+            "body": "During the orbital loop, Earth and Moon also travel around the Sun. Repeating the orbital loop alone therefore does not restore the former relative geometry with the Sun. Additional motion is needed to return to the new-Moon arrangement."
+          },
+          {
+            "title": "What cannot be dated",
+            "body": "The mechanism explains why the phase cycle is longer without establishing a calendar schedule. No starting timestamp, observing site, or ephemeris is provided. A deeper explanation can compare the two reference questions without fabricating an observation or predicting the next new Moon."
+          }
+        ],
+        "subject_en": "Source-grounded educational explanation",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "main distinction",
+          "conditions and relationships",
+          "evidence limits"
+        ]
+      },
+      "grandchild": {
+        "title": "A moving reference for the phase cycle",
+        "description": "Track which relationship has to repeat before treating two cycles as equivalent.",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "What repeats",
+            "body": "Finishing an orbit around Earth is one criterion. Restoring the new-Moon relationship with the Sun is another. Treating them as identical would discard the fact that the Earth-Moon system also moves around the Sun during the orbit."
+          },
+          {
+            "title": "Why further motion matters",
+            "body": "When that solar relationship has changed, completion of the orbital loop alone is not enough to repeat the phase. This supplied geometric reason supports a longer approximate phase cycle; it does not turn the two approximate durations into exact fixed deadlines."
+          },
+          {
+            "title": "Boundary of the explanation",
+            "body": "The argument concerns ordinary phase geometry, not Earth's shadow. A lunar eclipse still needs entry into the shadow at full Moon, and full Moon alone remains insufficient. None of these relationships supplies an exact date or a local viewing direction."
+          }
+        ],
+        "subject_en": "Source-grounded educational explanation",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "main distinction",
+          "conditions and relationships",
+          "evidence limits"
+        ]
+      }
+    },
+    "lunar-geometry-zh": {
+      "root": {
+        "title": "月相背后的几何关系",
+        "description": "分别理解太阳光、轨道重复与月食条件。",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "光照与视角",
+            "body": "月光反射自太阳光。月食之外，月球大致有一半受光，地球观察者在月球绕行时看到这一受光部分的不同比例。普通月相描述视角关系的改变，不能解释成地球影子在月面移动。"
+          },
+          {
+            "title": "两种不同周期",
+            "body": "绕地球一圈约为 27.3 天，新月到下一次新月约为 29.5 天，两者对应不同的重复关系。绕行一圈期间地月系统也在绕太阳运动，因此恢复新月几何关系还需要额外运动。"
+          },
+          {
+            "title": "月相与月食",
+            "body": "月食要求月球在满月时进入地球影子。满月本身不充分，因为月球轨道相对地球公转轨道平面存在倾斜。这份机制材料没有日期、地点或星历，不能用来预报当地事件。"
+          }
+        ],
+        "subject_en": "Source-grounded educational explanation",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "main distinction",
+          "conditions and relationships",
+          "evidence limits"
+        ]
+      },
+      "child": {
+        "title": "两种周期为何不同",
+        "description": "完成绕行和重复月相，回答的是两个几何问题。",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "绕地球一圈",
+            "body": "约 27.3 天描述绕地球完成一圈，约 29.5 天描述从一次新月回到下一次新月。两种终点要求重复的关系不同，所以时长差异有意义，而两个数值都继续保留“约”的限定。"
+          },
+          {
+            "title": "太阳方向的改变",
+            "body": "在绕行期间，地月系统也绕太阳运动。因此仅完成绕地球一圈，并没有恢复原先相对于太阳的几何关系；回到新月排列还需要更多运动。这个解释取决于参照关系，而不是给同一个间隔两个数值。"
+          },
+          {
+            "title": "不能据此定日期",
+            "body": "机制能够解释月相周期为何较长，却不能建立日历安排。材料没有起点时间戳、观测地点或星历。深入分支可比较两个参照问题，无须编造观测记录或预测下一次新月。"
+          }
+        ],
+        "subject_en": "Source-grounded educational explanation",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "main distinction",
+          "conditions and relationships",
+          "evidence limits"
+        ]
+      },
+      "grandchild": {
+        "title": "月相周期的移动参照",
+        "description": "先辨认必须重复的关系，再判断周期是否等价。",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "重复的对象",
+            "body": "完成绕地球的一圈是一种判据，恢复相对于太阳的新月关系是另一种判据。把二者视为完全相同，会丢掉地月系统在绕行期间也绕太阳运动这一条件。"
+          },
+          {
+            "title": "额外运动的作用",
+            "body": "当相对于太阳的关系发生改变，轨道一圈的完成就不足以重复原月相。材料给出的几何原因支持较长的近似月相周期，但不会把两个近似时长变成精确且固定的截止期限。"
+          },
+          {
+            "title": "解释的边界",
+            "body": "这里解释普通月相的几何关系，不是地球影子。月食仍要求满月时进入地影，满月单独仍不充分。这些关系都不能补足精确日期或当地观测方向。"
+          }
+        ],
+        "subject_en": "Source-grounded educational explanation",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "main distinction",
+          "conditions and relationships",
+          "evidence limits"
+        ]
+      }
+    },
+    "occluded-layout-zh": {
+      "root": {
+        "summary": "浅色背景上的原创平涂场景包含五个大小不同、位置不规则的形状：左上紫色圆环、右上橙色竖向胶囊形、横跨中部和下部的蓝色不规则四边形、左下珊瑚色横条，以及右下较小的绿色星形。珊瑚色横条覆盖蓝色形状的一部分。圆环中央开口呈背景色。图中未提供物理比例尺、材料、功能、真实物品来源或发生时间。",
+        "scene_type": "abstract",
+        "language_hint": "zh",
+        "hotspots": [
+          {
+            "id": "hs_1",
+            "label": "紫色圆环",
+            "x": 0.06,
+            "y": 0.1,
+            "width": 0.211,
+            "height": 0.30142857142857143
+          },
+          {
+            "id": "hs_2",
+            "label": "橙色竖向胶囊形",
+            "x": 0.77,
+            "y": 0.09285714285714286,
+            "width": 0.111,
+            "height": 0.38
+          },
+          {
+            "id": "hs_3",
+            "label": "蓝色不规则四边形",
+            "x": 0.29,
+            "y": 0.2714285714285714,
+            "width": 0.411,
+            "height": 0.6085714285714285
+          },
+          {
+            "id": "hs_4",
+            "label": "珊瑚色横条",
+            "x": 0.095,
+            "y": 0.55,
+            "width": 0.321,
+            "height": 0.12285714285714286
+          },
+          {
+            "id": "hs_5",
+            "label": "绿色星形",
+            "x": 0.826,
+            "y": 0.6857142857142857,
+            "width": 0.132,
+            "height": 0.18
+          }
+        ],
+        "keywords": [
+          {
+            "label": "紫色圆环",
+            "description": "观察可见的颜色、轮廓、位置与遮挡。"
+          },
+          {
+            "label": "橙色竖向胶囊形",
+            "description": "观察可见的颜色、轮廓、位置与遮挡。"
+          },
+          {
+            "label": "蓝色不规则四边形",
+            "description": "观察可见的颜色、轮廓、位置与遮挡。"
+          },
+          {
+            "label": "珊瑚色横条",
+            "description": "观察可见的颜色、轮廓、位置与遮挡。"
+          },
+          {
+            "label": "绿色星形",
+            "description": "观察可见的颜色、轮廓、位置与遮挡。"
+          }
+        ]
+      },
+      "child": {
+        "title": "观察蓝色四边形",
+        "description": "把可见形状、遮挡关系与推测分开。",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "颜色与范围",
+            "body": "较大的蓝色形状横跨画面中部和下部，与左上的紫色圆环、右上的橙色胶囊形和右下较小的绿色星形不同。入口标签应指向这个蓝色对象，而不是把邻近对象合并成同一个热点。"
+          },
+          {
+            "title": "遮挡与可见边界",
+            "body": "左下珊瑚色横条覆盖蓝色形状的一部分。在重叠位置看见的是横条，因此可说明横条位于前层，却不能声称看到了横条下方的蓝色表面细节。被遮挡不等于图形已经损坏。"
+          },
+          {
+            "title": "证据边界",
+            "body": "图像可支持颜色、相对位置和可见轮廓的描述，但没有物理比例尺或实物来源。蓝色填色不能证明材料、厚度、重量或用途，进一步解释仍应保留这些未知。"
+          }
+        ],
+        "subject_en": "Source-grounded educational explanation",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "main distinction",
+          "conditions and relationships",
+          "evidence limits"
+        ]
+      },
+      "grandchild": {
+        "title": "遮挡与可见证据",
+        "description": "继续追踪横条和蓝色区域的关系。",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "前后关系",
+            "body": "在重叠区域，珊瑚色横条覆盖蓝色形状，不能把前后关系反转。这里的“前层”描述平面绘制的覆盖顺序，不证明存在有厚度的真实物体。"
+          },
+          {
+            "title": "边界与覆盖",
+            "body": "可见蓝色区域在横条处中断，表示有一部分被遮住。框选可以概括可见区域的外部范围，但矩形本身不能揭示遮挡下面的轮廓或纹理，也不能把蓝色对象改变成长方形。"
+          },
+          {
+            "title": "保留未知",
+            "body": "描述遮挡已经提供了比重述颜色更多的信息，无须补造被遮部分的结构、真实尺寸或制作历史。该原创平面场景只提供可见的图形证据。"
+          }
+        ],
+        "subject_en": "Source-grounded educational explanation",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "main distinction",
+          "conditions and relationships",
+          "evidence limits"
+        ]
+      }
+    },
+    "occluded-layout-en": {
+      "root": {
+        "summary": "An original flat-color scene on a pale background contains five shapes of unequal size at irregular positions: a purple ring at upper left, an orange vertical capsule at upper right, a large blue irregular quadrilateral across the center and lower area, a coral horizontal bar at lower left, and a smaller green star at lower right. The coral bar is drawn over part of the blue shape. The ring has a background-colored opening. The image supplies no physical scale, material, function, provenance of real objects, or temporal event.",
+        "scene_type": "abstract",
+        "language_hint": "en",
+        "hotspots": [
+          {
+            "id": "hs_1",
+            "label": "Purple ring",
+            "x": 0.06,
+            "y": 0.1,
+            "width": 0.211,
+            "height": 0.30142857142857143
+          },
+          {
+            "id": "hs_2",
+            "label": "Orange vertical capsule",
+            "x": 0.77,
+            "y": 0.09285714285714286,
+            "width": 0.111,
+            "height": 0.38
+          },
+          {
+            "id": "hs_3",
+            "label": "Blue irregular quadrilateral",
+            "x": 0.29,
+            "y": 0.2714285714285714,
+            "width": 0.411,
+            "height": 0.6085714285714285
+          },
+          {
+            "id": "hs_4",
+            "label": "Coral horizontal bar",
+            "x": 0.095,
+            "y": 0.55,
+            "width": 0.321,
+            "height": 0.12285714285714286
+          },
+          {
+            "id": "hs_5",
+            "label": "Green star",
+            "x": 0.826,
+            "y": 0.6857142857142857,
+            "width": 0.132,
+            "height": 0.18
+          }
+        ],
+        "keywords": [
+          {
+            "label": "Purple ring",
+            "description": "Observe visible color, contour, position, and overlap."
+          },
+          {
+            "label": "Orange vertical capsule",
+            "description": "Observe visible color, contour, position, and overlap."
+          },
+          {
+            "label": "Blue irregular quadrilateral",
+            "description": "Observe visible color, contour, position, and overlap."
+          },
+          {
+            "label": "Coral horizontal bar",
+            "description": "Observe visible color, contour, position, and overlap."
+          },
+          {
+            "label": "Green star",
+            "description": "Observe visible color, contour, position, and overlap."
+          }
+        ]
+      },
+      "child": {
+        "title": "Observing the blue quadrilateral",
+        "description": "Separate visible shape and overlap from unsupported physical interpretations.",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "Color and extent",
+            "body": "The large blue shape spans the central and lower image, distinct from the upper-left purple ring, upper-right orange capsule, and smaller lower-right green star. An entry label should point to this blue target rather than merge its neighbors into one hotspot."
+          },
+          {
+            "title": "Occlusion and visible boundary",
+            "body": "The coral bar at lower left covers part of the blue shape. The overlap shows the bar on top, but it cannot reveal details of the blue surface beneath it. Being covered is not evidence that the shape is damaged or cut away."
+          },
+          {
+            "title": "Evidence limits",
+            "body": "Color, relative position, and visible contour can be described from this image. There is no physical scale or real-object provenance. Blue fill does not establish material, thickness, weight, or purpose, and these limits should remain in a deeper explanation."
+          }
+        ],
+        "subject_en": "Source-grounded educational explanation",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "main distinction",
+          "conditions and relationships",
+          "evidence limits"
+        ]
+      },
+      "grandchild": {
+        "title": "Occlusion and visible evidence",
+        "description": "Follow the relationship between the bar and the blue region.",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "Layer relationship",
+            "body": "The coral bar covers the blue shape at the overlap, so the visible order cannot be reversed. Here, being on top describes coverage in a flat drawing; it does not establish real objects with physical thickness."
+          },
+          {
+            "title": "Boundary and coverage",
+            "body": "The visible blue region is interrupted at the bar because some of it is covered. A box can summarize the outer extent of visible support, but the rectangle cannot reveal hidden contour or texture, nor does it make the blue target rectangular."
+          },
+          {
+            "title": "Keeping the unknowns",
+            "body": "Explaining overlap adds a useful relationship beyond repeating the color. It requires no invented hidden construction, real dimensions, or manufacturing history. This original flat scene supports only the visible graphic evidence."
+          }
+        ],
+        "subject_en": "Source-grounded educational explanation",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "main distinction",
+          "conditions and relationships",
+          "evidence limits"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "width": 1000,
+  "height": 700,
+  "png_sha256": "5e7023b67cd1e1090869c063e96b21100a5dc80d6afec6981a86cee0b879e030",
+  "coordinate_convention": "visible-support pixel bounding boxes, half-open endpoints, normalized by full raster width/height",
+  "objects": [
+    {
+      "id": "purple-ring",
+      "pixel_box_half_open": [
+        60,
+        70,
+        271,
+        281
+      ],
+      "box": {
+        "x": 0.06,
+        "y": 0.1,
+        "width": 0.211,
+        "height": 0.30142857142857143
+      },
+      "visible_pixels": 25924,
+      "occluded_pixels": 0
+    },
+    {
+      "id": "orange-capsule",
+      "pixel_box_half_open": [
+        770,
+        65,
+        881,
+        331
+      ],
+      "box": {
+        "x": 0.77,
+        "y": 0.09285714285714286,
+        "width": 0.111,
+        "height": 0.38
+      },
+      "visible_pixels": 26862,
+      "occluded_pixels": 0
+    },
+    {
+      "id": "blue-quadrilateral",
+      "pixel_box_half_open": [
+        290,
+        190,
+        701,
+        616
+      ],
+      "box": {
+        "x": 0.29,
+        "y": 0.2714285714285714,
+        "width": 0.411,
+        "height": 0.6085714285714285
+      },
+      "visible_pixels": 84706,
+      "occluded_pixels": 6595
+    },
+    {
+      "id": "green-star",
+      "pixel_box_half_open": [
+        826,
+        480,
+        958,
+        606
+      ],
+      "box": {
+        "x": 0.826,
+        "y": 0.6857142857142857,
+        "width": 0.132,
+        "height": 0.18
+      },
+      "visible_pixels": 6538,
+      "occluded_pixels": 0
+    },
+    {
+      "id": "coral-bar",
+      "pixel_box_half_open": [
+        95,
+        385,
+        416,
+        471
+      ],
+      "box": {
+        "x": 0.095,
+        "y": 0.55,
+        "width": 0.321,
+        "height": 0.12285714285714286
+      },
+      "visible_pixels": 27606,
+      "occluded_pixels": 0
+    }
+  ]
+}

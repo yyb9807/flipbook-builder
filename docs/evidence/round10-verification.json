@@ -1,0 +1,813 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-19T05:48:23.899664+00:00",
+  "scope": {
+    "user_scope": "No concrete model integration or selection in this round",
+    "real_inference_calls": 0,
+    "download_process_stopped": true,
+    "task_created_cache_removed": true,
+    "removed_bytes": 5991310101,
+    "optional_round9_runtime_restored_to_head": true
+  },
+  "baseline_commit": "cd39498a206826b9b87716be419a7148db1b9f67",
+  "generation_default": "legacy-v1",
+  "experimental_revision": "focused-v3",
+  "experimental_enabled_by_default": false,
+  "candidate_freeze_sha256": "9b44969564be55d73ca4edd258554e75e8ed07130cd5b8db43e6cce127e91ebd",
+  "producer_sha256": "4ac1b7089ee046a0074c7ebecc60bb1b1e9fe8960d35671e38a4db341b777c6f",
+  "evaluator_sha256": "56587b7e688c4e8b7388564e2930101bdeea8364e1c478be0c633eebd6a1c7f4",
+  "producer_and_evaluator_unchanged_since_candidate_freeze": true,
+  "holdout_opened_only_after_candidate_freeze": true,
+  "post_holdout_prompt_tuning": false,
+  "backend": {
+    "recorded_at": "2026-10-19T05:33:57.442401+00:00",
+    "database": "flipbook_acceptance_fbf627bc107f",
+    "targets": [
+      "tests"
+    ],
+    "generation_revision": "default; test-specific settings use monkeypatch",
+    "provider": "controlled only",
+    "exit_code": 0,
+    "elapsed_seconds": 67.79,
+    "log": "backend-final.log",
+    "passed": 434,
+    "isolated_database_removed": true
+  },
+  "frontend": {
+    "recorded_at": "2026-10-19T05:14:03.698154+00:00",
+    "node": "v24.19.0",
+    "npm": "11.17.0",
+    "checks": {
+      "lint": {
+        "exit_code": 0,
+        "elapsed_seconds": 2.81,
+        "log": "frontend-lint.log"
+      },
+      "tests": {
+        "exit_code": 0,
+        "elapsed_seconds": 4.23,
+        "log": "frontend-tests.log",
+        "passed": 299,
+        "test_files": 37
+      },
+      "player": {
+        "exit_code": 0,
+        "elapsed_seconds": 1.39,
+        "log": "frontend-player.log"
+      },
+      "build": {
+        "exit_code": 0,
+        "elapsed_seconds": 1.87,
+        "log": "frontend-build.log"
+      },
+      "publication": {
+        "exit_code": 0,
+        "elapsed_seconds": 0.22,
+        "log": "frontend-publication.log"
+      }
+    }
+  },
+  "evaluation_tests": {
+    "passed": 163,
+    "subtests_passed": 27,
+    "source": "independent implementation and review logs; final complete suite"
+  },
+  "processes": {
+    "recorded_at": "2026-10-19T05:32:20.001977+00:00",
+    "provider": "controlled local HTTP only",
+    "checks": [
+      {
+        "name": "knowledge-default",
+        "generation_revision": "legacy default",
+        "exit_code": 0,
+        "elapsed_seconds": 16.01,
+        "evidence": "knowledge-default.json",
+        "log": "knowledge-default.log",
+        "scenarios_passed": 7,
+        "paid_calls": 0
+      },
+      {
+        "name": "knowledge-focused",
+        "generation_revision": "focused-v3",
+        "exit_code": 0,
+        "elapsed_seconds": 15.53,
+        "evidence": "knowledge-focused.json",
+        "log": "knowledge-focused.log",
+        "scenarios_passed": 7,
+        "paid_calls": 0
+      },
+      {
+        "name": "history",
+        "generation_revision": "legacy default",
+        "exit_code": 0,
+        "elapsed_seconds": 9.97,
+        "evidence": "history.json",
+        "log": "history.log",
+        "scenarios_passed": 10,
+        "paid_calls": 0
+      },
+      {
+        "name": "publications",
+        "generation_revision": "legacy default",
+        "exit_code": 0,
+        "elapsed_seconds": 15.85,
+        "evidence": "publications.json",
+        "log": "publications.log",
+        "scenarios_passed": 10,
+        "paid_calls": 0
+      }
+    ]
+  },
+  "compose": {
+    "recorded_at": "2026-10-19T05:36:51.068970+00:00",
+    "project": "flipbook-verify-20261018",
+    "checks": [
+      {
+        "name": "compose-build",
+        "exit_code": 0,
+        "elapsed_seconds": 2.62,
+        "log": "compose-build.log"
+      },
+      {
+        "name": "compose-up",
+        "exit_code": 0,
+        "elapsed_seconds": 11.54,
+        "log": "compose-up.log"
+      },
+      {
+        "name": "stack-http",
+        "exit_code": 0,
+        "elapsed_seconds": 6.4,
+        "log": "stack-http.log"
+      }
+    ],
+    "http_passed": 19
+  },
+  "controlled_replays": {
+    "recorded_at": "2026-10-19T05:35:04.610968+00:00",
+    "evidence_kind": "controlled_fixture",
+    "real_model_calls": 0,
+    "runs": [
+      {
+        "suite": "development",
+        "suite_sha256": "c58fc124ea4212795bcec5c6f5a9f954387654db121469400e7249321292e5dd",
+        "generation_revision": "legacy-v1",
+        "run_directory": "evals/runs/round10-development-legacy-v1",
+        "run_sha256": "ad220cf70d86ead842df20abaab6013f0192b1de2a34d0a554cd495a54099728",
+        "cases": 6,
+        "pages": 18,
+        "recorded_transport_calls": 18,
+        "execution": "passed",
+        "automatic": "passed",
+        "human_quality": "not_reviewed",
+        "agent_quality": "not_reviewed"
+      },
+      {
+        "suite": "development",
+        "suite_sha256": "c58fc124ea4212795bcec5c6f5a9f954387654db121469400e7249321292e5dd",
+        "generation_revision": "grounded-v2",
+        "run_directory": "evals/runs/round10-development-grounded-v2",
+        "run_sha256": "e9897fdafdf493ac8e015a9a61676afa9c38652b8b787e4b8f2ca9cd37d7c445",
+        "cases": 6,
+        "pages": 18,
+        "recorded_transport_calls": 18,
+        "execution": "passed",
+        "automatic": "passed",
+        "human_quality": "not_reviewed",
+        "agent_quality": "not_reviewed"
+      },
+      {
+        "suite": "development",
+        "suite_sha256": "c58fc124ea4212795bcec5c6f5a9f954387654db121469400e7249321292e5dd",
+        "generation_revision": "focused-v3",
+        "run_directory": "evals/runs/round10-development-focused-v3",
+        "run_sha256": "aad4512f341fee5fc71ae66ccff154d50030969437d34d03ba9ea88a11e93822",
+        "cases": 6,
+        "pages": 18,
+        "recorded_transport_calls": 18,
+        "execution": "passed",
+        "automatic": "passed",
+        "human_quality": "not_reviewed",
+        "agent_quality": "not_reviewed"
+      },
+      {
+        "suite": "holdout",
+        "suite_sha256": "a8ba1f95f5b8dc494d71c174c9475b49cbed36eb74c85687a47b82a8a493576e",
+        "generation_revision": "legacy-v1",
+        "run_directory": "evals/runs/round10-holdout-legacy-v1",
+        "run_sha256": "46cf48524f6781a3ab6d249b7c9c67db92d5cda0aa294ca79143af971d43e56f",
+        "cases": 6,
+        "pages": 18,
+        "recorded_transport_calls": 18,
+        "execution": "passed",
+        "automatic": "passed",
+        "human_quality": "not_reviewed",
+        "agent_quality": "not_reviewed"
+      },
+      {
+        "suite": "holdout",
+        "suite_sha256": "a8ba1f95f5b8dc494d71c174c9475b49cbed36eb74c85687a47b82a8a493576e",
+        "generation_revision": "grounded-v2",
+        "run_directory": "evals/runs/round10-holdout-grounded-v2",
+        "run_sha256": "2be250cd3e1954118dc44e33c2188aa4d3cf8ace0327423d3fcfe1bb1186e4b8",
+        "cases": 6,
+        "pages": 18,
+        "recorded_transport_calls": 18,
+        "execution": "passed",
+        "automatic": "passed",
+        "human_quality": "not_reviewed",
+        "agent_quality": "not_reviewed"
+      },
+      {
+        "suite": "holdout",
+        "suite_sha256": "a8ba1f95f5b8dc494d71c174c9475b49cbed36eb74c85687a47b82a8a493576e",
+        "generation_revision": "focused-v3",
+        "run_directory": "evals/runs/round10-holdout-focused-v3",
+        "run_sha256": "734622089ec19fefbe6be46e003f31ceec0c49895364a736862f1d8ef58619ee",
+        "cases": 6,
+        "pages": 18,
+        "recorded_transport_calls": 18,
+        "execution": "passed",
+        "automatic": "passed",
+        "human_quality": "not_reviewed",
+        "agent_quality": "not_reviewed"
+      }
+    ],
+    "resume_checks": [
+      {
+        "suite": "development",
+        "completed_resume_kept_exact_run_bytes": true,
+        "additional_recorded_calls": 0
+      },
+      {
+        "suite": "holdout",
+        "completed_resume_kept_exact_run_bytes": true,
+        "additional_recorded_calls": 0
+      }
+    ],
+    "geometry_and_content_equivalence": [
+      {
+        "suite": "development",
+        "revision": "grounded-v2",
+        "same_project_content_and_labels": true,
+        "coordinate_absolute_tolerance": 1e-12
+      },
+      {
+        "suite": "development",
+        "revision": "focused-v3",
+        "same_project_content_and_labels": true,
+        "coordinate_absolute_tolerance": 1e-12
+      },
+      {
+        "suite": "holdout",
+        "revision": "grounded-v2",
+        "same_project_content_and_labels": true,
+        "coordinate_absolute_tolerance": 1e-12
+      },
+      {
+        "suite": "holdout",
+        "revision": "focused-v3",
+        "same_project_content_and_labels": true,
+        "coordinate_absolute_tolerance": 1e-12
+      }
+    ]
+  },
+  "browser_artifacts": {
+    "captured_at": "2026-10-19T05:46:04.114325+00:00",
+    "read_only": true,
+    "real_model_calls": 0,
+    "status": "passed",
+    "generation_jobs": [
+      {
+        "job_id": "job_nchuuai26j",
+        "project_id": "proj_am8x4yxx93",
+        "kind": "analyze",
+        "status": "succeeded",
+        "generation_revision": "focused-v3",
+        "content_format": "knowledge-v1",
+        "created_at": "2026-10-19T05:39:27.297224+00:00",
+        "frozen_input_sha256": "7c6f3df6f5a74adb5d0c8de510d143679672deb017c1542cdc4c7665dd954df1",
+        "contexts": [],
+        "focused_marker_and_contexts_match": true
+      },
+      {
+        "job_id": "job_zalik42sfc",
+        "project_id": "proj_am8x4yxx93",
+        "kind": "children",
+        "status": "succeeded",
+        "generation_revision": "focused-v3",
+        "content_format": "knowledge-v1",
+        "created_at": "2026-10-19T05:39:45.692849+00:00",
+        "frozen_input_sha256": "263f0d61c37cfc2d4744f93a30605dd7c448c5dbdceebf642050ce69e4fc4a51",
+        "contexts": [
+          {
+            "field": "children[0].context",
+            "sha256": "a8e9b76a12d849278b09ed81cb142ffe6dded0c48b93c1b0803b0a5cd685f419",
+            "context_version": "focused-v3",
+            "source_kind": "user_text",
+            "original_source_nonempty": true
+          }
+        ],
+        "focused_marker_and_contexts_match": true
+      },
+      {
+        "job_id": "job_b3dtq5jjm9",
+        "project_id": "proj_am8x4yxx93",
+        "kind": "children",
+        "status": "succeeded",
+        "generation_revision": "focused-v3",
+        "content_format": "knowledge-v1",
+        "created_at": "2026-10-19T05:40:15.190974+00:00",
+        "frozen_input_sha256": "4fe3419a8a1df400fcbaa5a90096b36546551d32443b4cfcaa728d76aafbff2d",
+        "contexts": [
+          {
+            "field": "children[0].context",
+            "sha256": "d85bfac7f5b9f7f2f0a47f9afa3699957d5abcf2ed1ab2cc68fe0f3da9ada572",
+            "context_version": "focused-v3",
+            "source_kind": "user_text",
+            "original_source_nonempty": true
+          }
+        ],
+        "focused_marker_and_contexts_match": true
+      },
+      {
+        "job_id": "job_tlt81m3q90",
+        "project_id": "proj_wfwzozwucl",
+        "kind": "analyze",
+        "status": "succeeded",
+        "generation_revision": "focused-v3",
+        "content_format": "image-v1",
+        "created_at": "2026-10-19T05:44:20.003124+00:00",
+        "frozen_input_sha256": "0c6b281f77d34577690dfda4219a98ecef0f3dcb469171115fa330912ad5e9f5",
+        "contexts": [],
+        "focused_marker_and_contexts_match": true
+      }
+    ],
+    "all_jobs_focused_and_contexts_match": true,
+    "publications_after": [
+      {
+        "publication_id": "pub_5b46c862176c44af8354a999e9abf47c",
+        "project_structure": {
+          "project_id": "proj_wfwzozwucl",
+          "root_node_id": "node_q04w8q814o",
+          "node_count": 1,
+          "branch_count": 0,
+          "edges": [],
+          "maximum_depth": 0,
+          "all_targets_present": true,
+          "parent_links_match": true,
+          "children_links_match": true,
+          "scene_documents": 0
+        },
+        "files_sha256": {
+          "assets/4f7f40ba6cf3b88ae572a784c95b58ae6e853a1d2694e51d2cb649230c98ea1e.png": "4f7f40ba6cf3b88ae572a784c95b58ae6e853a1d2694e51d2cb649230c98ea1e",
+          "index.html": "7e771e469063ebc7e075b1014af8de182a3ef463a8ad5dbbcc3f70023a23323a",
+          "manifest.json": "0c28da1f53b7a3494268db377b852e4f33a7adc9d7078df9cb0cdb8f221f1b54",
+          "player.css": "42ab01c4f02021896976322ad133cdd7bc7a84160ccb7f85541bd870bfd4214d",
+          "player.js": "fa5bb8495b2e8e192e66e978d008ace2b0cc6e84cfb8a9d6d9a9fd662755cb36",
+          "project.json": "d7cb8cfb7392fa561a72b26d599cee92e03079f45a4b3561f35bcf68eb1c1b79"
+        },
+        "files_digest_sha256": "93aed39710b6fbfba24003809ff7f698a5da834a3e0b8afc766c070ec3f0622b",
+        "before_comparison": {
+          "identical": true,
+          "added_files": [],
+          "removed_files": [],
+          "changed_files": [],
+          "note": "The independent baseline was captured after the first edit; the timed second edit below establishes before/after immutability."
+        },
+        "exact_provider_key_absent": true
+      },
+      {
+        "publication_id": "pub_c3a6d2dbeea0430f87d64ec35685dd45",
+        "project_structure": {
+          "project_id": "proj_am8x4yxx93",
+          "root_node_id": "node_j2cucyvf03",
+          "node_count": 3,
+          "branch_count": 2,
+          "edges": [
+            {
+              "from": "node_es01vhx2fv",
+              "to": "node_46ota3mxzm",
+              "hotspot_id": "hs_4b1qsh1csp"
+            },
+            {
+              "from": "node_j2cucyvf03",
+              "to": "node_es01vhx2fv",
+              "hotspot_id": "hs_3ifdw12nec"
+            }
+          ],
+          "maximum_depth": 2,
+          "all_targets_present": true,
+          "parent_links_match": true,
+          "children_links_match": true,
+          "scene_documents": 3
+        },
+        "files_sha256": {
+          "index.html": "49c41dd42dbcf0b90f6ce0b860d869e2bff8c46681e26db1a357faa58172641c",
+          "manifest.json": "7cef6d95dfd3becf2828009baaa2e5a54c1db19b16bae0f6c44ac78dc6e7a1be",
+          "player.css": "42ab01c4f02021896976322ad133cdd7bc7a84160ccb7f85541bd870bfd4214d",
+          "player.js": "fa5bb8495b2e8e192e66e978d008ace2b0cc6e84cfb8a9d6d9a9fd662755cb36",
+          "project.json": "8740871fbd76acdfdd26d160363846970c72def0b41159b270b933f1343a30ee"
+        },
+        "files_digest_sha256": "c97293cf62f5a062a1130355c963a26719c9582271631c167583e36dd0eddb6e",
+        "before_comparison": {
+          "identical": true,
+          "added_files": [],
+          "removed_files": [],
+          "changed_files": [],
+          "note": "The independent baseline was captured after the first edit; the timed second edit below establishes before/after immutability."
+        },
+        "exact_provider_key_absent": true
+      }
+    ],
+    "original_publication_all_files_unchanged": true,
+    "original_project_changes_after_publication": [
+      {
+        "node_id": "node_es01vhx2fv",
+        "project_id": "proj_am8x4yxx93",
+        "depth": 1,
+        "changed_fields": [
+          "title"
+        ],
+        "current_title": "发布后修改的工作稿",
+        "published_title": "蒸发",
+        "published_content_sha256": "afe3fd5d400c332d3a1a04ff744ce6b118ef34eecffbe9d35b1f59e698bb752f",
+        "current_content_sha256": "3f78bc76121f9e4c1a49e88b7ca2ecd4b62c3db0cb6c77fac8e9b961d0a4a0d8",
+        "note": "First edit was audited here; the separately timed second edit is bound by pre/post snapshot hashes."
+      }
+    ],
+    "image_publications": [
+      {
+        "publication_id": "pub_5b46c862176c44af8354a999e9abf47c",
+        "root_node_id": "node_q04w8q814o",
+        "boxes": [
+          [
+            0.1,
+            0.1,
+            0.2,
+            0.2
+          ],
+          [
+            0.6,
+            0.4,
+            0.2,
+            0.2
+          ]
+        ],
+        "expected_boxes_match": true,
+        "assets_all_present": true,
+        "image_refs": [
+          "assets/4f7f40ba6cf3b88ae572a784c95b58ae6e853a1d2694e51d2cb649230c98ea1e.png"
+        ]
+      }
+    ],
+    "matching_zip_count": 1,
+    "zip_artifacts": [
+      {
+        "sha256": "f360134d4ef1ec7d2d03f3488e1fc83b8257e8401b02a3d101d3687ad85d3b4d",
+        "bytes": 71594,
+        "entries": [
+          "index.html",
+          "player.js",
+          "player.css",
+          "project.json",
+          "README.txt"
+        ],
+        "entry_sha256": {
+          "index.html": "6b76cbd836b1a5d5d6f3178679871bf29f18254603095b885ce5626d218af857",
+          "player.js": "fa5bb8495b2e8e192e66e978d008ace2b0cc6e84cfb8a9d6d9a9fd662755cb36",
+          "player.css": "581f864c0845af06c35420a155bec06b80b2aa744679ad507f62e69cbb87970b",
+          "project.json": "76655956a6990678c229300193b0fb6e37de67f25dfd41552b0bb6da71177550",
+          "README.txt": "73723cf807a98ff3794478e7245db1fa1f57aa6d34c711373ec735ddde2f056f"
+        },
+        "structure": {
+          "project_id": "proj_am8x4yxx93",
+          "root_node_id": "node_j2cucyvf03",
+          "node_count": 3,
+          "branch_count": 2,
+          "edges": [
+            {
+              "from": "node_j2cucyvf03",
+              "to": "node_es01vhx2fv",
+              "hotspot_id": "hs_3ifdw12nec"
+            },
+            {
+              "from": "node_es01vhx2fv",
+              "to": "node_46ota3mxzm",
+              "hotspot_id": "hs_4b1qsh1csp"
+            }
+          ],
+          "maximum_depth": 2,
+          "all_targets_present": true,
+          "parent_links_match": true,
+          "children_links_match": true,
+          "scene_documents": 3
+        },
+        "offline": {
+          "runtime_files_present": true,
+          "html_dependencies": [
+            "player.css",
+            "player.js"
+          ],
+          "html_dependencies_all_local_and_in_zip": true,
+          "embedded_project_data": true,
+          "image_refs_all_local_and_in_zip": true,
+          "zip_integrity_ok": true
+        },
+        "exact_provider_key_absent": true,
+        "sensitive_project_fields": [],
+        "matching_publication_id": "pub_c3a6d2dbeea0430f87d64ec35685dd45",
+        "snapshot_project_bytes_equal": false,
+        "status": "passed"
+      }
+    ],
+    "all_published_files_identical_across_timed_second_edit": true,
+    "second_edit_before_captured_at": "2026-10-19T05:47:25.809913+00:00",
+    "second_edit_after_captured_at": "2026-10-19T05:47:36.469705+00:00",
+    "second_edit_working_copy_title": "发布后再次修改的工作稿"
+  },
+  "browser_isolation": {
+    "recorded_at": "2026-10-19T05:46:51.258431+00:00",
+    "stopped_services_confirmed_by_connection": {
+      "editor_api": true,
+      "provider": true,
+      "postgres": true
+    },
+    "independent_reader_files": [
+      {
+        "publication_id": "pub_5b46c862176c44af8354a999e9abf47c",
+        "file": "assets/4f7f40ba6cf3b88ae572a784c95b58ae6e853a1d2694e51d2cb649230c98ea1e.png",
+        "http_status": 200,
+        "sha256": "4f7f40ba6cf3b88ae572a784c95b58ae6e853a1d2694e51d2cb649230c98ea1e"
+      },
+      {
+        "publication_id": "pub_5b46c862176c44af8354a999e9abf47c",
+        "file": "index.html",
+        "http_status": 200,
+        "sha256": "7e771e469063ebc7e075b1014af8de182a3ef463a8ad5dbbcc3f70023a23323a"
+      },
+      {
+        "publication_id": "pub_5b46c862176c44af8354a999e9abf47c",
+        "file": "player.css",
+        "http_status": 200,
+        "sha256": "42ab01c4f02021896976322ad133cdd7bc7a84160ccb7f85541bd870bfd4214d"
+      },
+      {
+        "publication_id": "pub_5b46c862176c44af8354a999e9abf47c",
+        "file": "player.js",
+        "http_status": 200,
+        "sha256": "fa5bb8495b2e8e192e66e978d008ace2b0cc6e84cfb8a9d6d9a9fd662755cb36"
+      },
+      {
+        "publication_id": "pub_5b46c862176c44af8354a999e9abf47c",
+        "file": "project.json",
+        "http_status": 200,
+        "sha256": "d7cb8cfb7392fa561a72b26d599cee92e03079f45a4b3561f35bcf68eb1c1b79"
+      },
+      {
+        "publication_id": "pub_c3a6d2dbeea0430f87d64ec35685dd45",
+        "file": "index.html",
+        "http_status": 200,
+        "sha256": "49c41dd42dbcf0b90f6ce0b860d869e2bff8c46681e26db1a357faa58172641c"
+      },
+      {
+        "publication_id": "pub_c3a6d2dbeea0430f87d64ec35685dd45",
+        "file": "player.css",
+        "http_status": 200,
+        "sha256": "42ab01c4f02021896976322ad133cdd7bc7a84160ccb7f85541bd870bfd4214d"
+      },
+      {
+        "publication_id": "pub_c3a6d2dbeea0430f87d64ec35685dd45",
+        "file": "player.js",
+        "http_status": 200,
+        "sha256": "fa5bb8495b2e8e192e66e978d008ace2b0cc6e84cfb8a9d6d9a9fd662755cb36"
+      },
+      {
+        "publication_id": "pub_c3a6d2dbeea0430f87d64ec35685dd45",
+        "file": "project.json",
+        "http_status": 200,
+        "sha256": "8740871fbd76acdfdd26d160363846970c72def0b41159b270b933f1343a30ee"
+      }
+    ],
+    "browser_three_levels_after_refresh": true,
+    "image_natural_size": [
+      800,
+      500
+    ],
+    "mobile_viewport": [
+      390,
+      844
+    ],
+    "reader_scroll_width": 390,
+    "report_scroll_width": 375,
+    "real_model_calls": 0
+  },
+  "browser_provider": {
+    "transport_calls": 4,
+    "real_model_calls": 0,
+    "source": "local controlled HTTP fixture"
+  },
+  "cleanup": {
+    "owned_ports_closed": {
+      "editor_api": true,
+      "provider": true,
+      "browser_reader": true,
+      "dev_frontend": true
+    },
+    "isolated_database_removed": true,
+    "temporary_storage_removed": true,
+    "compose_restored": {
+      "backend": {
+        "state": "running",
+        "health": ""
+      },
+      "db": {
+        "state": "running",
+        "health": "healthy"
+      },
+      "frontend": {
+        "state": "running",
+        "health": ""
+      },
+      "reader": {
+        "state": "running",
+        "health": "healthy"
+      }
+    }
+  },
+  "public_run_exports": [
+    {
+      "file": "docs/evidence/round10-holdout-grounded-v2-run.json",
+      "sha256": "7327bac0271cff897ed11717b389bcc312bc561b5b43211d1a5b95f4bfff46e6",
+      "evidence_kind": "controlled_fixture"
+    },
+    {
+      "file": "docs/evidence/round10-holdout-focused-v3-run.json",
+      "sha256": "9ce018f44f636d4d8c2c8dacaec6c5e9463084eb1d7f8fe6e0632c9fa1ca5836",
+      "evidence_kind": "controlled_fixture"
+    }
+  ],
+  "screenshots_sha256": {
+    "docs/images/round10-desktop-history.png": "8c76c0c639cb31fc5e27b786eaba049935dd901510e2932468182e2c58058bd1",
+    "docs/images/round10-image-protocol.png": "f8664589da5261116cb91a17fdc38719e0d3182372104b29f28bd6d50aec8049",
+    "docs/images/round10-mobile-quality.png": "2180ae101f0f6ac639267dac3d6d63b44f07e36bd2bfdd3965509c729be14520",
+    "docs/images/round10-mobile-reader.png": "9f9cd460cf3e8f3f4502fed40963c363a42b1cc8619172ba1620d097e82e389c",
+    "docs/images/round10-quality-report.png": "34d2ec496abd0c8c372edf3fe79ca33a9d893eaa144882f35b45e5b0f469df33",
+    "docs/images/round10-reader-isolated.png": "fcc25962650542d277b2d938d5a0b0f527bed10c394f4fcbee2792e11727f02a"
+  },
+  "quality_claim": {
+    "real_model_quality_measured": false,
+    "human_quality": "not_reviewed",
+    "agent_quality": "not_reviewed",
+    "winner": null,
+    "score_delta": null
+  },
+  "validation_notes": [
+    "Earlier first backend run had 431 tests; final isolated run contains all 434.",
+    "Initial non-TTY browser harness received EOF and was restarted before generation.",
+    "An early agent-only pytest invocation without DATABASE_URL had five DB fixture setup errors; final isolated Postgres suite passed.",
+    "Final results correspond to the frozen producer/evaluator version. Some frontend/process checks completed before the freeze timestamp; their checked sources remained unchanged. Controlled replays and fake HTTP are functional evidence only."
+  ],
+  "final_static_checks": {
+    "recorded_at": "2026-10-19T05:50:53.037471+00:00",
+    "ruff": "passed",
+    "git_diff_check": "passed",
+    "local_markdown_links_checked": 356,
+    "broken_local_links": 0,
+    "holdout_full_file_manifest_and_pixel_validation": "passed",
+    "frozen_producer_and_evaluator_match": true,
+    "test_database_removed_independently_confirmed": true,
+    "public_json_and_screenshot_hashes_valid": true,
+    "sensitive_key_and_local_user_path_absent_from_public_evidence": true,
+    "compose_health_after_restoration": {
+      "editor": {
+        "status": 200,
+        "body": "{\"status\":\"ok\"}"
+      },
+      "reader": {
+        "status": 200,
+        "body": "{\"status\":\"ok\"}"
+      }
+    }
+  },
+  "final_independent_audit": {
+    "recorded_at": "2026-10-19T05:51:51.911409+00:00",
+    "unresolved_p1_p2": 0,
+    "candidate_and_evaluator_hashes_verified": true,
+    "public_run_hashes_and_six_screenshot_hashes_verified": true,
+    "controlled_call_and_job_counts_verified": true,
+    "second_edit_before_after_hashes_and_chronology_verified": true,
+    "first_edit_baseline_timing_limit_disclosed": true,
+    "documentation_precision_fixes_applied": [
+      "Live validates the dataset recording hash but never uses recordings as model responses or adapts live output.",
+      "Final check results match frozen source versions; not all checks ran after the freeze timestamp."
+    ],
+    "real_model_quality_claim_approved": false
+  },
+  "pre_commit_cleanup": {
+    "recorded_at": "2026-10-19T05:56:20.476175+00:00",
+    "branch": "codex/provider-neutral-quality",
+    "scope": "Documentation consolidation and historical report archival; frozen producer, evaluator and holdout bytes unchanged.",
+    "archived_reports": [
+      "docs/archive/ROUND_9_PLAN.md",
+      "docs/archive/ROUND_9_IMPLEMENTATION.md"
+    ],
+    "historical_evidence_patches_and_images_kept_in_place": true,
+    "checks": [
+      {
+        "name": "evaluation-pytest",
+        "exit_code": 0,
+        "elapsed_seconds": 7.38,
+        "passed": 163,
+        "subtests_passed": 27,
+        "command": "python -m pytest -q scripts/quality_eval/tests",
+        "cwd": "."
+      },
+      {
+        "name": "ruff-backend-scripts",
+        "exit_code": 1,
+        "elapsed_seconds": 0.08,
+        "command": "ruff check . ../scripts",
+        "cwd": "backend",
+        "scope": "additional backend-rule expansion; not the repository-documented command",
+        "diagnostic_count": 26,
+        "source_files_changed_by_check": false
+      },
+      {
+        "name": "holdout-fixture",
+        "exit_code": 0,
+        "elapsed_seconds": 0.13,
+        "command": "python evals/datasets/quality-holdout-v1/validate_fixture.py",
+        "cwd": "."
+      },
+      {
+        "name": "ruff-repository-config",
+        "exit_code": 0,
+        "elapsed_seconds": 0.03,
+        "command": "ruff check backend scripts",
+        "cwd": "."
+      }
+    ],
+    "required_checks_passed": true,
+    "local_markdown_files_checked": 51,
+    "local_markdown_links_checked": 357,
+    "broken_local_links": [],
+    "frozen_integrity": {
+      "candidate_freeze_sha256": "9b44969564be55d73ca4edd258554e75e8ed07130cd5b8db43e6cce127e91ebd",
+      "candidate_freeze_recorded_hash_match": true,
+      "producer_sha256": "4ac1b7089ee046a0074c7ebecc60bb1b1e9fe8960d35671e38a4db341b777c6f",
+      "evaluator_sha256": "56587b7e688c4e8b7388564e2930101bdeea8364e1c478be0c633eebd6a1c7f4",
+      "producer_and_evaluator_match_candidate_freeze": true,
+      "source_file_count": 12,
+      "all_source_file_hashes_match": true,
+      "development_suite_sha256": "c58fc124ea4212795bcec5c6f5a9f954387654db121469400e7249321292e5dd",
+      "holdout_suite_sha256": "a8ba1f95f5b8dc494d71c174c9475b49cbed36eb74c85687a47b82a8a493576e",
+      "suite_digests_match_candidate_and_run_evidence": true,
+      "development_dataset_files_unchanged_from_HEAD_excluding_documentation": [
+        "evals/datasets/quality-v1/LICENSE",
+        "evals/datasets/quality-v1/assets/generate_shapes.py",
+        "evals/datasets/quality-v1/assets/shapes.png",
+        "evals/datasets/quality-v1/cases/fictional-reservation-en.json",
+        "evals/datasets/quality-v1/cases/fictional-reservation-zh.json",
+        "evals/datasets/quality-v1/cases/shapes-en.json",
+        "evals/datasets/quality-v1/cases/shapes-zh.json",
+        "evals/datasets/quality-v1/cases/water-cycle-en.json",
+        "evals/datasets/quality-v1/cases/water-cycle-zh.json",
+        "evals/datasets/quality-v1/replay.json",
+        "evals/datasets/quality-v1/suite.json"
+      ]
+    },
+    "public_runs_and_screenshots_hashes_match": true,
+    "historical_artifacts_verified_against_baseline_commit": 11,
+    "public_text_scan": {
+      "text_files_scanned": 52,
+      "credential_or_private_path_findings": [],
+      "non_synthetic_json_credential_fields": [],
+      "boolean_audit_fields_allowed": true,
+      "limitations": "Pattern-based static review; does not prove the absence of every possible secret."
+    },
+    "github_actions": {
+      "tracked_workflows": 0,
+      "filesystem_workflows": 0,
+      "restored": false
+    },
+    "database_connections": 0,
+    "real_model_calls": 0,
+    "unchanged_full_acceptance_reused": {
+      "backend_tests": 434,
+      "frontend_tests": 299,
+      "process_scenarios": [
+        7,
+        7,
+        10,
+        10
+      ],
+      "compose_http_checks": 19,
+      "browser": "passed in implementation acceptance; not rerun for this documentation cleanup"
+    },
+    "notes": [
+      "The additional backend-wide Ruff rule expansion reports 26 style diagnostics outside the documented command scope. The repository-configured root command passes; frozen source was not rewritten.",
+      "No model-quality reassessment or score change. Human and Agent quality remain not_reviewed."
+    ]
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "id": "lunar-geometry-zh",
+  "version": "1.0.0",
+  "language": "zh",
+  "title": "月相：光照、参照与条件",
+  "input": {
+    "kind": "text",
+    "text": "本原创摘要依据 NASA 的公开科学说明解释月相机制。它是机制材料，不是观测记录或预报。\n光照与视角：月光是反射的太阳光。月食之外，太阳大致照亮月球的一半；月球绕地球运行时，地球观察者看到的受光部分比例改变，因此产生普通月相。普通月相不是地球影子造成的。\n两种不同周期：月球绕地球完成一圈约需 27.3 天，而从一次新月到下一次新月约需 29.5 天。这是两个不同周期的近似时长，并非同一个时间间隔的两个相互矛盾的测量值。\n太阳方向的改变：月球绕地球运行一圈的同时，地月系统也在绕太阳运动。因此，恢复新月时的相对位置关系，需要比完成那一圈更多的运动。\n月相与月食：月食要求月球在满月时进入地球影子。仅有满月不保证月食，因为月球轨道相对地球公转轨道平面有倾斜。\n材料未提供日期、观测地点、亮度测量、天气或星历。不可推断今天的月相、下一月相的精确时刻、当地观测方向或月食日期。深入解释可以比较参照几何关系，以及必要条件和充分条件，不必添加观测个案。"
+  },
+  "source": {
+    "kind": "primary-source-summary",
+    "text": "本原创摘要依据 NASA 的公开科学说明解释月相机制。它是机制材料，不是观测记录或预报。\n光照与视角：月光是反射的太阳光。月食之外，太阳大致照亮月球的一半；月球绕地球运行时，地球观察者看到的受光部分比例改变，因此产生普通月相。普通月相不是地球影子造成的。\n两种不同周期：月球绕地球完成一圈约需 27.3 天，而从一次新月到下一次新月约需 29.5 天。这是两个不同周期的近似时长，并非同一个时间间隔的两个相互矛盾的测量值。\n太阳方向的改变：月球绕地球运行一圈的同时，地月系统也在绕太阳运动。因此，恢复新月时的相对位置关系，需要比完成那一圈更多的运动。\n月相与月食：月食要求月球在满月时进入地球影子。仅有满月不保证月食，因为月球轨道相对地球公转轨道平面有倾斜。\n材料未提供日期、观测地点、亮度测量、天气或星历。不可推断今天的月相、下一月相的精确时刻、当地观测方向或月食日期。深入解释可以比较参照几何关系，以及必要条件和充分条件，不必添加观测个案。",
+    "license": "MIT",
+    "notes": "Original contributor-authored bilingual prose. Public references support the scientific relationships; no external page is needed at generation time. This source text is exactly the visible text input. No production prompt, live run, review output, or optimization plan was consulted.",
+    "references": [
+      {
+        "id": "nasa-phases",
+        "title": "NASA Science — Moon Phases",
+        "checked_on": "2026-10-19",
+        "url": "https://science.nasa.gov/moon/moon-phases/"
+      },
+      {
+        "id": "nasa-questions",
+        "title": "NASA Science — Top Moon Questions",
+        "checked_on": "2026-10-19",
+        "url": "https://science.nasa.gov/moon/top-moon-questions/"
+      },
+      {
+        "id": "nasa-eclipses",
+        "title": "NASA Science — Eclipses and the Moon",
+        "checked_on": "2026-10-19",
+        "url": "https://science.nasa.gov/moon/eclipses/"
+      }
+    ]
+  },
+  "branch_steps": [
+    {
+      "preferred_labels": [
+        "两种不同周期",
+        "两种周期",
+        "轨道与月相周期"
+      ]
+    },
+    {
+      "preferred_labels": [
+        "太阳方向的改变",
+        "太阳方向",
+        "参照方向的改变"
+      ]
+    }
+  ],
+  "fact_checks": [
+    {
+      "id": "reflected-light",
+      "claim": "月光为反射太阳光，普通月相取决于观察到的受光比例。",
+      "evidence_excerpt": "月光是反射的太阳光。月食之外，太阳大致照亮月球的一半；月球绕地球运行时，地球观察者看到的受光部分比例改变，因此产生普通月相。",
+      "source_id": "nasa-phases",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    },
+    {
+      "id": "different-cycles",
+      "claim": "27.3 天与 29.5 天分别是轨道一圈与新月到新月的近似周期，不能互换或当成精确承诺。",
+      "evidence_excerpt": "月球绕地球完成一圈约需 27.3 天，而从一次新月到下一次新月约需 29.5 天。",
+      "source_id": "nasa-questions",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "moving-geometry",
+      "claim": "地月系统绕太阳运动，使恢复新月几何关系需要额外运动。",
+      "evidence_excerpt": "月球绕地球运行一圈的同时，地月系统也在绕太阳运动。因此，恢复新月时的相对位置关系，需要比完成那一圈更多的运动。",
+      "source_id": "nasa-questions",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "eclipse-condition",
+      "claim": "普通月相不是地影；满月是月食条件之一，但单独不充分。",
+      "evidence_excerpt": "月食要求月球在满月时进入地球影子。仅有满月不保证月食，因为月球轨道相对地球公转轨道平面有倾斜。",
+      "source_id": "nasa-eclipses",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    }
+  ],
+  "forbidden_claims": [
+    {
+      "id": "phase-earth-shadow",
+      "claim": "普通月相由地球遮住太阳光而形成。",
+      "reason": "把观测到的受光比例误当成月食遮挡。",
+      "severity": "critical"
+    },
+    {
+      "id": "cycle-swap",
+      "claim": "新月到新月为 27.3 天、绕地球一圈为 29.5 天，或每次周期精确相同。",
+      "reason": "周期对象和近似限定必须保留。",
+      "severity": "critical"
+    },
+    {
+      "id": "every-full-eclipse",
+      "claim": "每次满月都会发生月食。",
+      "reason": "忽略倾斜轨道和进入地影的额外条件。",
+      "severity": "critical"
+    },
+    {
+      "id": "invented-observation",
+      "claim": "材料足以判断今天月相或精确预报当地月食与观测方向。",
+      "reason": "没有日期、地点或星历。",
+      "severity": "major"
+    }
+  ],
+  "unknown_limits": [
+    "今天月相、精确的下一月相时刻、月食日期、当地观测方向、实测亮度与天气。"
+  ],
+  "dimension_notes": {
+    "body": "判断解释是否准确表达材料中的关系且有实质内容。出现相同词语不等于语义正确。标为根页的事实必须在总览交代；条件事实仅在提及时逐页核对。",
+    "hotspots": "依据实际入口标签对读者作出的内容承诺评审目标页。图像热点另行检查目标身份和可见区域覆盖；矩形位置正确不能补救标签指错对象。",
+    "cross_page": "沿根页选中标签追踪子页，再沿子页标签追踪孙页。每层应增加有用的区分、条件或推论，并保持数量、计时事件、限定和证据边界。换一种说法不等于深入，不要求编造具体案例。",
+    "instruction": "保持案例语言，区分材料事实、明确标注的推论、虚构测试规则与缺失信息。评审锚点和受控回放只供评审使用，禁止追加到生成输入。"
+  }
+}

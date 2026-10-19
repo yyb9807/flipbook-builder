@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "id": "occluded-layout-zh",
+  "version": "1.0.0",
+  "language": "zh",
+  "title": "原创多尺度遮挡场景",
+  "input": {
+    "kind": "image",
+    "image_path": "assets/scene.png",
+    "sha256": "5e7023b67cd1e1090869c063e96b21100a5dc80d6afec6981a86cee0b879e030",
+    "width": 1000,
+    "height": 700
+  },
+  "source": {
+    "kind": "original-synthetic-image",
+    "text": "浅色背景上的原创平涂场景包含五个大小不同、位置不规则的形状：左上紫色圆环、右上橙色竖向胶囊形、横跨中部和下部的蓝色不规则四边形、左下珊瑚色横条，以及右下较小的绿色星形。珊瑚色横条覆盖蓝色形状的一部分。圆环中央开口呈背景色。图中未提供物理比例尺、材料、功能、真实物品来源或发生时间。",
+    "license": "MIT",
+    "notes": "One independently authored language-neutral scene, reused in Chinese and English. Original Pillow generator and visible-support pixel records are in assets/. Five unequal, irregularly placed shapes include partial occlusion; no third-party image, real photo, or image model was used. Reviewer annotations are not generation context. This synthetic scene does not establish natural-image generalization.",
+    "references": [
+      {
+        "id": "original-scene",
+        "title": "Original five-shape occlusion scene; deterministic repository-native generator, MIT",
+        "checked_on": "2026-10-19"
+      }
+    ]
+  },
+  "branch_steps": [
+    {
+      "preferred_labels": [
+        "蓝色不规则四边形",
+        "蓝色四边形",
+        "蓝色大形状"
+      ]
+    },
+    {
+      "preferred_labels": [
+        "遮挡与可见边界",
+        "遮挡关系",
+        "可见边界"
+      ]
+    }
+  ],
+  "fact_checks": [
+    {
+      "id": "five-targets",
+      "claim": "总览应区分五个不同对象，包括圆环开口和较小星形。",
+      "evidence_excerpt": "浅色背景上的原创平涂场景包含五个大小不同、位置不规则的形状：左上紫色圆环、右上橙色竖向胶囊形、横跨中部和下部的蓝色不规则四边形、左下珊瑚色横条，以及右下较小的绿色星形。",
+      "source_id": "original-scene",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    },
+    {
+      "id": "occlusion-order",
+      "claim": "珊瑚色横条在重叠处覆盖蓝色形状，不能反转。",
+      "evidence_excerpt": "珊瑚色横条覆盖蓝色形状的一部分。",
+      "source_id": "original-scene",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "ring-opening",
+      "claim": "圆环中间开口呈背景色，不能称为实心圆。",
+      "evidence_excerpt": "圆环中央开口呈背景色。",
+      "source_id": "original-scene",
+      "severity": "major",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    }
+  ],
+  "forbidden_claims": [
+    {
+      "id": "reverse-overlap",
+      "claim": "蓝色形状在重叠处覆盖珊瑚色横条。",
+      "reason": "与可见绘制顺序相反。",
+      "severity": "critical"
+    },
+    {
+      "id": "hidden-completion",
+      "claim": "图中可精确看出被遮住部分的纹理、损坏或结构。",
+      "reason": "被遮住部分没有可见证据。",
+      "severity": "major"
+    },
+    {
+      "id": "physical-invention",
+      "claim": "图中证明这些是真实材料制成、具有确定尺寸或用途的物品。",
+      "reason": "原创平面图未提供实物属性。",
+      "severity": "major"
+    }
+  ],
+  "unknown_limits": [
+    "物理比例尺、材料、质量、实际用途、历史、被遮挡区域的细节。"
+  ],
+  "dimension_notes": {
+    "body": "判断解释是否准确表达材料中的关系且有实质内容。出现相同词语不等于语义正确。标为根页的事实必须在总览交代；条件事实仅在提及时逐页核对。",
+    "hotspots": "依据实际入口标签对读者作出的内容承诺评审目标页。图像热点另行检查目标身份和可见区域覆盖；矩形位置正确不能补救标签指错对象。",
+    "cross_page": "沿根页选中标签追踪子页，再沿子页标签追踪孙页。每层应增加有用的区分、条件或推论，并保持数量、计时事件、限定和证据边界。换一种说法不等于深入，不要求编造具体案例。",
+    "instruction": "保持案例语言，区分材料事实、明确标注的推论、虚构测试规则与缺失信息。评审锚点和受控回放只供评审使用，禁止追加到生成输入。"
+  },
+  "expected_hotspots": [
+    {
+      "id": "purple-ring",
+      "label": "紫色圆环",
+      "aliases": [
+        "紫色环形",
+        "紫色环"
+      ],
+      "box": {
+        "x": 0.06,
+        "y": 0.1,
+        "width": 0.211,
+        "height": 0.30142857142857143
+      },
+      "required": true
+    },
+    {
+      "id": "orange-capsule",
+      "label": "橙色竖向胶囊形",
+      "aliases": [
+        "橙色胶囊形",
+        "橙色竖形"
+      ],
+      "box": {
+        "x": 0.77,
+        "y": 0.09285714285714286,
+        "width": 0.111,
+        "height": 0.38
+      },
+      "required": true
+    },
+    {
+      "id": "blue-quadrilateral",
+      "label": "蓝色不规则四边形",
+      "aliases": [
+        "蓝色四边形",
+        "蓝色大形状"
+      ],
+      "box": {
+        "x": 0.29,
+        "y": 0.2714285714285714,
+        "width": 0.411,
+        "height": 0.6085714285714285
+      },
+      "required": true
+    },
+    {
+      "id": "coral-bar",
+      "label": "珊瑚色横条",
+      "aliases": [
+        "珊瑚色长方形",
+        "珊瑚红横条",
+        "橙红色横条"
+      ],
+      "box": {
+        "x": 0.095,
+        "y": 0.55,
+        "width": 0.321,
+        "height": 0.12285714285714286
+      },
+      "required": true
+    },
+    {
+      "id": "green-star",
+      "label": "绿色星形",
+      "aliases": [
+        "绿色五角星",
+        "绿色小星形"
+      ],
+      "box": {
+        "x": 0.826,
+        "y": 0.6857142857142857,
+        "width": 0.132,
+        "height": 0.18
+      },
+      "required": true
+    }
+  ],
+  "iou_threshold": 0.5,
+  "independent_visual_scene_id": "irregular-occlusion-v1"
+}

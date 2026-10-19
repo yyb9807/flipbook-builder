@@ -6,7 +6,7 @@ import httpx
 from agents.hotspot_localization import HotspotLocalizationAgent, sanitize_hotspots
 from agents.image_generation import ImageGenerationAgent
 from agents.knowledge import KnowledgeFormatError
-from agents.page_context import GENERATION_REVISION
+from agents.page_context import EXPERIMENTAL_GENERATION_REVISIONS
 from agents.page_generation import PageGenerationAgent
 from storage import url_to_disk_path
 
@@ -53,8 +53,8 @@ async def perform(stage: str, config, frozen: dict, child: dict, page: dict | No
                 visual_style=settings.get("visual_style", "encyclopedia"), language=settings.get("language", "zh"),
                 selected_keywords=frozen["selected_keywords"],
                 **({"content_format": "knowledge-v1"} if frozen.get("content_format") == "knowledge-v1" else {}),
-                **({"generation_revision": GENERATION_REVISION} if frozen.get("content_format") == "knowledge-v1"
-                   and frozen.get("generation_revision") == GENERATION_REVISION else {}),
+                **({"generation_revision": frozen["generation_revision"]} if frozen.get("content_format") == "knowledge-v1"
+                   and frozen.get("generation_revision") in EXPERIMENTAL_GENERATION_REVISIONS else {}),
             )
         elif stage == "image":
             result = await ImageGenerationAgent(config).generate(

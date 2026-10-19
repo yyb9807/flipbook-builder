@@ -2,15 +2,23 @@
 
 更新于 2026-10-19。此页是当前可运行入口；[历史记录](archive/README.md)中的旧阶段数字、临时地址与已退役脚本不代表当前复测方式。
 
-## 最近完整结果
+## 第十轮当前结果
 
-第九轮完成本地 Qwen3-VL 2B 量化模型的真实基线与候选各 18 阶段，两侧各 6/6 案例未通过 Agent 评审，人工仍未审，实际分支不同也不能计算整体分差。候选保持默认关闭；当前评估 runner 固定测试实验修订，生产新任务默认仍用原行为。全轮本地服务累计 42 次接收且全部完成，生成器 API 费用为 0；另有一次未到达服务的候选连接失败意图，原检查点完整保留。
+本轮保持模型无关，不预置或绑定具体模型。默认 `legacy-v1`，`grounded-v2` / `focused-v3` 显式选择且服务环境默认关闭；候选先冻结，再打开独立保留集，保留集不修改。冻结依据见[计划](ROUND_10_PLAN.md)与[候选记录](evidence/round10-candidate-freeze.json)，交付与最终浏览器状态见[本轮实施](ROUND_10_IMPLEMENTATION.md)，完整本地结果见[机器证据](evidence/round10-verification.json)。
 
-最终隔离 Postgres 后端 314/314、评估器 148/148、前端 299/299；lint、Ruff、双环境播放器和构建通过。默认配置的生成恢复 7/7、历史 10/10、发布 10/10、正式 Compose HTTP 19/19 通过。实际浏览器完成三层真实生成、编辑、保护分支的版本恢复、ZIP 下载、固定发布与移动阅读；停止编辑 API、模型、专用后端和数据库后，发布仍能刷新及三层导航，四份公开文件字节不变。详见[第九轮实施报告](ROUND_9_IMPLEMENTATION.md)与[机器证据](evidence/round9-verification.json)。这些功能结果不表示正文或热点质量达标。
+| 验证 | 当前结果 | 范围 |
+|---|---|---|
+| 后端真实隔离 Postgres | 434/434 | 默认兼容、修订冻结、上下文、坐标与任务/历史/发布 |
+| 评估器 | 163 项、27 个 subtests 通过 | 恢复身份、合法/非法 bbox、显式上限、录制适配与受控 HTTP |
+| 前端 | 37 文件、299/299 | 产品回归；lint、双环境播放器、生产与发布构建通过 |
+| 真实进程 | 默认生成 7/7、focused-v3 生成 7/7、历史 10/10、发布 10/10 | 本地受控供应商与独立 Postgres |
+| 正式 Compose | 构建/启动通过，HTTP 19/19 | 正式 nginx / FastAPI / Postgres / reader |
+| 开发集与保留集回放 | 六组各 6 案例、18 阶段执行/自动检查通过 | 三修订 × 两套数据；显式图片上限 5 |
+| 实际浏览器与隔离阅读 | 通过 | 三层生成、编辑/历史恢复、实际 ZIP 下载、文字/图片固定发布、390px 阅读、停库后独立阅读及文件一致性 |
 
-## 前轮保留结果
+已完成回放恢复不新增调用、输出字节保持；不同修订的受控内容/标签相同，坐标在等价转换容差内一致。这证明夹具适配和执行合约，**不证明真实模型质量改善**：六组 Agent 与人工均为 `not_reviewed`，真实模型调用 0。Ruff 通过。真实浏览器闭环也已完成；其通过只证明产品流程与隔离阅读，不转为模型质量评审。
 
-第八轮新增独立[模型质量评估流程](MODEL_QUALITY.md)：固定中英文 6 案例、18 阶段。第八轮提交前清理后的评估测试为 94/94，Ruff 和两次完整回放、恢复、对比通过；新增负例覆盖损坏的本地运行、恢复配置和评审文件。六个作品输出与清理前逐项相同，数据集摘要不变。首次完整验收的 89/89、真实 Postgres 后端 290/290，以及桌面和 390px 报告检查保留原测量值。该轮没有改动生产代码和前端产品，清理时未重复完整发布浏览器流程。付费调用为 0，真实模型质量为未审，总分为空。详见[第八轮实施报告](archive/ROUND_8_IMPLEMENTATION.md)与[机器证据](archive/evidence/round8-verification.json)的 `pre_commit_cleanup`。
+第九轮原始真实基线与候选各 18 阶段、两侧各 6/6 Agent 失败、人工未审及分支不可直接比较，仍保留在[原报告](archive/ROUND_9_IMPLEMENTATION.md)和[原始证据](evidence/round9-verification.json)。其后端 314、评估器 148 等测量值不由本轮覆盖。
 
 ## 模型评估入口
 
@@ -21,13 +29,11 @@ python -m pytest scripts/quality_eval/tests -q
 python scripts/evaluate_quality.py run --output evals/runs/new-baseline
 ```
 
-使用后端开发依赖，无需数据库或密钥；每次使用新的运行目录。Agent/人工评审和显式 live 额度见[运行手册](MODEL_QUALITY.md)。默认离线回放，真实调用必须显式配置模型与额度；本轮本地推理环境独立于应用后端。GitHub Actions CI/CD 已移除。
+使用后端开发依赖，无需数据库或密钥，每次使用新的运行目录。默认离线回放与 `legacy-v1`；显式修订、热点上限、独立保留集、恢复身份、Agent/人工评审及 live 额度统一见[质量评估手册](MODEL_QUALITY.md)。仓库不配置 GitHub Actions CI/CD。
 
-## 产品流程的保留基线
+## 历史结果
 
-第七轮的完整本地验收仍作为发布、历史、任务恢复与产品浏览器流程的基线：后端真实 Postgres 290/290、前端 299/299、发布与历史真实进程各 10/10、生成恢复 7/7、整栈 HTTP 19/19，双环境播放器、静态检查与四服务构建通过。独立 reader 在编辑后端和数据库停止后仍能提供三层作品与复制图片。实现、审查修复、桌面/390px 截图和限制见[第七轮报告](archive/ROUND_7_IMPLEMENTATION.md)。
-
-[第七轮汇总](archive/evidence/round7-verification.json)保留完整结果，其 `pre_commit_cleanup` 另记当轮提交前复测：前端 299 项、后端发布专项 22 项、发布进程 10 场景及构建通过。原始数字未被后续结果覆盖；各项进程、浏览器与停库证据从报告进入。[历史索引](archive/README.md)保留更早记录，证据中的临时地址与测试数据库名不是部署配置。
+[历史索引](archive/README.md)集中保留第一至九轮计划、测量和失败，旧数字不由本轮结果覆盖。页面历史、独立固定发布与评估流程的初始验收分别见[第六轮](archive/ROUND_6_IMPLEMENTATION.md)、[第七轮](archive/ROUND_7_IMPLEMENTATION.md)和[第八轮](archive/ROUND_8_IMPLEMENTATION.md)。临时地址与数据库名是测量上下文，不是部署配置。
 
 ## 本地检查
 
@@ -75,6 +81,11 @@ python scripts/verify_version_history.py \
 python scripts/verify_knowledge_generation.py \
   --database-url postgresql://flipbook:flipbook@localhost:5434/flipbook \
   --evidence /tmp/flipbook-knowledge-new.json
+
+# 显式实验；仍只调用本地受控供应商
+KNOWLEDGE_GENERATION_REVISION=focused-v3 python scripts/verify_knowledge_generation.py \
+  --database-url postgresql://flipbook:flipbook@localhost:5434/flipbook \
+  --evidence /tmp/flipbook-knowledge-focused-new.json
 ```
 
 | 入口 | 场景与主要断言 |
@@ -97,7 +108,10 @@ python scripts/verify_knowledge_generation.py \
 
 保持标准输入可用，再启动前端 `npm run dev`。demo 打印假供应商地址与合成 Key，在模型设置填写；向 demo 标准输入发送 `{"action":"stop"}` 后清理自己的进程和数据库。不要提供真实付费 Key。
 
-第七轮实际产品浏览器覆盖：三层知识作品及图片作品发布、草稿阻止、编辑/恢复后旧快照不变、新发布新链接、冻结播放器样式、独立 PNG、删除原作后全局撤下与双语 404，以及 390px 英文长列表。复制测试验证反馈及链接，不把桥接剪贴板读回当作操作系统剪贴板一致性的证明。流程记录与截图见[第七轮报告](archive/ROUND_7_IMPLEMENTATION.md)。
+第十轮实际操作完成三层生成、标题编辑，并恢复最早版本且保留之后增加的 1 个分支；4 个生成任务冻结 `focused-v3` 与上下文，共 4 次假供应商请求、真实模型调用 0。通过界面实际下载 ZIP，独立检查其 3 节点、2 分支、本地播放器和无 Key；该数据核验不冒充浏览器 `file://` 播放。
+
+分别发布三页文字作品与一页图片作品；390×844 阅读三层时页面宽度为 390、无横向溢出，质量报告正文宽度 375。停止本轮测试 API、假供应商以及专用 Compose 的 backend/db 后，实际刷新阅读器仍能三层导航并加载 800×500 PNG，9 个独立 reader HTTP 文件逐字节 SHA-256 一致。恢复 Compose 的 backend/db 健康后，再通过 UI 修改原稿，编辑前后发布文件仍逐字节相同。本轮临时测试服务和独立数据库均已清理；步骤与非敏感证据见[第十轮报告](ROUND_10_IMPLEMENTATION.md)和[验证汇总](evidence/round10-verification.json)。
+
 
 ## 正式 Compose 与停库隔离
 
@@ -109,12 +123,12 @@ python scripts/verify_stack.py --base-url http://localhost:8080
 
 脚本只操作自己新建的合成作品并清理。默认假供应商地址 `http://host.docker.internal:19091/v1` 适用于能通过该名称访问宿主机的容器环境；其他环境用 `--provider-url` 指定后端容器可达的本机测试地址。参数以 `--help` 为准。
 
-独立 reader 隔离另在**专用测试 Compose 项目**验收：准备发布并记录全部公开文件哈希；停止该项目的 backend 和 db，确认均已退出且 reader 仍运行；实际浏览器刷新、三层导航和加载复制 PNG，并通过 HTTP 逐字节比较 HTML/JSON/JS/CSS/PNG；最后恢复编辑服务。不要停止无关容器。检查 reader 运行配置为非 root、只读根文件系统、仅发布目录只读挂载且无数据库/模型环境变量。第七轮 3 份发布均通过，证据见[停库隔离](archive/evidence/round7-isolation.json)。
+独立 reader 隔离另在**专用测试 Compose 项目**验收：准备发布并记录全部公开文件哈希；停止该项目的 backend 和 db，确认均已退出且 reader 仍运行；实际浏览器刷新、三层导航和加载复制 PNG，并通过 HTTP 逐字节比较 HTML/JSON/JS/CSS/PNG；最后恢复编辑服务。不要停止无关容器。检查 reader 运行配置为非 root、只读根文件系统、仅发布目录只读挂载且无数据库/模型环境变量。本轮两份发布、9 个公开文件均通过；最终记录见[验收证据](evidence/round10-verification.json)。早期停库测量见[第七轮证据](archive/evidence/round7-isolation.json)。
 
 ## 证据和限制
 
 当前进程验收扫描逻辑行、DBOS Base64 序列化、自己隔离库的原始关系文件、日志与资产，未发现合成 Key，负对照能检出误存 Key。扫描时允许 Postgres 正在清理的关系文件消失并记录数量，其余文件仍逐字节检查。审计未执行 `pg_dump`，也未读取无关数据库或整个集群 WAL。
 
-自动化回归使用本地受控假供应商；第九轮的真实质量实验和四次产品浏览器生成使用本地量化模型，生成器付费 API 请求均为 0。功能检查证明结构、关系、恢复与发布行为，不证明知识正确性；真实模型的逐例失败另见第九轮报告，不能外推为其他模型的质量、速度或费用。资料由作者填写，没有自动抓取或事实核验；混合恢复内容没有区块级出处。
+本轮自动化回归、评估与产品验收仅使用受控供应商，真实模型调用为 0。第九轮真实实验另存历史报告与原证据。功能检查证明结构、关系、恢复与发布行为，不证明知识正确性或模型质量、速度、费用；受控回放不得当作内容改进或自动事实核验。资料由作者填写，没有自动抓取或事实核验；混合恢复内容没有区块级出处。
 
 历史不进入 JSON/ZIP 或固定发布。删原作会删除源历史，但保留独立发布；本地每页 50 版和服务器不主动裁剪均不能替代数据库、源图片与发布目录备份。快照限额不是压力测试；发布依赖本地 POSIX 文件锁与原子 rename。跨浏览器、真实辅助技术、浏览器 `file://` 双击、任意跨版本任务迁移、多副本和长期负载均未完整验证。本文记录的是本地验收结果。

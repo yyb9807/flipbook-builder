@@ -10,7 +10,7 @@ from agents.hotspot_localization import HotspotLocalizationAgent, sanitize_hotsp
 from agents.image_generation import ImageGenerationAgent
 from agents.input_analysis import InputAnalysisAgent
 from agents.knowledge import compose_knowledge
-from agents.page_context import GENERATION_REVISION
+from agents.page_context import EXPERIMENTAL_GENERATION_REVISIONS
 from agents.page_generation import STYLE_PROMPTS, PageGenerationAgent
 from jobs import providers
 from jobs.workflows import database_operation, read_decision, runtime
@@ -31,8 +31,8 @@ def asset_bytes(url: str, expected_sha: str | None = None) -> bytes:
 async def perform_page(stage, config, frozen, page=None, image=None):
     settings = frozen["settings"]
     language = settings.get("language", "zh")
-    revision = ({"generation_revision": GENERATION_REVISION}
-                if frozen.get("generation_revision") == GENERATION_REVISION
+    revision = ({"generation_revision": frozen["generation_revision"]}
+                if frozen.get("generation_revision") in EXPERIMENTAL_GENERATION_REVISIONS
                 and frozen.get("content_format") in {"knowledge-v1", "image-v1"} else {})
     if stage == "analyze":
         agent = InputAnalysisAgent(config)

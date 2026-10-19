@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "suite_id": "quality-holdout-v1",
+  "suite_sha256": "a8ba1f95f5b8dc494d71c174c9475b49cbed36eb74c85687a47b82a8a493576e",
+  "frozen_at_utc": "2026-10-19T05:15:12+00:00",
+  "case_count": 6,
+  "stage_count": 18,
+  "content_families": 3,
+  "independent_visual_scenes": 1,
+  "origin": "independent-curator; no production prompts, runs, reviews, optimization plans, or real inference consulted",
+  "files_sha256": {
+    "LICENSE": "4c6831888c1c00e0b530d2b3bbddfd5a625ccd33424476b662ec003facda42bc",
+    "README.md": "1c77821ce3c61f03060f67b222456f3974ad317bb3e5ca82dbac73fe49259fd0",
+    "assets/generate_scene.py": "d73ea2a00c7304155f5fd5935bf53636dab7336255c71c7c6a110c5c0a16a7ec",
+    "assets/geometry.json": "0626fe398767671bbd6a3065114b1919bead5d84a337c7fbb256898770b22df6",
+    "assets/scene.png": "5e7023b67cd1e1090869c063e96b21100a5dc80d6afec6981a86cee0b879e030",
+    "assets/scene.svg": "882bd414f9b36ab49a658b57681df7862250587835d2c994fbe982fd3714ace1",
+    "author_fixture.py": "4fe682b22267318af4bcd385aa0f54870395a6ac95a07870edbe60540f61e23c",
+    "cases/lunar-geometry-en.json": "d36f897d122d9ca3ee02de8d70179af7c2a8ddf1a0f3f1089a1474aae5a4e757",
+    "cases/lunar-geometry-zh.json": "84de8390fdc9ca19d85981b72628041b6c7c7f76bdab30f1b394f33170ae23eb",
+    "cases/map-desk-en.json": "e50ca8fc3b09ffd3ac5736d0d4ebbf4534a96b1559967d2f31949a179ed81558",
+    "cases/map-desk-zh.json": "39549f95df767ef340758ba76383fbff2803563553bf25c547626566b0083957",
+    "cases/occluded-layout-en.json": "185fe7f6e65ee166de58a44fb7a8cc1d8b2cfe04f6fd19fa4b9342426a77ca9f",
+    "cases/occluded-layout-zh.json": "125181ab4cd248a1e823b4be586a9595bba4ac7c5331db9ba2218047e798742a",
+    "replay.json": "c2220282208aa618574c608f71573bd79f888cfd5f90fbe626776bf465f4938b",
+    "sources/README.md": "3f17215946d160de33185e9444218744385a8db92b43ba1dba5b02ad0e1e911f",
+    "suite.json": "1392172f7b12c76a8835d599e53c61aa4558a5e1b82523e47e6dbc603dd1d1de",
+    "validate_fixture.py": "9669d740361c070e42033f876d5237e02809a453da25a145488556b088def739"
+  }
+}

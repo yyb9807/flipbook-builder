@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "id": "occluded-layout-en",
+  "version": "1.0.0",
+  "language": "en",
+  "title": "Original multiscale scene with occlusion",
+  "input": {
+    "kind": "image",
+    "image_path": "assets/scene.png",
+    "sha256": "5e7023b67cd1e1090869c063e96b21100a5dc80d6afec6981a86cee0b879e030",
+    "width": 1000,
+    "height": 700
+  },
+  "source": {
+    "kind": "original-synthetic-image",
+    "text": "An original flat-color scene on a pale background contains five shapes of unequal size at irregular positions: a purple ring at upper left, an orange vertical capsule at upper right, a large blue irregular quadrilateral across the center and lower area, a coral horizontal bar at lower left, and a smaller green star at lower right. The coral bar is drawn over part of the blue shape. The ring has a background-colored opening. The image supplies no physical scale, material, function, provenance of real objects, or temporal event.",
+    "license": "MIT",
+    "notes": "One independently authored language-neutral scene, reused in Chinese and English. Original Pillow generator and visible-support pixel records are in assets/. Five unequal, irregularly placed shapes include partial occlusion; no third-party image, real photo, or image model was used. Reviewer annotations are not generation context. This synthetic scene does not establish natural-image generalization.",
+    "references": [
+      {
+        "id": "original-scene",
+        "title": "Original five-shape occlusion scene; deterministic repository-native generator, MIT",
+        "checked_on": "2026-10-19"
+      }
+    ]
+  },
+  "branch_steps": [
+    {
+      "preferred_labels": [
+        "Blue irregular quadrilateral",
+        "Blue quadrilateral",
+        "Large blue four-sided shape"
+      ]
+    },
+    {
+      "preferred_labels": [
+        "Occlusion and visible boundary",
+        "Occlusion",
+        "Visible boundary"
+      ]
+    }
+  ],
+  "fact_checks": [
+    {
+      "id": "five-targets",
+      "claim": "The overview should distinguish all five targets, including the ring opening and the smaller star.",
+      "evidence_excerpt": "An original flat-color scene on a pale background contains five shapes of unequal size at irregular positions: a purple ring at upper left, an orange vertical capsule at upper right, a large blue irregular quadrilateral across the center and lower area, a coral horizontal bar at lower left, and a smaller green star at lower right.",
+      "source_id": "original-scene",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    },
+    {
+      "id": "occlusion-order",
+      "claim": "The coral bar covers the blue shape in the overlapping region; the visible stacking order cannot be reversed.",
+      "evidence_excerpt": "The coral bar is drawn over part of the blue shape.",
+      "source_id": "original-scene",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "ring-opening",
+      "claim": "The ring has a background-colored opening, so it should not be described as a solid disk.",
+      "evidence_excerpt": "The ring has a background-colored opening.",
+      "source_id": "original-scene",
+      "severity": "major",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    }
+  ],
+  "forbidden_claims": [
+    {
+      "id": "reverse-overlap",
+      "claim": "The blue shape covers the coral bar in the overlapping area.",
+      "reason": "This reverses the visible stacking order.",
+      "severity": "critical"
+    },
+    {
+      "id": "hidden-completion",
+      "claim": "The image precisely reveals texture, damage, or construction beneath the bar.",
+      "reason": "Covered pixels supply no visible evidence.",
+      "severity": "major"
+    },
+    {
+      "id": "physical-invention",
+      "claim": "The image establishes real materials, physical dimensions, or intended use.",
+      "reason": "This original flat illustration supplies no physical-object evidence.",
+      "severity": "major"
+    }
+  ],
+  "unknown_limits": [
+    "Physical scale, material, mass, real-world use, history, and the details of covered regions."
+  ],
+  "dimension_notes": {
+    "body": "Assess whether the explanation expresses the supplied relationships correctly and provides useful substance. A matching word is not evidence that the claim is true. Root anchors are mandatory on the overview; conditional anchors apply only when that fact is discussed.",
+    "hotspots": "Judge the promise made by each actual entry label against what its destination explains. For images, separately judge target identity and overlap with visible support. Good geometry cannot rescue the wrong referent.",
+    "cross_page": "Follow the chosen root label into the child, then the chosen child label into the grandchild. Each page should add a useful distinction, condition, or implication while preserving quantities, event anchors, qualifications, and evidence limits. Paraphrase alone is not added depth; invented worked examples are not required.",
+    "instruction": "Use the case language. Separate supplied facts, clearly stated inference, invented test conventions, and missing information. Evaluation anchors and controlled replays are reviewer resources and must never be appended to generation input."
+  },
+  "expected_hotspots": [
+    {
+      "id": "purple-ring",
+      "label": "Purple ring",
+      "aliases": [
+        "purple annulus",
+        "violet ring"
+      ],
+      "box": {
+        "x": 0.06,
+        "y": 0.1,
+        "width": 0.211,
+        "height": 0.30142857142857143
+      },
+      "required": true
+    },
+    {
+      "id": "orange-capsule",
+      "label": "Orange vertical capsule",
+      "aliases": [
+        "orange capsule",
+        "vertical orange pill shape"
+      ],
+      "box": {
+        "x": 0.77,
+        "y": 0.09285714285714286,
+        "width": 0.111,
+        "height": 0.38
+      },
+      "required": true
+    },
+    {
+      "id": "blue-quadrilateral",
+      "label": "Blue irregular quadrilateral",
+      "aliases": [
+        "blue quadrilateral",
+        "large blue four-sided shape"
+      ],
+      "box": {
+        "x": 0.29,
+        "y": 0.2714285714285714,
+        "width": 0.411,
+        "height": 0.6085714285714285
+      },
+      "required": true
+    },
+    {
+      "id": "coral-bar",
+      "label": "Coral horizontal bar",
+      "aliases": [
+        "coral bar",
+        "salmon-colored rectangle",
+        "coral rectangle"
+      ],
+      "box": {
+        "x": 0.095,
+        "y": 0.55,
+        "width": 0.321,
+        "height": 0.12285714285714286
+      },
+      "required": true
+    },
+    {
+      "id": "green-star",
+      "label": "Green star",
+      "aliases": [
+        "green five-pointed star",
+        "small green star"
+      ],
+      "box": {
+        "x": 0.826,
+        "y": 0.6857142857142857,
+        "width": 0.132,
+        "height": 0.18
+      },
+      "required": true
+    }
+  ],
+  "iou_threshold": 0.5,
+  "independent_visual_scene_id": "irregular-occlusion-v1"
+}
