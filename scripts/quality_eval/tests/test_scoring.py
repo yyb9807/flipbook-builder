@@ -75,6 +75,26 @@ def reviewed(run, suite, kind="calibration"):
     return review
 
 
+def agent_reviewed(run, suite):
+    """Contract fixture only: these quotations do not establish factual truth."""
+    review = review_template(run, suite, reviewer_kind="agent")
+    review["reviewer"] = {"kind": "agent", "name": "controlled contract test", "model": "test-agent", "version": "test-v1"}
+    for entry, output in zip(review["cases"], run["cases"], strict=True):
+        project = output["project"]
+        entry["inspected_node_ids"] = list(project["nodes"])
+        root = project["nodes"].get(project["root_node_id"])
+        evidence = [{"node_id": root["id"], "quote": root["title"]}] if root else []
+        if not root:
+            continue
+        for item in entry["dimensions"].values():
+            item.update(score=4, reason="Controlled agent contract assertion.", evidence=copy.deepcopy(evidence))
+        for item in entry["fact_checks"]:
+            item.update(verdict="supported", reason="Controlled agent contract assertion.", evidence=copy.deepcopy(evidence))
+        for item in entry["forbidden_claims"]:
+            item.update(verdict="absent", reason="Controlled available-page inspection.", evidence=[])
+    return review
+
+
 @pytest.fixture
 def setup():
     suite = load_suite()
@@ -114,6 +134,115 @@ def test_live_requires_explicit_complete_human_review(setup):
     seal(run)
     assert apply_review(run, suite, reviewed(run, suite))["human_quality"] == "not_approved"
     assert apply_review(run, suite, reviewed(run, suite, "human"))["human_quality"] == "approved"
+
+
+def test_agent_review_never_grants_human_approval(setup):
+    suite, run = setup
+    run["mode"] = "live"
+    seal(run)
+    result = apply_review(run, suite, agent_reviewed(run, suite))
+    assert result["agent_quality"] == "passed"
+    assert result["human_quality"] == "not_reviewed"
+    assert result["calibration"] == "not_applicable"
+    assert all(case["review"]["status"] == "passed" for case in result["cases"])
+
+
+@pytest.mark.parametrize("field", ["name", "model", "version"])
+def test_agent_identity_requires_explicit_provenance(setup, field):
+    suite, run = setup
+    review = agent_reviewed(run, suite)
+    review["reviewer"].pop(field)
+    assert evaluate_run(run, suite, review)["agent_quality"] == "invalid"
+    with pytest.raises(ValueError):
+        apply_review(run, suite, review)
+
+
+@pytest.mark.parametrize("mutation", [
+    lambda citation: citation.update(node_id="unproduced-page"),
+    lambda citation: citation.update(section_id="missing-section"),
+    lambda citation: citation.update(section_id=[]),
+    lambda citation: citation.update(quote="A quotation invented by the reviewer."),
+    lambda citation: citation.update(quote=" "),
+])
+def test_agent_citations_must_locate_actual_output(setup, mutation):
+    suite, run = setup
+    review = agent_reviewed(run, suite)
+    mutation(review["cases"][0]["dimensions"]["body"]["evidence"][0])
+    with pytest.raises(ValueError):
+        apply_review(run, suite, review)
+
+
+def test_agent_section_quote_is_bound_to_named_body(setup):
+    suite, run = setup
+    review = agent_reviewed(run, suite)
+    output = run["cases"][0]
+    root = output["project"]["nodes"][output["project"]["root_node_id"]]
+    section = root["scene_document"]["sections"][0]
+    review["cases"][0]["dimensions"]["body"]["evidence"] = [
+        {"node_id": root["id"], "section_id": section["id"], "quote": section["body"]}]
+    apply_review(run, suite, review)
+    review["cases"][0]["dimensions"]["body"]["evidence"][0]["section_id"] = root["scene_document"]["sections"][1]["id"]
+    with pytest.raises(ValueError):
+        apply_review(run, suite, review)
+
+
+def test_agent_child_quote_cannot_fulfil_required_root_fact(setup):
+    suite, run = setup
+    review = agent_reviewed(run, suite)
+    output = run["cases"][0]
+    child = output["project"]["nodes"][output["branch_node_ids"][1]]
+    root_fact = next(check for check in suite["cases"][0]["fact_checks"] if check["applies_to"] == ["root"])
+    item = next(item for item in review["cases"][0]["fact_checks"] if item["id"] == root_fact["id"])
+    item["evidence"] = [{"node_id": child["id"], "quote": child["title"]}]
+    with pytest.raises(ValueError):
+        apply_review(run, suite, review)
+
+
+@pytest.mark.parametrize("scope", [[], ["invented-page"], None, [[], []]])
+def test_agent_absence_claim_requires_all_actual_pages_inspected(setup, scope):
+    suite, run = setup
+    review = agent_reviewed(run, suite)
+    review["cases"][0]["inspected_node_ids"] = scope
+    with pytest.raises(ValueError):
+        apply_review(run, suite, review)
+
+
+def test_agent_required_root_fact_not_mentioned_remains_failure(setup):
+    suite, run = setup
+    review = agent_reviewed(run, suite)
+    root_fact = next(check for check in suite["cases"][0]["fact_checks"] if check["applies_to"] == ["root"])
+    item = next(item for item in review["cases"][0]["fact_checks"] if item["id"] == root_fact["id"])
+    item.update(verdict="not_mentioned", evidence=[])
+    result = apply_review(run, suite, review)
+    assert result["cases"][0]["review"]["status"] == "failed"
+    assert f"required_fact_missing:{root_fact['id']}" in result["cases"][0]["review"]["failures"]
+
+
+def test_agent_partial_failed_execution_can_be_saved_without_fabricating_review(setup):
+    suite, run = setup
+    output = run["cases"][0]
+    output.update(status="failed", branch_node_ids=[], branch_path=[], calls=[])
+    output["project"].update(root_node_id=None, nodes={})
+    run["status"] = "incomplete"
+    seal(run)
+    review = agent_reviewed(run, suite)
+    result = apply_review(run, suite, review)
+    assert result["agent_quality"] == "partial"
+    assert result["human_quality"] == "not_reviewed"
+    assert result["execution"] == "failed"
+    assert result["cases"][0]["review"]["status"] == "partial"
+    assert result["cases"][0]["review"]["unreviewed_items"]
+    assert not result["cases"][0]["review"]["errors"]
+    comparison = compare_runs(run, run, suite, review, review)
+    assert not comparison["comparable"]
+
+
+def test_agent_completed_case_cannot_leave_dimension_unreviewed(setup):
+    suite, run = setup
+    review = agent_reviewed(run, suite)
+    review["cases"][0]["dimensions"]["cross_page"].update(score=None, reason="Unavailable", evidence=[])
+    with pytest.raises(ValueError):
+        apply_review(run, suite, review)
 
 
 @pytest.mark.parametrize("mutation,code", [
@@ -266,6 +395,48 @@ def test_prompt_and_implementation_changes_disclosed_with_body_pairs(setup):
     assert comparison["implementation_changed"] and comparison["prompt_sources_changed"]
     assert len(comparison["case_deltas"]) == 6
     assert comparison["case_deltas"][0]["base"]["pages"][0]["title"]
+
+
+def test_unreviewed_runs_remain_generation_comparable_without_score_comparison(setup):
+    suite, run = setup
+    comparison = compare_runs(run, run, suite)
+    assert comparison["comparable"]
+    assert not comparison["review_scores_comparable"]
+    assert "base_review_missing_invalid_or_partial" in comparison["review_comparison_reasons"]
+
+
+def test_human_and_agent_scores_are_not_directly_comparable(setup):
+    suite, run = setup
+    comparison = compare_runs(run, run, suite, reviewed(run, suite, "human"), agent_reviewed(run, suite))
+    assert comparison["comparable"]
+    assert not comparison["review_scores_comparable"]
+    assert "different_reviewer_kind" in comparison["review_comparison_reasons"]
+    assert all(row[side]["dimension_scores"] for row in comparison["case_deltas"] for side in ("base", "candidate"))
+    assert comparison["quality_score_delta"] is comparison["winner"] is None
+
+
+@pytest.mark.parametrize("field", ["name", "model", "version"])
+def test_different_agent_provenance_prevents_score_comparison(setup, field):
+    suite, run = setup
+    base_review = agent_reviewed(run, suite)
+    candidate_review = copy.deepcopy(base_review)
+    candidate_review["reviewer"][field] = "different-provenance"
+    comparison = compare_runs(run, run, suite, base_review, candidate_review)
+    assert comparison["comparable"]
+    assert not comparison["review_scores_comparable"]
+    assert f"different_reviewer_{field}" in comparison["review_comparison_reasons"]
+
+
+def test_matching_complete_agent_reviews_allow_descriptive_score_comparison(setup):
+    suite, run = setup
+    review = agent_reviewed(run, suite)
+    # A complete, valid low score is still comparable evidence, not an approval.
+    review["cases"][0]["dimensions"]["body"]["score"] = 2
+    comparison = compare_runs(run, run, suite, review, review)
+    assert comparison["comparable"]
+    assert comparison["review_scores_comparable"]
+    assert not comparison["review_comparison_reasons"]
+    assert comparison["quality_score_delta"] is comparison["winner"] is None
 
 
 def test_boolean_score_is_not_a_numeric_rating(setup):

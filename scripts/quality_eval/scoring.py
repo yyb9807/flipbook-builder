@@ -8,7 +8,7 @@ from collections import Counter
 from .artifacts import canonical_sha256
 from .rubric import DIMENSIONS, RUBRIC_VERSION
 
-METHOD_VERSION = "quality-diagnostics-v1"
+METHOD_VERSION = "quality-diagnostics-v2"
 
 
 def _run_digest(run):
@@ -256,10 +256,56 @@ def _text_review(item):
             and isinstance(item.get("evidence"), str) and bool(item["evidence"].strip()))
 
 
-def _review_case(case, output, entry):
+def _agent_evidence(item, output, *, allow_empty=False, root_required=False):
+    """Validate provenance of quotations, without judging their meaning."""
+    if not isinstance(item, dict) or not isinstance(item.get("reason"), str) or not item["reason"].strip():
+        return False
+    evidence = item.get("evidence")
+    if not isinstance(evidence, list) or len(evidence) > 200 or (not evidence and not allow_empty):
+        return False
+    project = output.get("project") or {}
+    nodes = project.get("nodes") or {}
+    cited_roots = False
+    for citation in evidence:
+        if not isinstance(citation, dict) or not isinstance(citation.get("node_id"), str):
+            return False
+        node = nodes.get(citation["node_id"])
+        quote = citation.get("quote")
+        if not isinstance(node, dict) or not isinstance(quote, str) or not quote.strip():
+            return False
+        sections = (node.get("scene_document") or {}).get("sections", [])
+        if "section_id" in citation:
+            section_id = citation["section_id"]
+            if not isinstance(section_id, str):
+                return False
+            texts = [section.get("body", "") for section in sections if section.get("id") == section_id]
+        else:
+            texts = [node.get("title", ""), node.get("description", "")]
+            texts.extend(hotspot.get("label", "") for hotspot in node.get("hotspots", []))
+            texts.extend(value for section in sections for value in (section.get("title", ""), section.get("body", "")))
+        if not any(isinstance(value, str) and quote in value for value in texts):
+            return False
+        cited_roots |= citation["node_id"] == project.get("root_node_id")
+    return not root_required or cited_roots
+
+
+def _agent_unreviewed(item, field):
+    return (isinstance(item, dict) and item.get(field) is None and isinstance(item.get("reason"), str)
+            and item.get("evidence") == [])
+
+
+def _review_case(case, output, entry, *, agent=False):
     errors, failures = [], []
     if not isinstance(entry, dict) or entry.get("case_sha256") != output.get("case_sha256"):
         return {"status": "invalid", "errors": ["case_review_hash_mismatch_or_missing"], "failures": []}
+    partial = agent and output.get("status") != "completed"
+    unreviewed = []
+    inspected = entry.get("inspected_node_ids")
+    nodes = (output.get("project") or {}).get("nodes", {})
+    scope_ok = (isinstance(inspected, list) and all(isinstance(node_id, str) for node_id in inspected)
+                and len(inspected) == len(set(inspected)) and set(inspected) == set(nodes))
+    if agent and not scope_ok:
+        errors.append("inspected_node_coverage_mismatch")
     dimensions = entry.get("dimensions", {})
     if not isinstance(dimensions, dict):
         dimensions = {}
@@ -270,7 +316,11 @@ def _review_case(case, output, entry):
         if not isinstance(item, dict):
             item = {}
         score = item.get("score")
-        if isinstance(score, bool) or not isinstance(score, int) or not 0 <= score <= 4 or not _text_review(item):
+        if partial and _agent_unreviewed(item, "score"):
+            unreviewed.append(f"dimension:{key}")
+            continue
+        evidence_ok = _agent_evidence(item, output) if agent else _text_review(item)
+        if isinstance(score, bool) or not isinstance(score, int) or not 0 <= score <= 4 or not evidence_ok:
             errors.append(f"unreviewed_dimension:{key}")
         elif score < 3:
             failures.append(f"dimension_below_acceptance:{key}")
@@ -286,14 +336,24 @@ def _review_case(case, output, entry):
         for key, check in expected.items():
             item = actual.get(key, {})
             verdict = item.get("verdict")
-            if not isinstance(verdict, str) or verdict not in verdicts or not _text_review(item):
+            if partial and _agent_unreviewed(item, "verdict"):
+                unreviewed.append(f"{collection}:{key}")
+                continue
+            absent = verdict in {"absent", "not_mentioned"} if isinstance(verdict, str) else False
+            root_required = collection == "fact_checks" and "root" in check.get("applies_to", []) and not absent
+            evidence_ok = (_agent_evidence(item, output, allow_empty=absent and scope_ok and bool(nodes),
+                                           root_required=root_required) if agent else _text_review(item))
+            if not isinstance(verdict, str) or verdict not in verdicts or not evidence_ok:
                 errors.append(f"unreviewed_{collection}:{key}")
             elif verdict in {"contradicted", "present"}:
                 failures.append(f"{collection}_failed:{key}")
             elif verdict == "not_mentioned" and "root" in check.get("applies_to", []):
                 failures.append(f"required_fact_missing:{key}")
-    return {"status": "invalid" if errors else "failed" if failures else "passed",
-            "errors": errors, "failures": failures}
+    result = {"status": "invalid" if errors else "partial" if partial else "failed" if failures else "passed",
+              "errors": errors, "failures": failures}
+    if agent:
+        result.update(inspected_node_ids=inspected if scope_ok else [], unreviewed_items=unreviewed)
+    return result
 
 
 def evaluate_run(run: dict, suite: dict, review: dict | None = None) -> dict:
@@ -334,9 +394,12 @@ def evaluate_run(run: dict, suite: dict, review: dict | None = None) -> dict:
                 or review.get("evaluator_sha256") != evaluator_sha256()
                 or review.get("run_sha256") != run_hash or review.get("suite_sha256") != run.get("suite_sha256")):
             review_errors.append("review_binding_mismatch")
-        if (not isinstance(reviewer.get("kind"), str) or reviewer["kind"] not in {"human", "calibration"}
+        if (not isinstance(reviewer.get("kind"), str) or reviewer["kind"] not in {"human", "calibration", "agent"}
                 or not isinstance(reviewer.get("name"), str) or not reviewer["name"].strip()):
             review_errors.append("reviewer_missing_or_invalid")
+        if reviewer.get("kind") == "agent" and any(not isinstance(reviewer.get(field), str) or not reviewer[field].strip()
+                                                  for field in ("model", "version")):
+            review_errors.append("agent_reviewer_provenance_missing")
         entries = review.get("cases", [])
         if not isinstance(entries, list):
             entries = []
@@ -345,7 +408,8 @@ def evaluate_run(run: dict, suite: dict, review: dict | None = None) -> dict:
         if set(entries_by_id) != set(expected) or len(entries_by_id) != len(entries):
             review_errors.append("review_case_coverage_mismatch")
         for output, result in zip((item for item in outputs if item.get("case_id") in expected), results):
-            result["review"] = _review_case(expected[output["case_id"]], output, entries_by_id.get(output["case_id"]))
+            result["review"] = _review_case(expected[output["case_id"]], output, entries_by_id.get(output["case_id"]),
+                                            agent=reviewer.get("kind") == "agent")
             if review_errors:
                 result["review"]["status"] = "invalid"
                 result["review"]["errors"] = [*result["review"]["errors"], *review_errors]
@@ -356,18 +420,28 @@ def evaluate_run(run: dict, suite: dict, review: dict | None = None) -> dict:
     automatic_ok = execution_ok and all(item["automatic_gate"] == "passed" for item in results)
     reviewed_ok = automatic_ok and not review_errors and review is not None and all(item["review"]["status"] == "passed" for item in results)
     human_approved = reviewed_ok and run.get("mode") == "live" and reviewer.get("kind") == "human"
+    agent_quality = "not_reviewed"
+    if review is not None and reviewer.get("kind") == "agent":
+        if review_errors or binding_errors or any(item["review"]["status"] == "invalid" for item in results):
+            agent_quality = "invalid"
+        elif any(item["review"]["status"] == "partial" for item in results):
+            agent_quality = "partial"
+        else:
+            agent_quality = "passed" if reviewed_ok and run.get("mode") == "live" else "failed"
     return {
         "schema_version": 1, "method_version": METHOD_VERSION, "rubric_version": RUBRIC_VERSION,
         "evaluator_sha256": evaluator_sha256(),
         "run_sha256": run_hash, "suite_sha256": run.get("suite_sha256"), "mode": run.get("mode"),
         "execution": "passed" if execution_ok else "failed",
         "automatic": "passed" if automatic_ok else "failed",
-        "human_quality": "approved" if human_approved else "not_reviewed" if review is None else "not_approved",
+        "human_quality": "not_reviewed" if review is None or reviewer.get("kind") == "agent" else "approved" if human_approved else "not_approved",
+        "agent_quality": agent_quality,
         "calibration": "passed" if reviewed_ok and (run.get("mode") == "replay" or reviewer.get("kind") == "calibration") else "not_applicable",
         "reviewer": reviewer, "binding_errors": binding_errors, "review_errors": review_errors, "cases": results,
         "overall_quality_score": None,
         "limitations": ["Replay is controlled fixture calibration, not a real model quality measurement.",
                         "Automatic checks do not establish factual accuracy or semantic consistency.",
+                        "Agent review verifies quoted evidence locations but does not constitute human approval.",
                         "One branch per case and one synthetic image do not establish statistical superiority or visual generalization."],
     }
 
@@ -386,6 +460,14 @@ def compare_runs(base, candidate, suite, base_review=None, candidate_review=None
         reasons.append("different_coverage_or_actual_branch")
     if left["execution"] != "passed" or right["execution"] != "passed":
         reasons.append("incomplete_or_invalid_run")
+    review_reasons = ["generation_runs_not_comparable"] if reasons else []
+    for label, assessment in (("base", left), ("candidate", right)):
+        if (assessment["review_errors"] or not assessment["cases"]
+                or any(item["review"]["status"] not in {"passed", "failed"} for item in assessment["cases"])):
+            review_reasons.append(f"{label}_review_missing_invalid_or_partial")
+    for field in ("kind", "name", "model", "version"):
+        if left["reviewer"].get(field) != right["reviewer"].get(field):
+            review_reasons.append(f"different_reviewer_{field}")
     def page_summaries(output):
         nodes = (output.get("project") or {}).get("nodes", {})
         return [{"title": nodes.get(node_id, {}).get("title", ""),
@@ -414,17 +496,19 @@ def compare_runs(base, candidate, suite, base_review=None, candidate_review=None
             row[label] = {"pages": page_summaries(outputs[case_id]), "geometry": result.get("geometry"),
                           "findings": result.get("findings", []), "review_status": review_result.get("status"),
                           "dimension_scores": {key: value.get("score") for key, value in reviews.get(case_id, {}).get("dimensions", {}).items()}
-                          if review_result.get("status") in {"passed", "failed"} else None}
+                          if review_result.get("status") in {"passed", "failed", "partial"} else None}
         deltas.append(row)
     return {"schema_version": 1, "method_version": METHOD_VERSION,
             "comparable": not reasons, "reasons": reasons,
+            "review_scores_comparable": not review_reasons, "review_comparison_reasons": review_reasons,
             "base_run_sha256": left["run_sha256"], "candidate_run_sha256": right["run_sha256"],
             "implementation_changed": base.get("producer_sha256") != candidate.get("producer_sha256"),
             "prompt_sources_changed": base.get("prompt_sources_sha256") != candidate.get("prompt_sources_sha256"),
             "models": {"base": base.get("model"), "candidate": candidate.get("model")},
+            "reviewers": {"base": left["reviewer"], "candidate": right["reviewer"]},
             "producer_sha256": {"base": base.get("producer_sha256"), "candidate": candidate.get("producer_sha256")},
             "automatic_findings": {"base": dict(Counter(item["severity"] for case in left["cases"] for item in case["findings"])),
                                    "candidate": dict(Counter(item["severity"] for case in right["cases"] for item in case["findings"]))},
             "case_deltas": deltas,
             "winner": None, "quality_score_delta": None,
-            "note": "Descriptive paired diagnostics only. No statistical model ranking or automatic quality winner."}
+            "note": "Generation comparability and review-score comparability are separate. Scores are shown as individual judgments; no statistical model ranking or automatic quality winner."}

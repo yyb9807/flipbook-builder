@@ -45,7 +45,7 @@ def _configuration(args):
         if saved["mode"] == "live" and not args.live:
             raise ValueError("live_resume_requires_explicit_live_flag")
         values = {**saved}
-        for argument in ("base_url", "model", "max_calls", "max_output_tokens", "timeout_seconds"):
+        for argument in ("base_url", "model", "max_calls", "max_output_tokens", "timeout_seconds", "branch_selection"):
             if getattr(args, argument) is not None:
                 values[argument] = getattr(args, argument)
     else:
@@ -54,7 +54,7 @@ def _configuration(args):
             raise ValueError("live_requires_provider_model_and_explicit_call_token_time_budgets")
         values = RunConfig().public()
         values["mode"] = "live" if args.live else "replay"
-        for argument in ("base_url", "model", "max_calls", "max_output_tokens", "timeout_seconds"):
+        for argument in ("base_url", "model", "max_calls", "max_output_tokens", "timeout_seconds", "branch_selection"):
             if getattr(args, argument) is not None:
                 values[argument] = getattr(args, argument)
     if values["mode"] == "live":
@@ -79,9 +79,12 @@ def parser():
     run.add_argument("--max-calls", type=int)
     run.add_argument("--max-output-tokens", type=int, help="Total reserved output-token ceiling, not measured billing.")
     run.add_argument("--timeout-seconds", type=float)
-    template = commands.add_parser("review-template", help="Export a blank, run-bound human grading template.")
+    run.add_argument("--branch-selection", choices=("strict-preferred-label", "first-hotspot"),
+                     help="Strict fixture labels by default; first-hotspot explores actual output without label hints.")
+    template = commands.add_parser("review-template", help="Export a blank, run-bound grading template.")
     template.add_argument("run_dir", type=Path)
     template.add_argument("--output", type=Path)
+    template.add_argument("--reviewer-kind", choices=("human", "agent", "calibration"), default="human")
     apply = commands.add_parser("apply-review", help="Validate a filled review and rebuild the report.")
     apply.add_argument("run_dir", type=Path)
     apply.add_argument("review", type=Path)
@@ -131,7 +134,7 @@ def main(argv=None):
         run = _read_run(args.run_dir, suite)
         if args.command == "review-template":
             output = args.output or args.run_dir / "review-template.json"
-            write_json(output, review_template(run, suite))
+            write_json(output, review_template(run, suite, reviewer_kind=args.reviewer_kind))
             print(output)
         elif args.command == "apply-review":
             review = read_json(args.review)

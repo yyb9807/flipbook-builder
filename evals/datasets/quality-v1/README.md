@@ -26,11 +26,46 @@ are distinct from facts that apply on any page **if mentioned**, so a deeper pag
 need not repeat the entire original brief. Review unexpected claims as well as
 the listed anchors. `unknown_limits` records what the input cannot establish.
 
-Each of the two `branch_steps` matches only a listed label, allowing normalized
-case and whitespace. A missing branch blocks later stages. There is no unrelated
-first-section fallback. A live model may therefore produce a useful page that
-does not satisfy this deliberately fixed regression path; report that coverage
-limit rather than silently changing the experiment.
+The default `strict-preferred-label` policy matches each of the two `branch_steps`
+only against a listed label, allowing normalized case and whitespace. Missing or
+ambiguous branches block later stages. There is no silent first-section fallback.
+The explicit CLI option `--branch-selection first-hotspot` instead follows the
+first entry in the actual output, without inserting fixture labels or answers
+into production prompts. It fixes the traversal procedure, not the actual themes;
+different paths remain incomparable. Both Round 9 live runs used this explicit
+policy while these case files, selectors, image bytes and recordings stayed fixed.
+
+Agent reviews use `reviewer.kind=agent` with name, model and version, inspect every
+generated node, and bind each quotation to an actual node and optional section
+body. Root-required facts must be assessed at the root; a child cannot supply a
+missing root fact. Exact quotation validation establishes the location of the
+evidence, not correctness of the Agent's semantic judgment or human approval.
+`agent_quality` is separate and `human_quality` remains `not_reviewed`. Review
+scores require complete valid reviews with the same reviewer kind/name/model/
+version, in addition to matching generation conditions and actual paths.
+
+Round 9 used the real local `mlx-community/Qwen3-VL-2B-Instruct-4bit` model for
+baseline and candidate, each with 18 completed generation stages. Both had 6/6
+cases fail Agent acceptance; the candidate also changed code validity from 48
+hours after issue to 48 hours after submission, a critical clock-anchor error.
+Actual branch paths differed, so `comparable=false`, review scores were not
+directly comparable, and no winner was selected. The candidate was blocked from
+default admission. New production tasks retain legacy v1 behavior unless the
+server explicitly sets `KNOWLEDGE_GENERATION_REVISION=grounded-v2`; saved tasks
+use their frozen revision. The current evaluation runner actively tests that
+experimental revision, so its output is not a measurement of the production
+default. See the [run manual](../../../docs/MODEL_QUALITY.md),
+[Round 9 report](../../../docs/ROUND_9_IMPLEMENTATION.md) and
+[machine evidence](../../../docs/evidence/round9-verification.json).
+
+The optional local runner is [`scripts/serve_quality_model.py`](../../../scripts/serve_quality_model.py)
+with a separate [MLX runtime lock](../../runtime/mlx-vlm-0.7.8-python3.12-macos-arm64.txt),
+not a backend dependency. It requires the pinned weight revision and verified
+manifest, binds only to loopback, caps each service process at 42 generation
+requests, disables compaction/caches/retries, and terminates the process when a
+request exceeds 120 seconds. The run manual records the identity and operational
+contract; capability probes, failed attempts and explicit restarts remain part of
+the experiment record.
 
 Image boxes are normalized `(x, y, width, height)` with inclusive raster object
 extents converted to half-open pixel bounds. Matching requires an allowed label

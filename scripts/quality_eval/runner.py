@@ -64,12 +64,17 @@ def _node(case, stage, result, *, parent=None, image_url=None, model):
     return node
 
 
-def choose_branch(parent, selector):
+def choose_branch(parent, selector, *, policy="strict-preferred-label"):
     def normalized(value):
         return " ".join(value.split()).casefold()
 
-    allowed = {normalized(label) for label in selector["preferred_labels"]}
-    matches = [hotspot for hotspot in parent["hotspots"] if normalized(hotspot["label"]) in allowed]
+    if policy == "first-hotspot":
+        matches = parent["hotspots"][:1]
+    elif policy == "strict-preferred-label":
+        allowed = {normalized(label) for label in selector["preferred_labels"]}
+        matches = [hotspot for hotspot in parent["hotspots"] if normalized(hotspot["label"]) in allowed]
+    else:
+        raise StageBlocked("invalid_branch_selection")
     if len(matches) != 1:
         raise StageBlocked("branch_selector_missing" if not matches else "branch_selector_ambiguous")
     selected = matches[0]
@@ -86,6 +91,25 @@ def _connect(parent, child, hotspot):
     for section in (parent.get("scene_document") or {}).get("sections", []):
         if section.get("hotspot_id") == hotspot["id"]:
             section["target_node_id"] = child["id"]
+
+
+def generation_context(case, project, parent, hotspot, selected_body):
+    from agents.page_context import build_page_context
+
+    root = project["nodes"][project["root_node_id"]]
+    titles, current = [], parent
+    while current and len(titles) < 12:
+        titles.append(current["title"])
+        current = project["nodes"].get(current.get("parent_id"))
+    return build_page_context(
+        source_text=case["input"].get("text") if case["input"]["kind"] == "text" else None,
+        source_kind="image_without_original_text" if case["input"]["kind"] == "image" else "original_text_unavailable",
+        root_title=root["title"], root_description=root["description"], ancestor_titles=list(reversed(titles)),
+        parent_title=parent["title"], parent_description=parent["description"],
+        selected_label=hotspot["label"], selected_body=selected_body,
+        covered_topics=[section["title"] for section in (parent.get("scene_document") or {}).get("sections", [])
+                        if section.get("hotspot_id") != hotspot["id"]],
+    )
 
 
 def _diagnostics(stage, result):
@@ -144,7 +168,7 @@ async def run_suite(suite, directory, config: RunConfig | None = None, *, resume
                           "evaluator_sha256": evaluator_sha256(),
                           "budgets": {"max_calls": config.max_calls, "max_reserved_output_tokens": config.max_output_tokens,
                                       "timeout_seconds": config.timeout_seconds, "max_prompt_bytes": config.max_prompt_bytes},
-                          "policy": {"branch_selection": "strict-preferred-label", "stage_count": 3, "repeat_count": 1},
+                          "policy": {"branch_selection": config.branch_selection, "stage_count": 3, "repeat_count": 1},
                           "repeat": 1, "call_count": 0, "reserved_output_tokens": 0, "status": "running", "cases": []}
             for case in suite["cases"]:
                 checkpoint["cases"].append({"case_id": case["id"], "case_sha256": case_digest(case), "mode": config.mode,
@@ -182,8 +206,12 @@ async def run_suite(suite, directory, config: RunConfig | None = None, *, resume
                 try:
                     if stage["state"] in {"in_flight", "outcome_unknown", "failed"}:
                         raise StageBlocked("prior_attempt_not_retried")
-                    hotspot, context = choose_branch(parent, case["branch_steps"][index - 1]) if parent else (None, None)
+                    hotspot, context = choose_branch(parent, case["branch_steps"][index - 1], policy=config.branch_selection) if parent else (None, None)
                     analysis, generation = agents(config, guard, lambda c=case["id"], s=stage_name: load_recording(suite, c, s))
+                    from agents.page_context import GENERATION_REVISION
+
+                    if parent:
+                        context = generation_context(case, result["project"], parent, hotspot, context)
                     if stage["state"] == "completed":
                         output = stage["normalized_output"]
                         if canonical_sha256(output) != stage["normalized_sha256"]:
@@ -191,18 +219,21 @@ async def run_suite(suite, directory, config: RunConfig | None = None, *, resume
                     elif parent:
                         output = await generation.generate(hotspot_label=hotspot["label"], parent_title=parent["title"],
                                                            parent_description=context, language=case["language"],
-                                                           selected_keywords=[], content_format="knowledge-v1")
+                                                           selected_keywords=[], content_format="knowledge-v1",
+                                                           generation_revision=GENERATION_REVISION)
                     elif case["input"]["kind"] == "text":
                         from agents.page_generation import STYLE_PROMPTS
 
                         output = await analysis.analyze_text(case["input"]["text"], case["language"],
-                                                             STYLE_PROMPTS["encyclopedia"], content_format="knowledge-v1")
+                                                             STYLE_PROMPTS["encyclopedia"], content_format="knowledge-v1",
+                                                             generation_revision=GENERATION_REVISION)
                     else:
                         image_path = asset_path(suite, case)
                         image_bytes = image_path.read_bytes()
                         if len(image_bytes) > 2_000_000:
                             raise StageBlocked("image_byte_budget_exceeded")
-                        output = await analysis.analyze_image(base64.b64encode(image_bytes).decode(), case["language"])
+                        output = await analysis.analyze_image(base64.b64encode(image_bytes).decode(), case["language"],
+                                                              generation_revision=GENERATION_REVISION)
                     output = redact(output, config.api_key)
                     stage.update(state="completed", normalized_output=output, normalized_sha256=canonical_sha256(output))
                     image_url = None
@@ -216,7 +247,8 @@ async def run_suite(suite, directory, config: RunConfig | None = None, *, resume
                     if parent:
                         _connect(parent, node, hotspot)
                         result["branch_path"].append({"stage": stage_name, "hotspot_id": hotspot["id"], "label": hotspot["label"],
-                                                      "parent_node_id": parent["id"], "parent_context_sha256": canonical_sha256(context)})
+                                                      "parent_node_id": parent["id"], "parent_context_sha256": canonical_sha256(context),
+                                                      "parent_context": context, "parent_context_kind": GENERATION_REVISION})
                     else:
                         result["project"]["root_node_id"] = node["id"]
                     result["project"]["nodes"][node["id"]] = node

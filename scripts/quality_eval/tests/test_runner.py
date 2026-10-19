@@ -53,7 +53,11 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(child["children"], [grandchild["id"]])
         self.assertEqual(root["scene_document"]["sections"][0]["target_node_id"], child["id"])
         self.assertEqual(child["scene_document"]["sections"][0]["target_node_id"], grandchild["id"])
-        self.assertEqual(case["branch_path"][0]["parent_context_sha256"], canonical_sha256(root["scene_document"]["sections"][0]["body"]))
+        context = case["branch_path"][0]["parent_context"]
+        self.assertEqual(case["branch_path"][0]["parent_context_sha256"], canonical_sha256(context))
+        self.assertEqual(json.loads(context)["selected_section"]["body"], root["scene_document"]["sections"][0]["body"])
+        self.assertEqual(json.loads(context)["source"]["text"], self.suite["cases"][0]["input"]["text"])
+        self.assertEqual(json.loads(case["branch_path"][1]["parent_context"])["ancestor_titles"], [root["title"], child["title"]])
         self.assertNotIn("raw_response", json.dumps(run))
         self.assertEqual(run["run_sha256"], canonical_sha256({key: value for key, value in run.items() if key != "run_sha256"}))
 
@@ -100,6 +104,23 @@ class RunnerTests(unittest.TestCase):
         parent = {"hotspots": [{"label": "same"}, {"label": "Same"}]}
         with self.assertRaisesRegex(ValueError, "ambiguous"):
             choose_branch(parent, {"preferred_labels": ["same"]})
+
+    def test_explicit_first_hotspot_explores_actual_output_without_expected_labels(self):
+        self.responses["root"]["sections"][0]["title"] = "An actual model heading"
+        self.responses["child"]["sections"][0]["title"] = "A deeper actual heading"
+        config = self.config(branch_selection="first-hotspot")
+        run = self.run_eval(config)
+        self.assertEqual(run["status"], "completed")
+        self.assertEqual(run["policy"]["branch_selection"], "first-hotspot")
+        self.assertEqual([step["label"] for step in run["cases"][0]["branch_path"]],
+                         ["An actual model heading", "A deeper actual heading"])
+        self.assertEqual(self.run_eval(config, resume=True)["call_count"], 6)
+        with self.assertRaisesRegex(ValueError, "changed"):
+            self.run_eval(self.config(), resume=True)
+
+    def test_first_hotspot_policy_stops_when_no_actual_entry_exists(self):
+        with self.assertRaisesRegex(ValueError, "missing"):
+            choose_branch({"hotspots": []}, {"preferred_labels": ["Imagined entry"]}, policy="first-hotspot")
 
     def test_missing_image_summary_keeps_production_empty_parent_context(self):
         from scripts.quality_eval.production import agents
@@ -153,6 +174,8 @@ class RunnerTests(unittest.TestCase):
     def test_live_http_adapter_uses_actual_prompt_and_never_sends_source_as_credentials(self):
         config = self.config(mode="live", base_url="https://provider.invalid/v1", model="synthetic-model", api_key="SYNTHETIC_HTTP_CREDENTIAL")
         bodies = []
+        self.suite["cases"][0]["source"] = {"text": "REVIEW_ONLY_NOT_GENERATOR_INPUT"}
+        self.suite["cases"][0]["fact_checks"] = [{"claim": "REVIEW_ONLY_FACT"}]
 
         async def response(url, **options):
             self.assertEqual(url, "https://provider.invalid/v1/chat/completions")
@@ -169,7 +192,9 @@ class RunnerTests(unittest.TestCase):
         self.assertIn("可独立阅读", bodies[0]["messages"][0]["content"])
         child_prompt = bodies[1]["messages"][-1]["content"]
         self.assertIn(self.responses["root"]["sections"][0]["body"], child_prompt)
-        self.assertNotIn(self.suite["cases"][0]["input"]["text"], child_prompt)
+        self.assertIn(self.suite["cases"][0]["input"]["text"], child_prompt)
+        self.assertNotIn("REVIEW_ONLY", json.dumps(bodies))
+        self.assertIn(run["cases"][0]["branch_path"][0]["parent_context"], child_prompt)
         self.assertNotIn(config.api_key, json.dumps(bodies))
 
     def test_completed_run_resume_is_free_and_changed_configuration_is_rejected(self):

@@ -1,0 +1,2 @@
+# Source reconstruction patches keep the single-space context lines required by unified diffs.
+docs/evidence/*-source.patch whitespace=-blank-at-eol

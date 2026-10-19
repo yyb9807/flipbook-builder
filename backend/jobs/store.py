@@ -11,6 +11,7 @@ from fastapi import HTTPException
 from sqlalchemy import text
 
 from agents.knowledge import generation_metadata, normalize_knowledge
+from agents.page_context import build_page_context, configured_generation_revision
 from hotspots import insert_hotspots
 from jobs.models import ACTIVE_SQL, TERMINAL
 from storage import url_to_disk_path
@@ -59,6 +60,32 @@ def validate_content_model(provider_config: dict) -> None:
 class JobStore:
     def __init__(self, pool: asyncpg.Pool, engine, dbos_client):
         self.pool, self.engine, self.client = pool, engine, dbos_client
+
+    @staticmethod
+    def context_inputs(conn, project, node):
+        """Read under the project lock, once at admission; never during replay."""
+        root = conn.execute(text("SELECT * FROM nodes WHERE id=:nid AND project_id=:pid"),
+                            {"nid": project["root_node_id"], "pid": project["id"]}).mappings().first() or node
+        source = conn.execute(text(
+            "SELECT input FROM generation_jobs WHERE project_id=:pid AND kind='analyze' "
+            "AND target_node_id=:nid AND status IN ('succeeded','partial') ORDER BY created_at,id LIMIT 1"
+        ), {"pid": project["id"], "nid": root["id"]}).mappings().first()
+        original = decoded(source["input"]) if source else {}
+        source_text = original.get("text") if original.get("source_type") == "text" else None
+        titles = conn.execute(text("SELECT id,parent_id,title FROM nodes WHERE project_id=:pid"),
+                              {"pid": project["id"]}).mappings().all()
+        lookup = {item["id"]: item for item in titles}
+        path, seen, current = [], set(), node["id"]
+        while current in lookup and current not in seen and len(path) < 12:
+            seen.add(current)
+            ancestor = lookup[current]
+            path.append(ancestor["title"])
+            current = ancestor["parent_id"]
+        return {"source_text": source_text,
+                "source_kind": "image_without_original_text" if root["source_type"] == "image" else "original_text_unavailable",
+                "root_title": root["title"], "root_description": root["description"],
+                "ancestor_titles": list(reversed(path)), "parent_title": node["title"],
+                "parent_description": node["description"]}
 
     @asynccontextmanager
     async def locked(self, job_id: str):
@@ -176,6 +203,10 @@ class JobStore:
                 return snapshot(existing)
             if self.active_project(conn, project_id) or node["status"] == "generating":
                 raise HTTPException(409, "这个页面已有生成任务，请先恢复或取消它")
+            try:
+                revision = configured_generation_revision()
+            except ValueError as exc:
+                raise HTTPException(503, str(exc)) from exc
             settings = decoded(project["settings"])
             if node["depth"] >= settings.get("max_depth", 4):
                 raise HTTPException(400, "已达到最大页面深度")
@@ -193,6 +224,16 @@ class JobStore:
                       "settings": settings, "selected_keywords": keywords, "image_requested": image_requested,
                       "children": [{"hotspot_id": h["id"], "label": h["label"], "node_id": gen_id("node_"),
                                     "context": section_context.get(h["id"], "")} for h in hotspots]}
+            if revision:
+                frozen["generation_revision"] = revision
+                context_inputs = self.context_inputs(conn, project, node)
+                for hotspot, child in zip(hotspots, frozen["children"], strict=True):
+                    child["context"] = build_page_context(
+                        **context_inputs, selected_label=hotspot["label"],
+                        selected_body=section_context.get(hotspot["id"], "") or node["description"],
+                        covered_topics=[s.get("title", "") for s in (parent_scene or {}).get("sections", [])
+                                        if s.get("hotspot_id") != hotspot["id"]],
+                    )
             conn.execute(text(
                 "INSERT INTO generation_jobs(id,operation_id,fingerprint,project_id,node_id,input,provider_config,previous_status,message) "
                 "VALUES(:jid,:op,:fp,:pid,:nid,CAST(:input AS jsonb),CAST(:providers AS jsonb),:previous,'任务已排队')"
@@ -229,8 +270,14 @@ class JobStore:
                 return snapshot(existing)
             if self.active_project(conn, project_id):
                 raise HTTPException(409, "作品已有活动任务，请先恢复或取消它")
+            try:
+                revision = configured_generation_revision()
+            except ValueError as exc:
+                raise HTTPException(503, str(exc)) from exc
             settings = decoded(project["settings"])
             frozen = {**payload, "settings": settings, "image_requested": image_requested, "kind": kind}
+            if revision:
+                frozen["generation_revision"] = revision
             previous = "draft"
             target = gen_id("node_") if kind == "analyze" else node_id
             if kind == "analyze":
@@ -274,6 +321,9 @@ class JobStore:
                                "node_updated_at": node["updated_at"].isoformat(),
                                "parent_title": parent["title"] if parent else "", "parent_description": parent["description"] if parent else "",
                                "subject": {"hotspot_id": f"node:{node_id}", "node_id": node_id, "label": label}})
+                if revision:
+                    frozen["generation_context"] = build_page_context(**self.context_inputs(conn, project, node),
+                        selected_label=label, selected_body=node["description"], covered_topics=[])
                 conn.execute(text("UPDATE nodes SET status='generating' WHERE id=:nid"), {"nid": node_id})
             summary = {"source_type": frozen["source_type"], "input_sha256": payload["identity"].get("input_sha256", digest),
                        "file_sha256": payload.get("file_sha256"), "filename": payload.get("filename"),

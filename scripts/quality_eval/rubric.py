@@ -1,7 +1,7 @@
 """Versioned human review contract; never infer factual correctness from structure."""
 from __future__ import annotations
 
-RUBRIC_VERSION = "quality-rubric-v1"
+RUBRIC_VERSION = "quality-rubric-v2"
 DIMENSIONS = {
     "body": {
         "label": "正文实质与事实 / Substance and facts",
@@ -22,27 +22,34 @@ DIMENSIONS = {
 }
 
 
-def review_template(run: dict, suite: dict) -> dict:
+def review_template(run: dict, suite: dict, *, reviewer_kind="human") -> dict:
     """A deliberately incomplete template bound to one exact run and dataset."""
     from .artifacts import canonical_sha256, evaluator_sha256
 
+    if reviewer_kind not in {"human", "calibration", "agent"}:
+        raise ValueError("invalid_reviewer_kind")
     cases = {case["id"]: case for case in suite["cases"]}
     result = {
         "schema_version": 1, "rubric_version": RUBRIC_VERSION,
         "evaluator_sha256": evaluator_sha256(),
         "run_sha256": canonical_sha256({key: value for key, value in run.items() if key != "run_sha256"}),
         "suite_sha256": run.get("suite_sha256"),
-        "reviewer": {"kind": "human", "name": ""},
+        "reviewer": {"kind": reviewer_kind, "name": ""},
         "cases": [],
     }
+    if reviewer_kind == "agent":
+        result["reviewer"].update(model="", version="")
     for output in run.get("cases", []):
         case = cases.get(output.get("case_id"), {})
         result["cases"].append({
             "case_id": output.get("case_id"), "case_sha256": output.get("case_sha256"),
-            "dimensions": {key: {"score": None, "reason": "", "evidence": ""} for key in DIMENSIONS},
-            "fact_checks": [{"id": item["id"], "verdict": None, "reason": "", "evidence": ""}
+            # Required for agent reviews; human/calibration reviews retain their
+            # existing free-text evidence contract.
+            "inspected_node_ids": [],
+            "dimensions": {key: {"score": None, "reason": "", "evidence": [] if reviewer_kind == "agent" else ""} for key in DIMENSIONS},
+            "fact_checks": [{"id": item["id"], "verdict": None, "reason": "", "evidence": [] if reviewer_kind == "agent" else ""}
                             for item in case.get("fact_checks", [])],
-            "forbidden_claims": [{"id": item["id"], "verdict": None, "reason": "", "evidence": ""}
+            "forbidden_claims": [{"id": item["id"], "verdict": None, "reason": "", "evidence": [] if reviewer_kind == "agent" else ""}
                                  for item in case.get("forbidden_claims", [])],
         })
     return result

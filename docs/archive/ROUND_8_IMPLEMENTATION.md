@@ -30,11 +30,11 @@
 
 独立审查修复了两项实质问题：全局评审失配现在使每案评分失效，旧分数不会进入对比；短 Key 的脱敏不再改写内部字段或 `outcome_unknown` 状态，未知请求恢复保持一次分发。另修正缺失图片摘要与生产空上下文一致、保留未完成模板，以及用 `prompt_sources_sha256` 准确标记提示词/适配代码摘要；逐调用的 `prompt_sha256` 仍记录实际请求摘要。
 
-原始测量见[机器证据](evidence/round8-verification.json)，命令与评分方法见[运行手册](MODEL_QUALITY.md)。本地报告保存在忽略入库的 `evals/runs/round8-baseline/report.html` 与 `evals/runs/round8-comparison/report.html`；新克隆需按手册重新生成。
+原始测量见[机器证据](evidence/round8-verification.json)，命令与评分方法见[运行手册](../MODEL_QUALITY.md)。本地报告保存在忽略入库的 `evals/runs/round8-baseline/report.html` 与 `evals/runs/round8-comparison/report.html`；新克隆需按手册重新生成。
 
-![桌面三层正文与热点对照](images/round8-desktop-quality.jpg)
+![桌面三层正文与热点对照](../images/round8-desktop-quality.jpg)
 
-[390px 手机报告](images/round8-mobile-quality.jpg)中热点框、来源表和三层正文按单列阅读。
+[390px 手机报告](../images/round8-mobile-quality.jpg)中热点框、来源表和三层正文按单列阅读。
 
 ## 提交前清理与复核
 
@@ -50,4 +50,4 @@
 
 次数与预留输出 token 不是实际 token 用量或金额上限。输入、视觉与供应商计价需另行核对；保存的原始输出限 1 MB，但沿用的生产 HTTP 适配器没有流式下载体积限制。严格固定标签可能阻断措辞不同但有用的真实输出，报告必须如实记为未覆盖。
 
-人工评审身份是运行者声明，工具不验证身份或事实本身。测试证明评审门槛有效，不证明任意人工填写正确。自然图片集、多人独立评审校准、真实模型人工基线与统计重复仍需后续开展。既有任务/历史/发布与产品浏览器验收保留[第七轮记录](archive/ROUND_7_IMPLEMENTATION.md)，本轮未重复其完整发布流程；当前检查在本地运行。
+人工评审身份是运行者声明，工具不验证身份或事实本身。测试证明评审门槛有效，不证明任意人工填写正确。自然图片集、多人独立评审校准、真实模型人工基线与统计重复仍需后续开展。既有任务/历史/发布与产品浏览器验收保留[第七轮记录](ROUND_7_IMPLEMENTATION.md)，本轮未重复其完整发布流程；当前检查在本地运行。

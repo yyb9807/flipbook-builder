@@ -56,6 +56,8 @@ DATABASE_URL=postgresql://flipbook:flipbook@localhost:5434/flipbook_test python 
 - 同一作品的新活动任务互斥。编辑、热点写入与删除在 project → node → job 一致锁顺序下检查活动任务，返回409时需先完成或取消任务。升级前已存在的不同节点并行任务继续恢复，不通过新增唯一索引或擅自取消来清理。独立 PoC 与旧 36 场景 CLI 已退役，仅保留历史记录；当前进程验证使用 `scripts/verify_knowledge_generation.py`。
 - 新前端离线导出复用共享 React 播放器。后端 `export.zip` 保留兼容，安全嵌入数据并降级展示结构化页面的文字和链接；JSON 导出保留原始结构化数据。JSON/ZIP 都不包含页面历史。
 
+`KNOWLEDGE_GENERATION_REVISION` 默认不设置，继续原生成提示词和上下文。只有显式设为 `grounded-v2`，新任务才冻结实验修订及有界原始素材/分支上下文；这项候选在[第九轮真实评估](../docs/ROUND_9_IMPLEMENTATION.md)未达标，不建议作为默认配置。其他非空值使新任务接收返回 503；已有操作的幂等回执先返回，已保存任务按冻结输入恢复。Compose 默认不传入该实验变量，试验需明确覆盖 backend 的 environment。MLX 本地评估环境不属于后端运行依赖。
+
 ## 页面历史接口与并发
 
 下列路径均包含 `/api` 前缀。版本只属于指定项目和页面，跨归属读取或恢复返回 404。

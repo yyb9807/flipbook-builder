@@ -1,0 +1,108 @@
+--- a/backend/agents/page_context.py
++++ b/backend/agents/page_context.py
+@@ -2,26 +2,8 @@
+ from __future__ import annotations
+ 
+ import json
+-import os
+ 
+ GENERATION_REVISION = "grounded-v2"
+-
+-
+-def configured_generation_revision() -> str | None:
+-    """New behavior is experimental and must be explicitly enabled by the host.
+-
+-    Call at startup to fail early on a typo, and again for new admissions so a
+-    persisted job records its own decision. Replays use only that frozen marker.
+-    """
+-    value = os.getenv("KNOWLEDGE_GENERATION_REVISION", "").strip()
+-    if not value:
+-        return None
+-    if value != GENERATION_REVISION:
+-        raise ValueError(
+-            "KNOWLEDGE_GENERATION_REVISION 配置错误：仅支持 grounded-v2；"
+-            "未设置或留空时使用当前默认生成行为"
+-        )
+-    return value
+ 
+ 
+ def bounded_text(value: str | None, limit: int) -> str:
+--- a/backend/jobs/store.py
++++ b/backend/jobs/store.py
+@@ -11,7 +11,7 @@
+ from sqlalchemy import text
+ 
+ from agents.knowledge import generation_metadata, normalize_knowledge
+-from agents.page_context import build_page_context, configured_generation_revision
++from agents.page_context import GENERATION_REVISION, build_page_context
+ from hotspots import insert_hotspots
+ from jobs.models import ACTIVE_SQL, TERMINAL
+ from storage import url_to_disk_path
+@@ -203,10 +203,6 @@
+                 return snapshot(existing)
+             if self.active_project(conn, project_id) or node["status"] == "generating":
+                 raise HTTPException(409, "这个页面已有生成任务，请先恢复或取消它")
+-            try:
+-                revision = configured_generation_revision()
+-            except ValueError as exc:
+-                raise HTTPException(503, str(exc)) from exc
+             settings = decoded(project["settings"])
+             if node["depth"] >= settings.get("max_depth", 4):
+                 raise HTTPException(400, "已达到最大页面深度")
+@@ -219,21 +215,15 @@
+             parent_scene = decoded(node["scene_document"])
+             section_context = {section.get("hotspot_id"): section.get("body", "")
+                                for section in (parent_scene or {}).get("sections", [])}
++            context_inputs = self.context_inputs(conn, project, node)
+             frozen = {"title": node["title"], "description": node["description"], "depth": node["depth"],
+-                      "content_format": "knowledge-v1", "kind": "children",
++                      "content_format": "knowledge-v1", "generation_revision": GENERATION_REVISION, "kind": "children",
+                       "settings": settings, "selected_keywords": keywords, "image_requested": image_requested,
+                       "children": [{"hotspot_id": h["id"], "label": h["label"], "node_id": gen_id("node_"),
+-                                    "context": section_context.get(h["id"], "")} for h in hotspots]}
+-            if revision:
+-                frozen["generation_revision"] = revision
+-                context_inputs = self.context_inputs(conn, project, node)
+-                for hotspot, child in zip(hotspots, frozen["children"], strict=True):
+-                    child["context"] = build_page_context(
+-                        **context_inputs, selected_label=hotspot["label"],
+-                        selected_body=section_context.get(hotspot["id"], "") or node["description"],
+-                        covered_topics=[s.get("title", "") for s in (parent_scene or {}).get("sections", [])
+-                                        if s.get("hotspot_id") != hotspot["id"]],
+-                    )
++                                    "context": build_page_context(**context_inputs, selected_label=h["label"],
++                                        selected_body=section_context.get(h["id"], "") or node["description"],
++                                        covered_topics=[s.get("title", "") for s in (parent_scene or {}).get("sections", [])
++                                                        if s.get("hotspot_id") != h["id"]])} for h in hotspots]}
+             conn.execute(text(
+                 "INSERT INTO generation_jobs(id,operation_id,fingerprint,project_id,node_id,input,provider_config,previous_status,message) "
+                 "VALUES(:jid,:op,:fp,:pid,:nid,CAST(:input AS jsonb),CAST(:providers AS jsonb),:previous,'任务已排队')"
+@@ -270,14 +260,9 @@
+                 return snapshot(existing)
+             if self.active_project(conn, project_id):
+                 raise HTTPException(409, "作品已有活动任务，请先恢复或取消它")
+-            try:
+-                revision = configured_generation_revision()
+-            except ValueError as exc:
+-                raise HTTPException(503, str(exc)) from exc
+             settings = decoded(project["settings"])
+-            frozen = {**payload, "settings": settings, "image_requested": image_requested, "kind": kind}
+-            if revision:
+-                frozen["generation_revision"] = revision
++            frozen = {**payload, "settings": settings, "image_requested": image_requested, "kind": kind,
++                      "generation_revision": GENERATION_REVISION}
+             previous = "draft"
+             target = gen_id("node_") if kind == "analyze" else node_id
+             if kind == "analyze":
+@@ -321,9 +306,8 @@
+                                "node_updated_at": node["updated_at"].isoformat(),
+                                "parent_title": parent["title"] if parent else "", "parent_description": parent["description"] if parent else "",
+                                "subject": {"hotspot_id": f"node:{node_id}", "node_id": node_id, "label": label}})
+-                if revision:
+-                    frozen["generation_context"] = build_page_context(**self.context_inputs(conn, project, node),
+-                        selected_label=label, selected_body=node["description"], covered_topics=[])
++                frozen["generation_context"] = build_page_context(**self.context_inputs(conn, project, node),
++                    selected_label=label, selected_body=node["description"], covered_topics=[])
+                 conn.execute(text("UPDATE nodes SET status='generating' WHERE id=:nid"), {"nid": node_id})
+             summary = {"source_type": frozen["source_type"], "input_sha256": payload["identity"].get("input_sha256", digest),
+                        "file_sha256": payload.get("file_sha256"), "filename": payload.get("filename"),

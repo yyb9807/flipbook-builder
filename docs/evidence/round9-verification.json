@@ -1,0 +1,956 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-19",
+  "round": 9,
+  "suite_sha256": "c58fc124ea4212795bcec5c6f5a9f954387654db121469400e7249321292e5dd",
+  "evaluator_sha256": "56587b7e688c4e8b7388564e2930101bdeea8364e1c478be0c633eebd6a1c7f4",
+  "rubric_version": "quality-rubric-v2",
+  "method_version": "quality-diagnostics-v2",
+  "runs": {
+    "baseline": {
+      "run_sha256": "6f7ba4775263e2768afca9ead8cab4fd87f75b951c492c2056629d78aa6eb0eb",
+      "producer_sha256": "c2d321f54bb879b736b37288671c118e4d20d91a4b38944de5bf21e84b343d36",
+      "prompt_sources_sha256": "9b5c9fb69fea8654d31541891fbb1cddbbc886e2354b05258dc5fcfbf1d24b2c",
+      "status": "completed",
+      "call_count": 18,
+      "reserved_output_tokens": 66400,
+      "execution": "passed",
+      "automatic": "failed",
+      "agent_quality": "failed",
+      "human_quality": "not_reviewed",
+      "case_judgments": [
+        {
+          "case_id": "water-cycle-zh",
+          "status": "failed",
+          "dimensions": {
+            "body": 1,
+            "hotspots": 2,
+            "cross_page": 1,
+            "instruction": 2
+          },
+          "actual_branch_labels": [
+            "蒸发",
+            "分子动能与蒸发"
+          ]
+        },
+        {
+          "case_id": "water-cycle-en",
+          "status": "failed",
+          "dimensions": {
+            "body": 2,
+            "hotspots": 2,
+            "cross_page": 1,
+            "instruction": 0
+          },
+          "actual_branch_labels": [
+            "蒸发过程",
+            "蒸发的定义与条件"
+          ]
+        },
+        {
+          "case_id": "fictional-reservation-zh",
+          "status": "failed",
+          "dimensions": {
+            "body": 1,
+            "hotspots": 2,
+            "cross_page": 1,
+            "instruction": 1
+          },
+          "actual_branch_labels": [
+            "申请流程",
+            "预约条件与名额限制"
+          ]
+        },
+        {
+          "case_id": "fictional-reservation-en",
+          "status": "failed",
+          "dimensions": {
+            "body": 1,
+            "hotspots": 1,
+            "cross_page": 1,
+            "instruction": 0
+          },
+          "actual_branch_labels": [
+            "申请流程",
+            "申请前提与资格"
+          ]
+        },
+        {
+          "case_id": "shapes-zh",
+          "status": "failed",
+          "dimensions": {
+            "body": 1,
+            "hotspots": 1,
+            "cross_page": 2,
+            "instruction": 2
+          },
+          "actual_branch_labels": [
+            "圆形",
+            "圆形的对称性"
+          ]
+        },
+        {
+          "case_id": "shapes-en",
+          "status": "failed",
+          "dimensions": {
+            "body": 1,
+            "hotspots": 1,
+            "cross_page": 2,
+            "instruction": 0
+          },
+          "actual_branch_labels": [
+            "圆形",
+            "圆形的对称性"
+          ]
+        }
+      ]
+    },
+    "candidate": {
+      "run_sha256": "f3138600ec5dd78fbfe2d1cf2919a06786914ff7be5099b7957fcd68136bffbf",
+      "producer_sha256": "5e5496df49df1f6ece3813175d503c4ab4b3c0482162dba4569d0ac0717d6bc6",
+      "prompt_sources_sha256": "65f094610b5018cadb2ad3afe7557fc7b3d6c978cd39aeb8f772f900bf0276ef",
+      "status": "completed",
+      "call_count": 18,
+      "reserved_output_tokens": 66400,
+      "execution": "passed",
+      "automatic": "failed",
+      "agent_quality": "failed",
+      "human_quality": "not_reviewed",
+      "case_judgments": [
+        {
+          "case_id": "water-cycle-zh",
+          "status": "failed",
+          "dimensions": {
+            "body": 1,
+            "hotspots": 2,
+            "cross_page": 1,
+            "instruction": 2
+          },
+          "actual_branch_labels": [
+            "蒸发的定义与条件",
+            "蒸发的定义"
+          ]
+        },
+        {
+          "case_id": "water-cycle-en",
+          "status": "failed",
+          "dimensions": {
+            "body": 1,
+            "hotspots": 2,
+            "cross_page": 1,
+            "instruction": 2
+          },
+          "actual_branch_labels": [
+            "Evaporation and Phase Change",
+            "Evaporation as a Phase Change"
+          ]
+        },
+        {
+          "case_id": "fictional-reservation-zh",
+          "status": "failed",
+          "dimensions": {
+            "body": 1,
+            "hotspots": 2,
+            "cross_page": 1,
+            "instruction": 1
+          },
+          "actual_branch_labels": [
+            "预约申请流程",
+            "申请提交与名额限制"
+          ]
+        },
+        {
+          "case_id": "fictional-reservation-en",
+          "status": "failed",
+          "dimensions": {
+            "body": 1,
+            "hotspots": 2,
+            "cross_page": 0,
+            "instruction": 0
+          },
+          "actual_branch_labels": [
+            "申请流程与名额限制",
+            "申请提交与名额分配"
+          ]
+        },
+        {
+          "case_id": "shapes-zh",
+          "status": "failed",
+          "dimensions": {
+            "body": 1,
+            "hotspots": 1,
+            "cross_page": 1,
+            "instruction": 2
+          },
+          "actual_branch_labels": [
+            "圆形",
+            "圆形的视觉属性"
+          ]
+        },
+        {
+          "case_id": "shapes-en",
+          "status": "failed",
+          "dimensions": {
+            "body": 1,
+            "hotspots": 1,
+            "cross_page": 1,
+            "instruction": 0
+          },
+          "actual_branch_labels": [
+            "圆形",
+            "圆形的视觉主导性"
+          ]
+        }
+      ]
+    }
+  },
+  "comparison": {
+    "comparable": false,
+    "reasons": [
+      "different_coverage_or_actual_branch"
+    ],
+    "review_scores_comparable": false,
+    "review_comparison_reasons": [
+      "generation_runs_not_comparable"
+    ],
+    "winner": null,
+    "quality_score_delta": null
+  },
+  "review_provenance": {
+    "reviewer": {
+      "kind": "agent",
+      "name": "Codex independent case review panel",
+      "model": "Codex session; exact model snapshot not exposed",
+      "version": "round9-source-evidence-v1/2026-10-19"
+    },
+    "case_groups": [
+      "water-cycle pair",
+      "fictional-reservation pair",
+      "shapes pair"
+    ],
+    "reviewers_did_not_implement_prompts": true,
+    "blinded_to_production_patch": true,
+    "blinded_between_runs": false,
+    "human_review_performed": false,
+    "quotation_location_verified": true,
+    "semantic_judgments_are_not_automatically_verified": true
+  },
+  "local_model": {
+    "model": {
+      "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+      "model_revision": "9c4f5209e57b31f4b9dfba735de3fb983739c9cc",
+      "weights_sha256": "4750d95a2162829e127a94e83ac350d498d02070aab216c4687da48804a06ffb",
+      "packages": {
+        "mlx-vlm": "0.7.8",
+        "mlx": "0.32.4",
+        "mlx-metal": "0.32.4",
+        "transformers": "5.20.1",
+        "huggingface-hub": "2.2.0",
+        "uvicorn": "0.54.0"
+      },
+      "python": "3.12.13",
+      "runtime_policy_sha256": "10ab00a9a501010d9ea79dc08e6910ee3bbd120ad4c73b7df21e65a9ddfe45ab",
+      "protocol": "openai-chat-completions",
+      "inputs": [
+        "text",
+        "image_url-data-uri"
+      ],
+      "temperature": 0.0,
+      "seed": 0,
+      "enable_thinking": false,
+      "max_output_tokens_per_request": 4000,
+      "max_generation_requests": 42,
+      "concurrency": 1,
+      "retries": 0,
+      "remote_code": false,
+      "offline": true,
+      "prefix_cache": false,
+      "vision_cache_size": 0,
+      "context_management": [],
+      "automatic_compaction": false,
+      "request_timeout_seconds": 120,
+      "timeout_behavior": "fail_stop_process_no_automatic_restart_or_retry"
+    },
+    "phases": [
+      {
+        "phase": "capability-probes",
+        "service_request_numbers": [
+          1,
+          2
+        ],
+        "calls": 2,
+        "max_tokens_reserved": 96,
+        "reported_usage": {
+          "prompt_tokens": 666,
+          "completion_tokens": 20,
+          "total_tokens": 686
+        },
+        "service_elapsed_seconds_sum": 3.123427,
+        "peak_reported_memory_gb": 2.478004012
+      },
+      {
+        "phase": "baseline",
+        "service_request_numbers": [
+          3,
+          20
+        ],
+        "calls": 18,
+        "max_tokens_reserved": 66400,
+        "reported_usage": {
+          "prompt_tokens": 6682,
+          "completion_tokens": 6271,
+          "total_tokens": 12953
+        },
+        "service_elapsed_seconds_sum": 36.660343,
+        "peak_reported_memory_gb": 2.498559512
+      },
+      {
+        "phase": "candidate",
+        "service_request_numbers": [
+          21,
+          38
+        ],
+        "calls": 18,
+        "max_tokens_reserved": 66400,
+        "reported_usage": {
+          "prompt_tokens": 18173,
+          "completion_tokens": 8916,
+          "total_tokens": 27089
+        },
+        "service_elapsed_seconds_sum": 59.37154,
+        "peak_reported_memory_gb": 2.825027068
+      },
+      {
+        "phase": "browser-default-product",
+        "service_request_numbers": [
+          39,
+          42
+        ],
+        "calls": 4,
+        "max_tokens_reserved": 13200,
+        "reported_usage": {
+          "prompt_tokens": 1658,
+          "completion_tokens": 1553,
+          "total_tokens": 3211
+        },
+        "service_elapsed_seconds_sum": 9.884524,
+        "peak_reported_memory_gb": 2.907216784
+      }
+    ],
+    "admissions": 42,
+    "completed": 42,
+    "termination_events": 0,
+    "api_cost": 0,
+    "cost_currency": "USD",
+    "billing_note": "Local inference. Service-reported tokens are not billed API tokens. Codex review is separate from this generator ledger."
+  },
+  "event_log": {
+    "file": "round9-model-events.jsonl",
+    "sha256": "fdb2929b5958b7a27b760c7707bb7d279d74111ca566f40b4d5a83b0ccac5a2c"
+  },
+  "transport_start_failure": {
+    "run_sha256": "dc46305f72d09150fac7a6e17fc68bba75a4236f003fafa61f0cd49c973f6860",
+    "retained_local_directory": "evals/runs/round9-live-candidate",
+    "client_call_intents": 1,
+    "reserved_output_tokens": 4000,
+    "status": "incomplete",
+    "recorded_outcome": "outcome_unknown",
+    "observed_exception_class": "ConnectError",
+    "model_admissions": 0,
+    "disposition": "original checkpoint retained; no resume; explicit new candidate after verified service restart",
+    "service_admissions_before_restart": 20,
+    "service_finished_before_restart": 20,
+    "exit_cause": "unconfirmed"
+  },
+  "rollout": {
+    "default_generation_revision": null,
+    "default_new_job_behavior": "legacy v1; original selected-section/body context",
+    "experimental_server_environment": "KNOWLEDGE_GENERATION_REVISION=grounded-v2",
+    "experimental_candidate_accepted": false,
+    "reason": "6/6 failed; critical code-validity clock error; repetition and localization failures",
+    "evaluator_runner_target": "explicit grounded-v2 experiment, not default admission",
+    "final_producer_sha256": "238dd8f535be170d023896cc546e92c94eb9cdfd57c78879d9b839a81640360f",
+    "final_source_hashes": {
+      "backend/agents/base.py": "718bdeb0271dd29b9bbc13e0ea9a27181e3245cd4a2c2470b9fec3ec57ab31ea",
+      "backend/agents/input_analysis.py": "e28d4050a98e0b082ebb63764509fa31f319429bc78cc351628f0c382a1b978a",
+      "backend/agents/page_generation.py": "10c05c096db3c84de217ef3dd366398a4b3d9d89b9d32806adcb7324ba9ff8d8",
+      "backend/agents/knowledge.py": "e85a2318a0c1fb7bbb4f4885f0ddfff59f35a2d61d68917036cb2a55501923a9",
+      "backend/agents/composition.py": "2c40fdea662015beb43a9e2cb72e0bfdd89ba973b49b73b0437205fbf3f7a632",
+      "backend/agents/hotspot_localization.py": "82d3fe4c03670da7500637d8246df11d17010b74f41a92de28ad494d64174065",
+      "backend/agents/page_context.py": "543bdc06d14565003fc894053058545bee784119f656e2fd497789e9f4717aaf",
+      "backend/jobs/providers.py": "01ebc2ca0379c69533a70ec4b1111e1d6bde0c7523951ff3c998240e3b840914",
+      "backend/jobs/page_workflows.py": "174a9e9dca24119679fcf7c47f368abc803176853e509d110a8402967892e587",
+      "backend/jobs/store.py": "071ef2f3b3bcafc7fa7f5d3751590d9fe6fab2a2e91472dd50129aa26a8d79ed",
+      "backend/utils.py": "4ad7878ec0a4fa518a24bede6879caf4eb59c5efad2b9adb54738417133516ab"
+    },
+    "candidate_vs_final_changed_sources": [
+      "backend/agents/page_context.py",
+      "backend/jobs/store.py"
+    ],
+    "candidate_is_final_default_quality_evidence": false,
+    "candidate_source_patch": {
+      "schema_version": 1,
+      "direction": "current gated source -> actual candidate-2 source (before rollout gate)",
+      "candidate_run_path": "evals/runs/round9-live-candidate-2/run.json",
+      "candidate_run_sha256": "f3138600ec5dd78fbfe2d1cf2919a06786914ff7be5099b7957fcd68136bffbf",
+      "patch_path": "docs/evidence/round9-experiment-source.patch",
+      "patch_sha256": "c94e9e6cc9e6907af45057d5f69369468c9e65000181bbb2eac128220a452bac",
+      "files": {
+        "backend/agents/page_context.py": {
+          "base_sha256": "543bdc06d14565003fc894053058545bee784119f656e2fd497789e9f4717aaf",
+          "candidate_sha256": "d2840a99182834b821f7b19c2d75cc13132fa7f2228c6073025cddbcece12ab8"
+        },
+        "backend/jobs/store.py": {
+          "base_sha256": "071ef2f3b3bcafc7fa7f5d3751590d9fe6fab2a2e91472dd50129aa26a8d79ed",
+          "candidate_sha256": "d6d3b4108d82a06e1243fe6032096b4c8506ed2ff8a83a7bc633938478995cb5"
+        }
+      },
+      "verification": {
+        "candidate_source_hashes_match": true,
+        "git_apply_check": true,
+        "git_apply_exact_bytes": true,
+        "git_reverse_apply_exact_bytes": true,
+        "production_files_unchanged": true
+      }
+    },
+    "baseline_source_patch": {
+      "schema_version": 1,
+      "purpose": "Exact source reconstruction of the actual Round 9 baseline; patch applies current tree to baseline",
+      "artifact": "docs/evidence/round9-baseline-source.patch",
+      "patch_sha256": "02b7e4e59a25d7e4d04992ad2692280752baf928116e8c77c9a62ba608090461",
+      "patch_bytes": 28293,
+      "baseline_git_reference": "71535c9",
+      "baseline_run_sha256": "6f7ba4775263e2768afca9ead8cab4fd87f75b951c492c2056629d78aa6eb0eb",
+      "base": {
+        "meaning": "Final source tree before applying this patch",
+        "producer_sha256": "238dd8f535be170d023896cc546e92c94eb9cdfd57c78879d9b839a81640360f",
+        "source_hashes": {
+          "backend/agents/base.py": "718bdeb0271dd29b9bbc13e0ea9a27181e3245cd4a2c2470b9fec3ec57ab31ea",
+          "backend/agents/input_analysis.py": "e28d4050a98e0b082ebb63764509fa31f319429bc78cc351628f0c382a1b978a",
+          "backend/agents/page_generation.py": "10c05c096db3c84de217ef3dd366398a4b3d9d89b9d32806adcb7324ba9ff8d8",
+          "backend/agents/knowledge.py": "e85a2318a0c1fb7bbb4f4885f0ddfff59f35a2d61d68917036cb2a55501923a9",
+          "backend/agents/composition.py": "2c40fdea662015beb43a9e2cb72e0bfdd89ba973b49b73b0437205fbf3f7a632",
+          "backend/agents/hotspot_localization.py": "82d3fe4c03670da7500637d8246df11d17010b74f41a92de28ad494d64174065",
+          "backend/agents/page_context.py": "543bdc06d14565003fc894053058545bee784119f656e2fd497789e9f4717aaf",
+          "backend/jobs/providers.py": "01ebc2ca0379c69533a70ec4b1111e1d6bde0c7523951ff3c998240e3b840914",
+          "backend/jobs/page_workflows.py": "174a9e9dca24119679fcf7c47f368abc803176853e509d110a8402967892e587",
+          "backend/jobs/store.py": "071ef2f3b3bcafc7fa7f5d3751590d9fe6fab2a2e91472dd50129aa26a8d79ed",
+          "backend/utils.py": "4ad7878ec0a4fa518a24bede6879caf4eb59c5efad2b9adb54738417133516ab"
+        }
+      },
+      "target": {
+        "meaning": "Actual measured baseline sources",
+        "producer_sha256": "c2d321f54bb879b736b37288671c118e4d20d91a4b38944de5bf21e84b343d36",
+        "source_hashes": {
+          "backend/agents/base.py": "718bdeb0271dd29b9bbc13e0ea9a27181e3245cd4a2c2470b9fec3ec57ab31ea",
+          "backend/agents/input_analysis.py": "e35da9c1c0c19ef84e0da143218c3f78fb026752152b69f9f4e7221c65cee8a8",
+          "backend/agents/page_generation.py": "1165f48bdea9d53049525375f9ba0752b5af48d3ec4116df0a2b503f2c9ac230",
+          "backend/agents/knowledge.py": "2148d6167d7cfef752606bffcca93bf1872d7003eba3e0b79e2fef784317d4c7",
+          "backend/agents/composition.py": "2c40fdea662015beb43a9e2cb72e0bfdd89ba973b49b73b0437205fbf3f7a632",
+          "backend/agents/hotspot_localization.py": "82d3fe4c03670da7500637d8246df11d17010b74f41a92de28ad494d64174065",
+          "backend/jobs/providers.py": "6fd4c3b3803dd2bac1ccbe6a2b3276e6bcfad657e7b573f15ef4c4c1212e3ad9",
+          "backend/jobs/store.py": "4e1ce86a9bb7af81a08a0b8302e7b6ae9d7864e2bb7ab372b3f7e904ef4fbad3",
+          "backend/utils.py": "4ad7878ec0a4fa518a24bede6879caf4eb59c5efad2b9adb54738417133516ab"
+        }
+      },
+      "verified_producer_sha256": "c2d321f54bb879b736b37288671c118e4d20d91a4b38944de5bf21e84b343d36",
+      "source_hashes_match": true,
+      "forward_apply_check": true,
+      "forward_bytes_match": true,
+      "reverse_apply_check": true,
+      "reverse_bytes_match": true,
+      "reverse_producer_matches_base": true,
+      "files": {
+        "backend/agents/base.py": {
+          "base_sha256": "718bdeb0271dd29b9bbc13e0ea9a27181e3245cd4a2c2470b9fec3ec57ab31ea",
+          "target_sha256": "718bdeb0271dd29b9bbc13e0ea9a27181e3245cd4a2c2470b9fec3ec57ab31ea",
+          "changed": false,
+          "target_origin": "git show 71535c9:backend/agents/base.py"
+        },
+        "backend/agents/composition.py": {
+          "base_sha256": "2c40fdea662015beb43a9e2cb72e0bfdd89ba973b49b73b0437205fbf3f7a632",
+          "target_sha256": "2c40fdea662015beb43a9e2cb72e0bfdd89ba973b49b73b0437205fbf3f7a632",
+          "changed": false,
+          "target_origin": "git show 71535c9:backend/agents/composition.py"
+        },
+        "backend/agents/hotspot_localization.py": {
+          "base_sha256": "82d3fe4c03670da7500637d8246df11d17010b74f41a92de28ad494d64174065",
+          "target_sha256": "82d3fe4c03670da7500637d8246df11d17010b74f41a92de28ad494d64174065",
+          "changed": false,
+          "target_origin": "git show 71535c9:backend/agents/hotspot_localization.py"
+        },
+        "backend/agents/input_analysis.py": {
+          "base_sha256": "e28d4050a98e0b082ebb63764509fa31f319429bc78cc351628f0c382a1b978a",
+          "target_sha256": "e35da9c1c0c19ef84e0da143218c3f78fb026752152b69f9f4e7221c65cee8a8",
+          "changed": true,
+          "target_origin": "git show 71535c9:backend/agents/input_analysis.py"
+        },
+        "backend/agents/knowledge.py": {
+          "base_sha256": "e85a2318a0c1fb7bbb4f4885f0ddfff59f35a2d61d68917036cb2a55501923a9",
+          "target_sha256": "2148d6167d7cfef752606bffcca93bf1872d7003eba3e0b79e2fef784317d4c7",
+          "changed": true,
+          "target_origin": "git show 71535c9:backend/agents/knowledge.py"
+        },
+        "backend/agents/page_context.py": {
+          "base_sha256": "543bdc06d14565003fc894053058545bee784119f656e2fd497789e9f4717aaf",
+          "target_sha256": "543bdc06d14565003fc894053058545bee784119f656e2fd497789e9f4717aaf",
+          "changed": false,
+          "target_origin": "Unchanged current bytes"
+        },
+        "backend/agents/page_generation.py": {
+          "base_sha256": "10c05c096db3c84de217ef3dd366398a4b3d9d89b9d32806adcb7324ba9ff8d8",
+          "target_sha256": "1165f48bdea9d53049525375f9ba0752b5af48d3ec4116df0a2b503f2c9ac230",
+          "changed": true,
+          "target_origin": "git show 71535c9:backend/agents/page_generation.py"
+        },
+        "backend/jobs/page_workflows.py": {
+          "base_sha256": "174a9e9dca24119679fcf7c47f368abc803176853e509d110a8402967892e587",
+          "target_sha256": "9ab310cc1aaff53e7045107c08c63e2430ce3e3719f2b792cf4bff5c948f7e38",
+          "changed": true,
+          "target_origin": "git show 71535c9:backend/jobs/page_workflows.py"
+        },
+        "backend/jobs/providers.py": {
+          "base_sha256": "01ebc2ca0379c69533a70ec4b1111e1d6bde0c7523951ff3c998240e3b840914",
+          "target_sha256": "6fd4c3b3803dd2bac1ccbe6a2b3276e6bcfad657e7b573f15ef4c4c1212e3ad9",
+          "changed": true,
+          "target_origin": "git show 71535c9:backend/jobs/providers.py"
+        },
+        "backend/jobs/store.py": {
+          "base_sha256": "071ef2f3b3bcafc7fa7f5d3751590d9fe6fab2a2e91472dd50129aa26a8d79ed",
+          "target_sha256": "4e1ce86a9bb7af81a08a0b8302e7b6ae9d7864e2bb7ab372b3f7e904ef4fbad3",
+          "changed": true,
+          "target_origin": "git show 71535c9:backend/jobs/store.py"
+        },
+        "backend/utils.py": {
+          "base_sha256": "4ad7878ec0a4fa518a24bede6879caf4eb59c5efad2b9adb54738417133516ab",
+          "target_sha256": "4ad7878ec0a4fa518a24bede6879caf4eb59c5efad2b9adb54738417133516ab",
+          "changed": false,
+          "target_origin": "git show 71535c9:backend/utils.py"
+        },
+        "scripts/quality_eval/artifacts.py": {
+          "base_sha256": "e6bb36bd70c31aa71f5d57e5445a746224e09024b55408a255e9f231446fcd25",
+          "target_sha256": "f8d63e2acfac2761589e65e9d35768e7d494160796d39b2af5992b86b2fa417e",
+          "changed": true,
+          "target_origin": "Exact reconstruction verified by complete producer hash"
+        },
+        "scripts/quality_eval/cli.py": {
+          "base_sha256": "6aa2fcf1ade958ac78e57fe574cac36effb48c07fa131adf341eb0a0254d26a3",
+          "target_sha256": "6aa2fcf1ade958ac78e57fe574cac36effb48c07fa131adf341eb0a0254d26a3",
+          "changed": false,
+          "target_origin": "Unchanged current bytes"
+        },
+        "scripts/quality_eval/dataset.py": {
+          "base_sha256": "6a2e4a60ca8c998d8b8c4f89d0cd3f13ced1eb1b594f9b49ae45f6add4da2a4a",
+          "target_sha256": "6a2e4a60ca8c998d8b8c4f89d0cd3f13ced1eb1b594f9b49ae45f6add4da2a4a",
+          "changed": false,
+          "target_origin": "Unchanged current bytes"
+        },
+        "scripts/quality_eval/production.py": {
+          "base_sha256": "b375b220aad5ce4c2e03e5298be19b441618ea106dfc7a7625f4609669cae25b",
+          "target_sha256": "b375b220aad5ce4c2e03e5298be19b441618ea106dfc7a7625f4609669cae25b",
+          "changed": false,
+          "target_origin": "Unchanged current bytes"
+        },
+        "scripts/quality_eval/runner.py": {
+          "base_sha256": "87a34c01183451a8720b8ea91e0467c3fffebefa541886fd6418810710adca32",
+          "target_sha256": "6d24ca9b52d2cd4635fc68e7f94b5b0f0fd15e57ca22eb28dd78f2ca8e65b32b",
+          "changed": true,
+          "target_origin": "Exact reconstruction verified by complete producer hash"
+        }
+      },
+      "changed_files": [
+        "backend/agents/input_analysis.py",
+        "backend/agents/knowledge.py",
+        "backend/agents/page_generation.py",
+        "backend/jobs/page_workflows.py",
+        "backend/jobs/providers.py",
+        "backend/jobs/store.py",
+        "scripts/quality_eval/artifacts.py",
+        "scripts/quality_eval/runner.py"
+      ],
+      "retained_unused_files": [
+        "backend/agents/page_context.py"
+      ],
+      "notes": [
+        "Additional unused helper and tests need not be removed for the baseline quality run.",
+        "No source files in the live repository were modified; only this evidence patch was added.",
+        "No provider, model, database or credential operation was performed."
+      ]
+    }
+  },
+  "verification": {
+    "backend_final": {
+      "recorded_at": "2026-10-19T03:42:45.540376+00:00",
+      "command": "python -m pytest -q (cwd=backend; default generation revision)",
+      "exit_code": 0,
+      "passed": 314,
+      "failed": 0,
+      "elapsed_seconds": 62.91,
+      "database": "flipbook_acceptance_2d0e4ecc1372",
+      "isolated_database_removed": true,
+      "log": "backend-final-tests.log"
+    },
+    "quality_tests": {
+      "passed": 148,
+      "seconds": 4.43
+    },
+    "frontend": {
+      "recorded_at": "2026-10-19T03:21:05.223567+00:00",
+      "node": "v24.19.0",
+      "npm": "11.17.0",
+      "checks": {
+        "frontend_lint": {
+          "exit_code": 0,
+          "log": "frontend-lint.log"
+        },
+        "frontend_tests": {
+          "exit_code": 0,
+          "test_files": 37,
+          "passed": 299,
+          "failed": 0,
+          "seconds": 3.95,
+          "log": "frontend-test.log"
+        },
+        "frontend_player": {
+          "exit_code": 0,
+          "environments": [
+            "development",
+            "production"
+          ],
+          "startup": true,
+          "three_level_navigation": true,
+          "references_and_provenance": true,
+          "author_review_state": true,
+          "host_environment_preserved": true,
+          "script_bytes": 198984,
+          "log": "frontend-verify-player.log"
+        },
+        "frontend_build": {
+          "exit_code": 0,
+          "log": "frontend-build.log"
+        },
+        "frontend_publication_runtime": {
+          "exit_code": 0,
+          "log": "frontend-build-publication.log"
+        }
+      },
+      "tracked_frontend_or_runtime_changes": false
+    },
+    "processes_final": {
+      "recorded_at": "2026-10-19T03:43:35.441998+00:00",
+      "checks": [
+        {
+          "name": "knowledge",
+          "generation_revision": "default legacy (KNOWLEDGE_GENERATION_REVISION unset)",
+          "exit_code": 0,
+          "elapsed_seconds": 15.5,
+          "evidence": "knowledge-final.json",
+          "log": "knowledge-final.log",
+          "scenarios_passed": 7,
+          "paid_calls": 0,
+          "database_cleaned": true
+        },
+        {
+          "name": "history",
+          "generation_revision": "default legacy (KNOWLEDGE_GENERATION_REVISION unset)",
+          "exit_code": 0,
+          "elapsed_seconds": 10.02,
+          "evidence": "history-final.json",
+          "log": "history-final.log",
+          "scenarios_passed": 10,
+          "paid_calls": 0,
+          "database_cleaned": true
+        },
+        {
+          "name": "publications",
+          "generation_revision": "default legacy (KNOWLEDGE_GENERATION_REVISION unset)",
+          "exit_code": 0,
+          "elapsed_seconds": 12.1,
+          "evidence": "publications-final.json",
+          "log": "publications-final.log",
+          "scenarios_passed": 10,
+          "paid_calls": 0,
+          "database_cleaned": true
+        }
+      ]
+    },
+    "compose": {
+      "built_current_sources": true,
+      "passed": 19,
+      "checks": [
+        {
+          "check": "health through nginx",
+          "passed": true
+        },
+        {
+          "check": "built SPA and assets through nginx",
+          "passed": true
+        },
+        {
+          "check": "upload and real HTTP vision analysis",
+          "passed": true
+        },
+        {
+          "check": "root and two actual normalized hotspots persisted",
+          "passed": true
+        },
+        {
+          "check": "uploaded image served through nginx",
+          "passed": true
+        },
+        {
+          "check": "upload response security headers",
+          "passed": true
+        },
+        {
+          "check": "editable scene JSONB HTTP roundtrip",
+          "passed": true
+        },
+        {
+          "check": "node ownership enforced across projects",
+          "passed": true
+        },
+        {
+          "check": "partial generation retains successful child",
+          "passed": true
+        },
+        {
+          "check": "partial generation restores parent status",
+          "passed": true
+        },
+        {
+          "check": "retry creates only failed child and keeps first relation",
+          "passed": true
+        },
+        {
+          "check": "only the failed child provider call was retried",
+          "passed": true
+        },
+        {
+          "check": "structured page regeneration refuses destructive replacement",
+          "passed": true
+        },
+        {
+          "check": "generated knowledge has explicit connections and provenance",
+          "passed": true
+        },
+        {
+          "check": "mixed-owner hotspot batch atomically rolls back in Postgres",
+          "passed": true
+        },
+        {
+          "check": "export retains scene content and all nodes",
+          "passed": true
+        },
+        {
+          "check": "legacy ZIP export through nginx",
+          "passed": true
+        },
+        {
+          "check": "new multipart analysis entry through nginx",
+          "passed": true
+        },
+        {
+          "check": "new text analysis entry saves content without image credentials",
+          "passed": true
+        }
+      ],
+      "provider": "controlled fake HTTP; no real model calls",
+      "temporary_projects_deleted": true
+    },
+    "ruff": true,
+    "diff_check": true,
+    "github_actions_added": false,
+    "local_artifact_note": "Log/evidence filenames in verification refer to retained local, untracked acceptance artifacts, not public repository files."
+  },
+  "browser": {
+    "operator": "Codex CUA; actual browser, not a mocked DOM",
+    "generation_revision": "default legacy; four saved jobs have no marker",
+    "real_model_calls": 4,
+    "text_pages": 3,
+    "image_pages": 1,
+    "jobs": [
+      {
+        "id": "job_8gwa3leqcb",
+        "kind": "analyze",
+        "status": "succeeded",
+        "revision": null
+      },
+      {
+        "id": "job_rw9owsg09i",
+        "kind": "children",
+        "status": "succeeded",
+        "revision": null
+      },
+      {
+        "id": "job_a0ts466ct0",
+        "kind": "children",
+        "status": "succeeded",
+        "revision": null
+      },
+      {
+        "id": "job_wwrzxo4pj8",
+        "kind": "analyze",
+        "status": "succeeded",
+        "revision": null
+      }
+    ],
+    "three_level_navigation_observed": true,
+    "page_edit_saved": true,
+    "restore_before_grandchild_kept_newer_connection": true,
+    "restoration_kept_three_pages": true,
+    "review_statuses_remained_unreviewed": true,
+    "zip_download": {
+      "files": [
+        "index.html",
+        "player.js",
+        "player.css",
+        "project.json",
+        "README.txt"
+      ],
+      "bytes": 73412,
+      "sha256": "7803a4ec757636cb1b9e823827383da0f883e5b9b7c815ca7be1754255960f0c",
+      "nodes": 3,
+      "dummy_key_absent": true
+    },
+    "fixed_publication": {
+      "three_level_navigation_observed": true,
+      "source_edit_did_not_change_saved_title": true,
+      "hashes_before": {
+        "index.html": "f838ef592949c6a50f4bef07bcc2b622a8549d277d2d886c51c8dae0359a3d26",
+        "project.json": "4f6b7f727c3cd107da044f05475918094e100fcdce76641100dd3d51d3f859d1",
+        "player.js": "fa5bb8495b2e8e192e66e978d008ace2b0cc6e84cfb8a9d6d9a9fd662755cb36",
+        "player.css": "42ab01c4f02021896976322ad133cdd7bc7a84160ccb7f85541bd870bfd4214d"
+      },
+      "hashes_after": {
+        "index.html": "f838ef592949c6a50f4bef07bcc2b622a8549d277d2d886c51c8dae0359a3d26",
+        "project.json": "4f6b7f727c3cd107da044f05475918094e100fcdce76641100dd3d51d3f859d1",
+        "player.js": "fa5bb8495b2e8e192e66e978d008ace2b0cc6e84cfb8a9d6d9a9fd662755cb36",
+        "player.css": "42ab01c4f02021896976322ad133cdd7bc7a84160ccb7f85541bd870bfd4214d"
+      }
+    },
+    "responsive_checks": [
+      {
+        "surface": "reader",
+        "requested_viewport": [
+          390,
+          844
+        ],
+        "client_width": 390,
+        "scroll_width": 390
+      },
+      {
+        "surface": "quality report",
+        "requested_viewport": [
+          390,
+          844
+        ],
+        "client_width": 375,
+        "scroll_width": 375
+      }
+    ],
+    "image_localization_quality_passed": false,
+    "image_boxes_were_not_manually_corrected": true,
+    "screenshots": [
+      "round9-desktop-history.jpg",
+      "round9-desktop-image.jpg",
+      "round9-desktop-quality.jpg",
+      "round9-mobile-quality.jpg",
+      "round9-mobile-reader.jpg"
+    ]
+  },
+  "browser_isolation": {
+    "editor_api": "stopped",
+    "local_model": "stopped",
+    "dedicated_compose_states": {
+      "backend": "exited",
+      "db": "exited"
+    },
+    "browser_refresh_and_three_level_navigation": true,
+    "public_file_hashes_unchanged": {
+      "index.html": "f838ef592949c6a50f4bef07bcc2b622a8549d277d2d886c51c8dae0359a3d26",
+      "project.json": "4f6b7f727c3cd107da044f05475918094e100fcdce76641100dd3d51d3f859d1",
+      "player.js": "fa5bb8495b2e8e192e66e978d008ace2b0cc6e84cfb8a9d6d9a9fd662755cb36",
+      "player.css": "42ab01c4f02021896976322ad133cdd7bc7a84160ccb7f85541bd870bfd4214d"
+    },
+    "public_files_checked": [
+      "index.html",
+      "project.json",
+      "player.js",
+      "player.css"
+    ],
+    "model_requests_added": 0
+  },
+  "cleanup": {
+    "browser_test_database_removed": true,
+    "test_api_reader_model_vite_stopped": true,
+    "dedicated_compose_db_backend_restored_healthy": true,
+    "static_quality_report_preview_retained": true,
+    "download_archived_in_temporary_evidence_and_removed_from_downloads": true
+  },
+  "environment_incidents": [
+    {
+      "incident": "verification Postgres backend received SIGKILL during COMMIT, followed by recovery",
+      "observed_at_utc": "2026-10-19 03:36:14",
+      "cause": "not established",
+      "test_data_before_restart": "no browser generation yet",
+      "disposition": "waited for recovery; restarted isolated host API; rebuilt final Compose and reran health/19 checks"
+    },
+    {
+      "incident": "test fake-provider recognized only old prompt text",
+      "disposition": "updated test-only recognizer; first failure log retained; all final process scenarios passed"
+    }
+  ],
+  "limits": [
+    "One local 2B quantized model; not evidence about other providers or model sizes.",
+    "Six fixed cases, one branch per case, one independent synthetic image; no statistical superiority.",
+    "Both runs failed agent review; no human quality approval.",
+    "Actual paths differ: no global score delta or winner.",
+    "Final default product browser flow is functional evidence, not content correctness.",
+    "Credential audit used synthetic keys and relation/log/checkpoint scans, not a separate pg_dump.",
+    "Temporary local services, test databases and URLs are not deployment configuration."
+  ],
+  "pre_commit_cleanup": {
+    "recorded_at": "2026-10-19T04:05:45.146739+00:00",
+    "scope": "Documentation/archive cleanup; generation and evaluator source bytes unchanged from final full acceptance.",
+    "quality_tests": {
+      "command": "python -m pytest scripts/quality_eval/tests -q",
+      "passed": 148,
+      "failed": 0,
+      "elapsed_seconds": 4.77
+    },
+    "ruff": {
+      "command": "ruff check backend scripts",
+      "passed": true
+    },
+    "documentation": {
+      "markdown_files": 47,
+      "local_links_checked": 332,
+      "broken_links": 0,
+      "round8_plan_and_json_bytes_preserved": true,
+      "round8_report_changes": "Relative links only"
+    },
+    "frozen_hashes": {
+      "suite": "c58fc124ea4212795bcec5c6f5a9f954387654db121469400e7249321292e5dd",
+      "evaluator": "56587b7e688c4e8b7388564e2930101bdeea8364e1c478be0c633eebd6a1c7f4",
+      "producer": "238dd8f535be170d023896cc546e92c94eb9cdfd57c78879d9b839a81640360f"
+    },
+    "public_runs_and_reviews_valid": true,
+    "agent_cases_failed_each_side": 6,
+    "human_quality": "not_reviewed",
+    "comparison_rejected": true,
+    "source_patches_reconstructed_independently": true,
+    "raw_run_review_patch_and_event_bytes_preserved": true,
+    "public_artifacts_and_images_reviewed": true,
+    "credential_pattern_hits": 0,
+    "diff_check": true,
+    "github_actions_added": false,
+    "real_model_calls_added": 0,
+    "full_stack_and_browser_rerun": false,
+    "full_acceptance_note": "Original 314 backend / 299 frontend / 7+10+10 process / 19 stack and browser measurements retained; no source changes required rerunning them.",
+    "machine_specific_reconstruction_paths_removed": true,
+    "pending_files": 56,
+    "staged_diff_check": true,
+    "source_patch_context_whitespace": ".gitattributes disables only blank-at-eol for docs/evidence/*-source.patch to preserve unified-diff context lines; production files retain normal whitespace checking."
+  }
+}

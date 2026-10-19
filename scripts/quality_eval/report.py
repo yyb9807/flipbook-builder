@@ -21,6 +21,22 @@ def _paragraph(value):
     return f"<p>{_escape(value)}</p>"
 
 
+def _evidence(value, *, legacy_quote=False):
+    if not isinstance(value, list):
+        escaped = _escape(value)
+        return f'<blockquote>{escaped}</blockquote>' if legacy_quote else escaped
+    parts = []
+    for item in value:
+        if not isinstance(item, dict):
+            parts.append(_paragraph(item))
+            continue
+        location = f'Node: <code>{_escape(item.get("node_id", ""))}</code>'
+        if item.get("section_id") is not None:
+            location += f' · Section: <code>{_escape(item["section_id"])}</code>'
+        parts.append(f'<p class="muted">{location}</p><blockquote>{_escape(item.get("quote", ""))}</blockquote>')
+    return ''.join(parts)
+
+
 def _source(case):
     source = case.get("source", {})
     parts = ["<details><summary>固定依据与逐项核对 / Fixed source and review checks</summary>",
@@ -95,10 +111,14 @@ def _pages(case, output, suite, out):
                              if hotspot.get("target_node_id") == node_id), {})
             section = next((section for section in (parent.get("scene_document") or {}).get("sections", [])
                             if section.get("hotspot_id", section.get("id")) == selected.get("id")), {})
-            context = section.get("body") or parent.get("description", "")
+            context = step.get("parent_context")
+            if not isinstance(context, str):
+                context = section.get("body") or parent.get("description", "")
+            context_kind = step.get("parent_context_kind") or "legacy-reconstructed"
             parts.append('<details class="context"><summary>本页实际父上下文 / Actual parent context</summary>'
                          f'<p>入口：{_escape(step.get("label", selected.get("label", "")))}</p>{_paragraph(context)}'
-                         '<p class="muted">仅所选区块正文（图片页使用描述），未额外注入祖先全文。</p></details>')
+                         '<p class="muted">本次实际发送的父页上下文；输入范围以记录为准。'
+                         f'类型：<code>{_escape(context_kind)}</code></p></details>')
         document = node.get("scene_document") or {}
         for section in document.get("sections", []):
             parts.append(f'<section class="body-section"><h4>{_escape(section.get("title", ""))}</h4>'
@@ -119,7 +139,10 @@ def _review_rows(entry, case, *, invalid=False):
         return '<p class="error">原始评分未生效 / Review invalid。摘要、方法、评审者或覆盖项不匹配；本报告不显示这些评分，请重新生成匹配本次运行的模板。</p>'
     if not entry:
         return '<p class="unreviewed">未审 / Not reviewed。自动检查通过不代表内容质量通过。</p>'
-    parts = ['<table><thead><tr><th>人工维度 / Dimension</th><th>0–4</th><th>理由 / Reason</th><th>输出证据 / Evidence</th></tr></thead><tbody>']
+    parts = []
+    if isinstance(entry.get("inspected_node_ids"), list):
+        parts.append(f'<p class="muted">已检查页面 / Inspected nodes：{_escape(", ".join(str(item) for item in entry["inspected_node_ids"]))}</p>')
+    parts.append('<table><thead><tr><th>评审维度 / Dimension</th><th>0–4</th><th>理由 / Reason</th><th>输出证据 / Evidence</th></tr></thead><tbody>')
     dimensions = entry.get("dimensions", {})
     if not isinstance(dimensions, dict):
         dimensions = {}
@@ -129,7 +152,7 @@ def _review_rows(entry, case, *, invalid=False):
             value = {}
         score = value.get("score")
         parts.append(f'<tr><td>{_escape(rubric["label"])}</td><td>{score if isinstance(score, int) and not isinstance(score, bool) else "未审"}</td>'
-                     f'<td>{_escape(value.get("reason", ""))}</td><td>{_escape(value.get("evidence", ""))}</td></tr>')
+                     f'<td>{_escape(value.get("reason", ""))}</td><td>{_evidence(value.get("evidence", ""))}</td></tr>')
     parts.append('</tbody></table>')
     for collection, title in (("fact_checks", "事实核对"), ("forbidden_claims", "禁止结论核对")):
         parts.append(f'<h4>{title}</h4><ul>')
@@ -142,7 +165,7 @@ def _review_rows(entry, case, *, invalid=False):
                 continue
             parts.append(f'<li><strong>{_escape(checks.get(item.get("id"), {}).get("claim", item.get("id", "")))}</strong>：'
                          f'{_escape(item.get("verdict") or "未审")} — {_escape(item.get("reason", ""))}'
-                         f'<blockquote>{_escape(item.get("evidence", ""))}</blockquote></li>')
+                         f'{_evidence(item.get("evidence", ""), legacy_quote=True)}</li>')
         parts.append('</ul>')
     return ''.join(parts)
 
@@ -187,10 +210,11 @@ def write_report(run, suite, out, review=None, comparison=None):
     if run.get("mode") == "replay":
         parts.append('<div class="banner"><strong>受控回放 / Controlled replay</strong><p>只校准评估流程，不是实际模型质量。人工模型质量保持未测，不产生总分或优胜模型。</p></div>')
     else:
-        parts.append('<div class="banner"><strong>真实模型运行 / Live run</strong><p>自动诊断与人工判断分别展示。一次固定路径样本不构成统计优胜结论。</p></div>')
+        parts.append('<div class="banner"><strong>真实模型运行 / Live run</strong><p>自动诊断、人工判断与自主评审分别展示。一次固定路径样本不构成统计优胜结论。</p></div>')
     parts.append('<div class="summary">')
     for label, key in (("执行 / Execution", "execution"), ("自动诊断 / Diagnostics", "automatic"),
-                       ("人工质量 / Human quality", "human_quality"), ("夹具校准 / Calibration", "calibration")):
+                       ("人工质量 / Human quality", "human_quality"), ("自主评审质量 / Agent quality", "agent_quality"),
+                       ("夹具校准 / Calibration", "calibration")):
         parts.append(f'<span>{label}：<strong>{_escape(assessment[key])}</strong></span>')
     parts.append('</div>')
     for label, value in (("Model", run.get("model")),
@@ -249,11 +273,13 @@ def write_report(run, suite, out, review=None, comparison=None):
             parts.append('</tbody></table>')
         parts.append('<h3>自动发现 / Automatic findings</h3><ul class="findings">')
         if not result["findings"]:
-            parts.append('<li class="passed">未发现结构问题；事实和跨页语义仍需人工核对。</li>')
+            parts.append('<li class="passed">未发现结构问题；事实和跨页语义仍需逐页评审。</li>')
         for finding in result["findings"]:
             parts.append(f'<li class="{finding["severity"]}"><strong>{_escape(finding["code"])}</strong> '
                          f'{_escape({key: value for key, value in finding.items() if key not in {"code", "severity"}})}</li>')
-        parts.append('</ul><h3>人工评审 / Manual review</h3>'
+        review_label = ('自主评审 / Agent review' if assessment.get("reviewer", {}).get("kind") == "agent"
+                        else '人工评审 / Manual review')
+        parts.append(f'</ul><h3>{review_label}</h3>'
                      + _review_rows(reviews.get(case["id"]), case, invalid=result["review"]["status"] == "invalid"))
         for error in result["review"]["errors"] + result["review"]["failures"]:
             parts.append(f'<p class="error">{_escape(error)}</p>')
@@ -266,7 +292,13 @@ def write_report(run, suite, out, review=None, comparison=None):
     parts.append('<p>每维至少 3 分且逐项事实/禁止结论核对通过，才满足本流程接受门槛；不计算平均分。校准评审不能代替真实人工模型质量评审。</p></section>')
     if comparison:
         parts.append('<section class="case"><h2>成对运行对比 / Paired comparison</h2>'
-                     f'<pre style="white-space:pre-wrap;overflow-wrap:anywhere">{_escape({key: value for key, value in comparison.items() if key != "case_deltas"})}</pre>')
+                     '<div class="summary">'
+                     f'<span>生成结果可比 / Generation comparable：<strong>{_escape(comparison.get("comparable", False))}</strong></span>'
+                     f'<span>评审分数可比 / Review scores comparable：<strong>{_escape(comparison.get("review_scores_comparable", False))}</strong></span></div>')
+        if not comparison.get("review_scores_comparable"):
+            parts.append('<p class="muted">评审分数不可直接比较；两侧分数仅分别展示，不计算分数差异或优胜结论。</p>'
+                         + _paragraph({"Review comparison reasons": comparison.get("review_comparison_reasons", [])}))
+        parts.append(f'<pre style="white-space:pre-wrap;overflow-wrap:anywhere">{_escape({key: value for key, value in comparison.items() if key not in {"case_deltas", "comparable", "review_scores_comparable", "review_comparison_reasons"}})}</pre>')
         for delta in comparison.get("case_deltas", []):
             parts.append(f'<details><summary>{_escape(delta["case_id"])}：正文与诊断对照</summary><div class="pages paired">')
             for key, label in (("base", "基线 / Baseline"), ("candidate", "候选 / Candidate")):

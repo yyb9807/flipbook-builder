@@ -125,6 +125,10 @@ def test_complete_offline_cli_does_not_use_network_or_deployment_keys(tmp_path):
     invoke("run", "--output", baseline)
     invoke("run", "--output", candidate)
     invoke("review-template", baseline, "--output", tmp_path / "review.json")
+    invoke("review-template", baseline, "--reviewer-kind", "agent", "--output", tmp_path / "agent-template.json")
+    agent_template = json.loads((tmp_path / "agent-template.json").read_text())
+    assert agent_template["reviewer"]["kind"] == "agent"
+    assert agent_template["cases"][0]["dimensions"]["body"]["evidence"] == []
     invoke("report", baseline)
     invoke("compare", baseline, candidate, "--output", comparison)
 

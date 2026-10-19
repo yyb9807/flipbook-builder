@@ -1,0 +1,2179 @@
+{
+  "schema_version": 1,
+  "run_id": "0f5791b8-fbb7-4c11-85e0-f2e6e0cca7a4",
+  "mode": "live",
+  "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+  "provider": {
+    "base_url": "http://127.0.0.1:18084/v1",
+    "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+  },
+  "created_at": "2026-10-19T03:34:10.745411+00:00",
+  "suite_sha256": "c58fc124ea4212795bcec5c6f5a9f954387654db121469400e7249321292e5dd",
+  "producer_sha256": "5e5496df49df1f6ece3813175d503c4ab4b3c0482162dba4569d0ac0717d6bc6",
+  "prompt_sources_sha256": "65f094610b5018cadb2ad3afe7557fc7b3d6c978cd39aeb8f772f900bf0276ef",
+  "evaluator_sha256": "56587b7e688c4e8b7388564e2930101bdeea8364e1c478be0c633eebd6a1c7f4",
+  "source_hashes": {
+    "backend/agents/base.py": "718bdeb0271dd29b9bbc13e0ea9a27181e3245cd4a2c2470b9fec3ec57ab31ea",
+    "backend/agents/input_analysis.py": "e28d4050a98e0b082ebb63764509fa31f319429bc78cc351628f0c382a1b978a",
+    "backend/agents/page_generation.py": "10c05c096db3c84de217ef3dd366398a4b3d9d89b9d32806adcb7324ba9ff8d8",
+    "backend/agents/knowledge.py": "e85a2318a0c1fb7bbb4f4885f0ddfff59f35a2d61d68917036cb2a55501923a9",
+    "backend/agents/composition.py": "2c40fdea662015beb43a9e2cb72e0bfdd89ba973b49b73b0437205fbf3f7a632",
+    "backend/agents/hotspot_localization.py": "82d3fe4c03670da7500637d8246df11d17010b74f41a92de28ad494d64174065",
+    "backend/agents/page_context.py": "d2840a99182834b821f7b19c2d75cc13132fa7f2228c6073025cddbcece12ab8",
+    "backend/jobs/providers.py": "01ebc2ca0379c69533a70ec4b1111e1d6bde0c7523951ff3c998240e3b840914",
+    "backend/jobs/page_workflows.py": "174a9e9dca24119679fcf7c47f368abc803176853e509d110a8402967892e587",
+    "backend/jobs/store.py": "d6d3b4108d82a06e1243fe6032096b4c8506ed2ff8a83a7bc633938478995cb5",
+    "backend/utils.py": "4ad7878ec0a4fa518a24bede6879caf4eb59c5efad2b9adb54738417133516ab"
+  },
+  "budgets": {
+    "max_calls": 18,
+    "max_reserved_output_tokens": 66400,
+    "timeout_seconds": 1800.0,
+    "max_prompt_bytes": 262144
+  },
+  "policy": {
+    "branch_selection": "first-hotspot",
+    "stage_count": 3,
+    "repeat_count": 1
+  },
+  "repeat": 1,
+  "call_count": 18,
+  "reserved_output_tokens": 66400,
+  "status": "completed",
+  "evidence_kind": "live_provider",
+  "cases": [
+    {
+      "case_id": "water-cycle-zh",
+      "case_sha256": "b59454a7f1077dd6f74a70c8f5ddaf847cf48540771cf12e762fec27d002de5a",
+      "mode": "live",
+      "status": "completed",
+      "project": {
+        "project_id": "eval_water-cycle-zh",
+        "name": "water-cycle-zh",
+        "root_node_id": "water-cycle-zh_root",
+        "settings": {
+          "max_depth": 4,
+          "max_hotspots_per_page": 3,
+          "visual_style": "encyclopedia",
+          "language": "zh"
+        },
+        "nodes": {
+          "water-cycle-zh_root": {
+            "id": "water-cycle-zh_root",
+            "parent_id": null,
+            "depth": 0,
+            "title": "水循环中的蒸发与凝结",
+            "description": "本页介绍水循环中蒸发与凝结两个关键过程，基于USGS水科学资料，强调其在无沸腾条件下发生、不依赖固定温度，且不涉及降雨预测或全球比例等具体数据。同时说明云中可见小水滴并非等同于水蒸气，且水返回地表并非所有云都会下雨。所有内容均基于原始素材，未添加虚构信息。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "water-cycle-zh_child"
+            ],
+            "hotspots": [
+              {
+                "id": "water-cycle-zh_root_hs_1",
+                "kind": "section",
+                "label": "蒸发的定义与条件",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "water-cycle-zh_child"
+              },
+              {
+                "id": "water-cycle-zh_root_hs_2",
+                "kind": "section",
+                "label": "凝结的机制与表现",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-zh_root_hs_3",
+                "kind": "section",
+                "label": "水返回地表的机制与局限",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "draft",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "蒸发的定义与条件",
+                  "body": "蒸发是液态水转变为水蒸气的过程，不需要达到沸点（100°C），可在任何温度下发生。这一过程需要能量，即吸收热量，但不涉及沸腾。蒸发是水循环中水从液态到气态的初始步骤。",
+                  "hotspot_id": "water-cycle-zh_root_hs_1",
+                  "target_node_id": "water-cycle-zh_child"
+                },
+                {
+                  "id": "section_2",
+                  "title": "凝结的机制与表现",
+                  "body": "凝结是水蒸气转变为液态水的过程，通常发生在空气中的水蒸气达到饱和时。虽然凝结本身是物理变化，但云中可见的小水滴并非等同于水蒸气，因为这些小水滴是液态水的聚集，且肉眼可见。凝结过程本身不涉及温度变化，但会形成微小的液滴，这些液滴随后可能形成降水。",
+                  "hotspot_id": "water-cycle-zh_root_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "水返回地表的机制与局限",
+                  "body": "水返回地表主要通过降水形式，如雨、雪等，但并非所有云都会下雨。水返回地表的过程是水循环的一部分，但其发生概率受多种因素影响，如天气系统、地形和气候条件等。此外，水返回地表的机制也包括蒸发、凝结和降水，但并非所有过程都会导致降雨。",
+                  "hotspot_id": "water-cycle-zh_root_hs_3"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "text",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "water-cycle-zh_child": {
+            "id": "water-cycle-zh_child",
+            "parent_id": "water-cycle-zh_root",
+            "depth": 1,
+            "title": "蒸发的定义与条件",
+            "description": "本页聚焦蒸发的定义与条件，基于USGS水科学资料，强调其在任何温度下均可发生，无需达到沸点（100°C），且不涉及沸腾。蒸发是水循环中液态水向水蒸气的转化过程，需吸收能量，但不依赖固定温度或沸腾。该过程在无沸腾条件下即可进行，且不涉及降雨预测或全球比例等具体数据。所有内容均基于原始素材，未添加虚构信息。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "water-cycle-zh_grandchild"
+            ],
+            "hotspots": [
+              {
+                "id": "water-cycle-zh_child_hs_1",
+                "kind": "section",
+                "label": "蒸发的定义",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "water-cycle-zh_grandchild"
+              },
+              {
+                "id": "water-cycle-zh_child_hs_2",
+                "kind": "section",
+                "label": "蒸发的条件",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-zh_child_hs_3",
+                "kind": "section",
+                "label": "蒸发与沸腾的区别",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-zh_child_hs_4",
+                "kind": "section",
+                "label": "蒸发的机制与局限",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "蒸发的定义",
+                  "body": "蒸发是液态水转变为水蒸气的过程，这一过程发生在任何温度下，无需达到沸点（100°C）。与沸腾不同，蒸发是水分子从液态到气态的缓慢、无剧烈沸腾的相变。蒸发是水循环中水从液态到气态的初始步骤，是水从地表进入大气的起点。",
+                  "hotspot_id": "water-cycle-zh_child_hs_1",
+                  "target_node_id": "water-cycle-zh_grandchild"
+                },
+                {
+                  "id": "section_2",
+                  "title": "蒸发的条件",
+                  "body": "蒸发需要能量，即吸收热量，但不涉及沸腾。这一过程在任何温度下均可发生，且不依赖固定温度或沸腾。蒸发是水循环中水从液态到气态的初始步骤，是水从地表进入大气的起点。蒸发过程不涉及任何特定温度或压力条件，而是基于分子运动的普遍规律。",
+                  "hotspot_id": "water-cycle-zh_child_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "蒸发与沸腾的区别",
+                  "body": "蒸发和沸腾是水相变的两种方式，但它们在条件和机制上存在显著区别。蒸发发生在任何温度下，且不涉及沸腾，是水分子从液态到气态的缓慢过程。而沸腾则需要水温达到沸点（100°C），且在沸腾过程中，水分子会剧烈地从液态跳转到气态。蒸发是水循环中水从液态到气态的初始步骤，而沸腾是水循环中水从液态到气态的剧烈过程。",
+                  "hotspot_id": "water-cycle-zh_child_hs_3"
+                },
+                {
+                  "id": "section_4",
+                  "title": "蒸发的机制与局限",
+                  "body": "蒸发是水分子从液态到气态的相变过程，其机制基于分子动能分布。在任何温度下，水分子会因热运动而逐渐从液态蒸发，但蒸发速度受温度、湿度和表面粗糙度的影响。蒸发过程不涉及固定耗时或全球比例，且不涉及降雨预测或具体温度条件。蒸发是水循环中水从液态到气态的初始步骤，但并非所有水都会蒸发，且蒸发程度受环境条件限制。",
+                  "hotspot_id": "water-cycle-zh_child_hs_4"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "water-cycle-zh_grandchild": {
+            "id": "water-cycle-zh_grandchild",
+            "parent_id": "water-cycle-zh_child",
+            "depth": 2,
+            "title": "蒸发的定义与条件",
+            "description": "本页聚焦蒸发的定义，基于USGS水科学资料，强调其在任何温度下均可发生，无需达到沸点（100°C），且不涉及沸腾。蒸发是水分子从液态到气态的缓慢、无剧烈沸腾的相变过程，是水循环中水从地表进入大气的起点。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [],
+            "hotspots": [
+              {
+                "id": "water-cycle-zh_grandchild_hs_1",
+                "kind": "section",
+                "label": "蒸发的定义",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-zh_grandchild_hs_2",
+                "kind": "section",
+                "label": "蒸发的条件",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-zh_grandchild_hs_3",
+                "kind": "section",
+                "label": "蒸发与沸腾的区别",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-zh_grandchild_hs_4",
+                "kind": "section",
+                "label": "蒸发的机制与局限",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "蒸发的定义",
+                  "body": "蒸发是液态水转变为水蒸气的过程，这一过程发生在任何温度下，无需达到沸点（100°C）。与沸腾不同，蒸发是水分子从液态到气态的缓慢、无剧烈沸腾的相变。蒸发是水循环中水从地表进入大气的起点。",
+                  "hotspot_id": "water-cycle-zh_grandchild_hs_1"
+                },
+                {
+                  "id": "section_2",
+                  "title": "蒸发的条件",
+                  "body": "蒸发需要能量，但不依赖固定温度或沸腾。任何温度下，液态水均可发生蒸发，且不涉及降雨预测或全球比例等具体数据。蒸发过程依赖于水分子的动能分布，当部分分子获得足够能量脱离液相，便形成水蒸气。",
+                  "hotspot_id": "water-cycle-zh_grandchild_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "蒸发与沸腾的区别",
+                  "body": "蒸发和沸腾是水相变的两种方式，但存在本质区别：蒸发发生在任何温度下，且是表面分子的缓慢蒸发；而沸腾则需要达到沸点（100°C），且是整个液体内部的剧烈沸腾。蒸发不涉及剧烈沸腾，且不依赖固定温度，而沸腾是液体在特定温度下剧烈汽化的过程。",
+                  "hotspot_id": "water-cycle-zh_grandchild_hs_3"
+                },
+                {
+                  "id": "section_4",
+                  "title": "蒸发的机制与局限",
+                  "body": "蒸发的机制在于水分子获得足够动能脱离液相，形成水蒸气。该过程不涉及剧烈沸腾，且不依赖固定温度或沸腾。然而，蒸发的速率受环境因素影响，如湿度、风速和表面温度，且在高湿度环境下蒸发会减缓。此外，蒸发过程不涉及降雨预测或全球比例等具体数据，且不涉及所有云都会下雨的假设。",
+                  "hotspot_id": "water-cycle-zh_grandchild_hs_4"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          }
+        }
+      },
+      "branch_node_ids": [
+        "water-cycle-zh_root",
+        "water-cycle-zh_child",
+        "water-cycle-zh_grandchild"
+      ],
+      "branch_path": [
+        {
+          "stage": "child",
+          "hotspot_id": "water-cycle-zh_root_hs_1",
+          "label": "蒸发的定义与条件",
+          "parent_node_id": "water-cycle-zh_root",
+          "parent_context_sha256": "f641ac990511644613d65fb24a721ddd3830ea3dbb37d460d8c8c28c062d0239",
+          "parent_context": "{\"context_version\":\"grounded-v2\",\"source\":{\"kind\":\"user_text\",\"text\":\"水循环：以下是依据 USGS 水科学资料撰写的简要素材，不是完整教材。\\n蒸发：液态水转变为气态的水，气态的水也叫水蒸气。蒸发需要能量，也能在水没有沸腾时发生；不要把蒸发说成只在 100°C 才发生。\\n凝结：水蒸气转变为液态水；空气中的水蒸气本身是肉眼不可见的，云中可见的小水滴不能直接等同于气态水。\\n水的返回：云中的水可能形成降水，水以液态或固态返回地表。不是每一片云都会下雨。\\n素材没有给出当地的降雨预测、各过程的固定耗时、全球比例或实验温度条件。需要这些结论时应说明资料不足，不要编造精确数字。\",\"truncated\":false},\"root_page\":{\"title\":\"水循环中的蒸发与凝结\",\"overview\":\"本页介绍水循环中蒸发与凝结两个关键过程，基于USGS水科学资料，强调其在无沸腾条件下发生、不依赖固定温度，且不涉及降雨预测或全球比例等具体数据。同时说明云中可见小水滴并非等同于水蒸气，且水返回地表并非所有云都会下雨。所有内容均基于原始素材，未添加虚构信息。\",\"is_original_source\":false},\"ancestor_titles\":[\"水循环中的蒸发与凝结\"],\"parent_page\":{\"title\":\"水循环中的蒸发与凝结\",\"overview\":\"本页介绍水循环中蒸发与凝结两个关键过程，基于USGS水科学资料，强调其在无沸腾条件下发生、不依赖固定温度，且不涉及降雨预测或全球比例等具体数据。同时说明云中可见小水滴并非等同于水蒸气，且水返回地表并非所有云都会下雨。所有内容均基于原始素材，未添加虚构信息。\"},\"selected_section\":{\"title\":\"蒸发的定义与条件\",\"body\":\"蒸发是液态水转变为水蒸气的过程，不需要达到沸点（100°C），可在任何温度下发生。这一过程需要能量，即吸收热量，但不涉及沸腾。蒸发是水循环中水从液态到气态的初始步骤。\"},\"other_covered_topics\":[\"凝结的机制与表现\",\"水返回地表的机制与局限\"]}",
+          "parent_context_kind": "grounded-v2"
+        },
+        {
+          "stage": "grandchild",
+          "hotspot_id": "water-cycle-zh_child_hs_1",
+          "label": "蒸发的定义",
+          "parent_node_id": "water-cycle-zh_child",
+          "parent_context_sha256": "e56a7360a9555cc94bd394ffbff0b33006217589e7295c00901edb228b10c4d1",
+          "parent_context": "{\"context_version\":\"grounded-v2\",\"source\":{\"kind\":\"user_text\",\"text\":\"水循环：以下是依据 USGS 水科学资料撰写的简要素材，不是完整教材。\\n蒸发：液态水转变为气态的水，气态的水也叫水蒸气。蒸发需要能量，也能在水没有沸腾时发生；不要把蒸发说成只在 100°C 才发生。\\n凝结：水蒸气转变为液态水；空气中的水蒸气本身是肉眼不可见的，云中可见的小水滴不能直接等同于气态水。\\n水的返回：云中的水可能形成降水，水以液态或固态返回地表。不是每一片云都会下雨。\\n素材没有给出当地的降雨预测、各过程的固定耗时、全球比例或实验温度条件。需要这些结论时应说明资料不足，不要编造精确数字。\",\"truncated\":false},\"root_page\":{\"title\":\"水循环中的蒸发与凝结\",\"overview\":\"本页介绍水循环中蒸发与凝结两个关键过程，基于USGS水科学资料，强调其在无沸腾条件下发生、不依赖固定温度，且不涉及降雨预测或全球比例等具体数据。同时说明云中可见小水滴并非等同于水蒸气，且水返回地表并非所有云都会下雨。所有内容均基于原始素材，未添加虚构信息。\",\"is_original_source\":false},\"ancestor_titles\":[\"水循环中的蒸发与凝结\",\"蒸发的定义与条件\"],\"parent_page\":{\"title\":\"蒸发的定义与条件\",\"overview\":\"本页聚焦蒸发的定义与条件，基于USGS水科学资料，强调其在任何温度下均可发生，无需达到沸点（100°C），且不涉及沸腾。蒸发是水循环中液态水向水蒸气的转化过程，需吸收能量，但不依赖固定温度或沸腾。该过程在无沸腾条件下即可进行，且不涉及降雨预测或全球比例等具体数据。所有内容均基于原始素材，未添加虚构信息。\"},\"selected_section\":{\"title\":\"蒸发的定义\",\"body\":\"蒸发是液态水转变为水蒸气的过程，这一过程发生在任何温度下，无需达到沸点（100°C）。与沸腾不同，蒸发是水分子从液态到气态的缓慢、无剧烈沸腾的相变。蒸发是水循环中水从液态到气态的初始步骤，是水从地表进入大气的起点。\"},\"other_covered_topics\":[\"蒸发的条件\",\"蒸发与沸腾的区别\",\"蒸发的机制与局限\"]}",
+          "parent_context_kind": "grounded-v2"
+        }
+      ],
+      "normalization_checks": [
+        {
+          "stage": "root",
+          "raw_invalid": false,
+          "raw_section_count": 3,
+          "normalized_section_count": 3
+        },
+        {
+          "stage": "child",
+          "raw_invalid": false,
+          "raw_section_count": 4,
+          "normalized_section_count": 4
+        },
+        {
+          "stage": "grandchild",
+          "raw_invalid": false,
+          "raw_section_count": 4,
+          "normalized_section_count": 4
+        }
+      ],
+      "calls": [
+        {
+          "stage": "root",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 3.319837,
+          "max_tokens": 4000,
+          "prompt_sha256": "a2f16c61ac6b899d20b1b747ddc8696275b17223a2db89a70044c5e9d9f1a152",
+          "response_sha256": "50d4c2af17a3515ebe4015348b50cef07b7e229dd281a2efbd3c6d64bec338fe",
+          "ok": true
+        },
+        {
+          "stage": "child",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 4.851207,
+          "max_tokens": 4000,
+          "prompt_sha256": "b072e75c2b28c6c4b5caad90bc7981a324479410baa4e11eed70892f2ff1bd40",
+          "response_sha256": "0fba67e95c5b6cfd9e401cf18182906aa47ac7d937964b40f2579cb89c54b884",
+          "ok": true
+        },
+        {
+          "stage": "grandchild",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 3.894951,
+          "max_tokens": 4000,
+          "prompt_sha256": "f8c8c8e2de7b57585dfee946634de70e73764512a577630ba4f9cddab2591b10",
+          "response_sha256": "9cfb64b1ca8eb6219d5474c420ff95f8a3bb7b306ab3bcd04445eabf501ac326",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "case_id": "water-cycle-en",
+      "case_sha256": "03f62a2740f05100de214f99b2fdde057af3f8c2e88ddeb2036051a058bd0469",
+      "mode": "live",
+      "status": "completed",
+      "project": {
+        "project_id": "eval_water-cycle-en",
+        "name": "water-cycle-en",
+        "root_node_id": "water-cycle-en_root",
+        "settings": {
+          "max_depth": 4,
+          "max_hotspots_per_page": 3,
+          "visual_style": "encyclopedia",
+          "language": "en"
+        },
+        "nodes": {
+          "water-cycle-en_root": {
+            "id": "water-cycle-en_root",
+            "parent_id": null,
+            "depth": 0,
+            "title": "Water Cycle Overview",
+            "description": "This page provides a summary of the water cycle, a natural process involving evaporation, condensation, and precipitation. It is based on USGS water-science material and does not include forecasts or specific experimental data. The cycle is governed by physical principles and applies universally, though local weather and environmental factors influence outcomes. The information gap includes precise duration, global percentage, and controlled temperature conditions, which are not addressed in this summary.",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "water-cycle-en_child"
+            ],
+            "hotspots": [
+              {
+                "id": "water-cycle-en_root_hs_1",
+                "kind": "section",
+                "label": "Evaporation and Phase Change",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "water-cycle-en_child"
+              },
+              {
+                "id": "water-cycle-en_root_hs_2",
+                "kind": "section",
+                "label": "Condensation and Cloud Formation",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-en_root_hs_3",
+                "kind": "section",
+                "label": "Precipitation and Water Return",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-en_root_hs_4",
+                "kind": "section",
+                "label": "Limitations and Information Gaps",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "draft",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "Evaporation and Phase Change",
+                  "body": "Evaporation is the process by which liquid water turns into water vapor. It requires energy but does not require boiling; it occurs at any temperature. This phase change is a key step in the water cycle and is distinct from boiling, which occurs at 100°C (212°F) at standard pressure. The process is continuous and occurs in nature, such as in lakes or oceans, and is not limited to a specific temperature.",
+                  "hotspot_id": "water-cycle-en_root_hs_1",
+                  "target_node_id": "water-cycle-en_child"
+                },
+                {
+                  "id": "section_2",
+                  "title": "Condensation and Cloud Formation",
+                  "body": "Condensation is the reverse process of evaporation, where water vapor turns into liquid water. This occurs when vapor cools and forms tiny droplets, which can accumulate in clouds. However, visible cloud droplets are not the same as vapor; they are liquid water droplets that are visible due to light scattering. The formation of clouds is a natural result of temperature and humidity changes, but not all clouds result in rain.",
+                  "hotspot_id": "water-cycle-en_root_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "Precipitation and Water Return",
+                  "body": "Water in clouds may fall to the ground as precipitation, which can be in liquid or solid form (e.g., rain, sleet, or snow). Not every cloud produces rain; factors like temperature, wind, and cloud height influence whether precipitation occurs. The water cycle is a continuous process, but the timing and form of precipitation vary widely by location and weather conditions. The cycle is governed by natural forces and is not subject to human control or prediction in this summary.",
+                  "hotspot_id": "water-cycle-en_root_hs_3"
+                },
+                {
+                  "id": "section_4",
+                  "title": "Limitations and Information Gaps",
+                  "body": "This summary does not provide local weather forecasts, universal process duration, global percentage, or controlled experimental temperature. The water cycle is a universal process that occurs on a planetary scale, but specific details such as exact duration, temperature thresholds, or regional variations are not included. The process is governed by physical laws and is consistent across the globe, but the specific conditions for each location are not detailed. The information gap is intentional and reflects the limitations of this summary as a contributor-authored overview.",
+                  "hotspot_id": "water-cycle-en_root_hs_4"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "text",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "water-cycle-en_child": {
+            "id": "water-cycle-en_child",
+            "parent_id": "water-cycle-en_root",
+            "depth": 1,
+            "title": "Evaporation and Phase Change: Mechanism and Distinction",
+            "description": "This section explores the scientific basis of evaporation and its relationship to phase change, clarifying how liquid water transforms into water vapor without boiling. It distinguishes evaporation from boiling and explains the physical conditions under which this process occurs, emphasizing that it is a continuous, natural phenomenon that does not require a specific temperature or pressure.",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "water-cycle-en_grandchild"
+            ],
+            "hotspots": [
+              {
+                "id": "water-cycle-en_child_hs_1",
+                "kind": "section",
+                "label": "Evaporation as a Phase Change",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "water-cycle-en_grandchild"
+              },
+              {
+                "id": "water-cycle-en_child_hs_2",
+                "kind": "section",
+                "label": "Distinction from Boiling",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-en_child_hs_3",
+                "kind": "section",
+                "label": "Energy and Molecular Process",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-en_child_hs_4",
+                "kind": "section",
+                "label": "Environmental and Physical Constraints",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "Evaporation as a Phase Change",
+                  "body": "Evaporation is a physical process where liquid water transitions into water vapor, a gaseous state. Unlike boiling, which occurs at 100°C (212°F) at standard pressure, evaporation happens at any temperature and is driven by the loss of molecules from the surface of a liquid. This phase change is governed by molecular motion and energy transfer, not by temperature alone.",
+                  "hotspot_id": "water-cycle-en_child_hs_1",
+                  "target_node_id": "water-cycle-en_grandchild"
+                },
+                {
+                  "id": "section_2",
+                  "title": "Distinction from Boiling",
+                  "body": "While both evaporation and boiling involve the transition of liquid water to vapor, they differ in temperature and mechanism. Boiling occurs at a specific temperature (100°C at standard pressure) and involves the rapid vaporization of all liquid, while evaporation is a gradual process that occurs at any temperature and only at the surface of the liquid. The energy required for evaporation is lower than that for boiling and is not limited to a specific temperature.",
+                  "hotspot_id": "water-cycle-en_child_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "Energy and Molecular Process",
+                  "body": "Evaporation requires energy to overcome intermolecular forces, allowing water molecules to escape into the gas phase. This energy is absorbed from the surrounding environment, which can lead to cooling of the liquid. The process is continuous and occurs naturally in various environments, such as lakes, oceans, and even in the atmosphere during the formation of clouds.",
+                  "hotspot_id": "water-cycle-en_child_hs_3"
+                },
+                {
+                  "id": "section_4",
+                  "title": "Environmental and Physical Constraints",
+                  "body": "The water cycle is governed by physical principles and applies universally, though local weather and environmental factors influence outcomes. For example, while evaporation occurs at any temperature, the rate and extent of evaporation can vary with humidity, surface area, and temperature gradients. The process is continuous and occurs in nature, such as in lakes or oceans, and is not limited to a specific temperature.",
+                  "hotspot_id": "water-cycle-en_child_hs_4"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "water-cycle-en_grandchild": {
+            "id": "water-cycle-en_grandchild",
+            "parent_id": "water-cycle-en_child",
+            "depth": 2,
+            "title": "Evaporation as a Phase Change: Mechanism and Boundary",
+            "description": "This section explores the scientific basis of evaporation as a phase change, clarifying how liquid water transforms into water vapor without boiling. It distinguishes evaporation from boiling and explains the physical conditions under which this process occurs, emphasizing that it is a continuous, natural phenomenon that does not require a specific temperature or pressure.",
+            "source_type": "text",
+            "image_url": null,
+            "children": [],
+            "hotspots": [
+              {
+                "id": "water-cycle-en_grandchild_hs_1",
+                "kind": "section",
+                "label": "Evaporation as a Phase Change",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-en_grandchild_hs_2",
+                "kind": "section",
+                "label": "Distinction from Boiling",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-en_grandchild_hs_3",
+                "kind": "section",
+                "label": "Molecular and Energy Dynamics",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-en_grandchild_hs_4",
+                "kind": "section",
+                "label": "Environmental and Physical Constraints",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-en_grandchild_hs_5",
+                "kind": "section",
+                "label": "Limitations and Misconceptions",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "Evaporation as a Phase Change",
+                  "body": "Evaporation is a physical process where liquid water transitions into water vapor, a gaseous state. Unlike boiling, which occurs at 100°C (212°F) at standard pressure, evaporation happens at any temperature and is driven by the loss of molecules from the surface of a liquid. This phase change is governed by molecular motion and energy transfer, not by temperature alone.",
+                  "hotspot_id": "water-cycle-en_grandchild_hs_1"
+                },
+                {
+                  "id": "section_2",
+                  "title": "Distinction from Boiling",
+                  "body": "Evaporation and boiling are both phase changes from liquid to gas, but they differ in mechanism and conditions. Evaporation occurs at any temperature and involves the gradual evaporation of molecules from the surface of a liquid, while boiling occurs at a specific temperature (100°C at standard pressure) and involves the rapid vaporization of all liquid, forming bubbles throughout the liquid. The key difference lies in the temperature and the nature of the phase transition.",
+                  "hotspot_id": "water-cycle-en_grandchild_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "Molecular and Energy Dynamics",
+                  "body": "In evaporation, individual water molecules gain enough kinetic energy to escape the liquid phase, but the process is not driven by a single temperature threshold. Instead, it depends on the distribution of molecular energy, with some molecules having sufficient energy to overcome intermolecular forces. This energy transfer is governed by the system's temperature and surface conditions, but the process is continuous and occurs at any temperature, unlike boiling which is a sudden, pressure-dependent phase transition.",
+                  "hotspot_id": "water-cycle-en_grandchild_hs_3"
+                },
+                {
+                  "id": "section_4",
+                  "title": "Environmental and Physical Constraints",
+                  "body": "While evaporation is a universal process, it is subject to environmental and physical constraints. For instance, the rate of evaporation depends on factors such as surface area, humidity, wind speed, and temperature. In some cases, evaporation may be limited by the presence of other substances or by the physical state of the liquid. Additionally, the process is not restricted to water; it can occur with other substances, but the rate and mechanism may vary significantly depending on the substance and its physical properties.",
+                  "hotspot_id": "water-cycle-en_grandchild_hs_4"
+                },
+                {
+                  "id": "section_5",
+                  "title": "Limitations and Misconceptions",
+                  "body": "It is important to note that evaporation is not limited to water and does not require boiling. It is a continuous process that occurs at any temperature and is driven by the loss of molecules from the surface of a liquid. However, some misconceptions exist, such as the idea that all clouds produce rain. In reality, not every cloud results in precipitation; the formation of rain depends on the atmospheric conditions and the state of the water vapor. This highlights the complexity of the water cycle and the limitations of oversimplified models.",
+                  "hotspot_id": "water-cycle-en_grandchild_hs_5"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          }
+        }
+      },
+      "branch_node_ids": [
+        "water-cycle-en_root",
+        "water-cycle-en_child",
+        "water-cycle-en_grandchild"
+      ],
+      "branch_path": [
+        {
+          "stage": "child",
+          "hotspot_id": "water-cycle-en_root_hs_1",
+          "label": "Evaporation and Phase Change",
+          "parent_node_id": "water-cycle-en_root",
+          "parent_context_sha256": "69901e352e4008db4b1f490a8d50fac96adb1be0a03f65f0b223c2810062744c",
+          "parent_context": "{\"context_version\":\"grounded-v2\",\"source\":{\"kind\":\"user_text\",\"text\":\"Water cycle: this is a contributor-authored summary based on USGS water-science material, not a complete textbook.\\nEvaporation changes liquid water into gaseous water, or water vapor. Energy is needed, but evaporation can occur without the water boiling; it is not restricted to 100 degrees Celsius.\\nCondensation changes water vapor into liquid water. Water vapor itself is invisible to the human eye; visible tiny liquid droplets in a cloud must not be equated with the gas.\\nWater in clouds may return to the surface as precipitation in liquid or solid form. Not every cloud produces rain.\\nThis brief supplies no local weather forecast, universal process duration, global percentage or controlled experimental temperature. State the information gap rather than inventing exact figures.\",\"truncated\":false},\"root_page\":{\"title\":\"Water Cycle Overview\",\"overview\":\"This page provides a summary of the water cycle, a natural process involving evaporation, condensation, and precipitation. It is based on USGS water-science material and does not include forecasts or specific experimental data. The cycle is governed by physical principles and applies universally, though local weather and environmental factors influence outcomes. The information gap includes precise duration, global percentage, and controlled temperature conditions, which are not addressed in this summary.\",\"is_original_source\":false},\"ancestor_titles\":[\"Water Cycle Overview\"],\"parent_page\":{\"title\":\"Water Cycle Overview\",\"overview\":\"This page provides a summary of the water cycle, a natural process involving evaporation, condensation, and precipitation. It is based on USGS water-science material and does not include forecasts or specific experimental data. The cycle is governed by physical principles and applies universally, though local weather and environmental factors influence outcomes. The information gap includes precise duration, global percentage, and controlled temperature conditions, which are not addressed in this summary.\"},\"selected_section\":{\"title\":\"Evaporation and Phase Change\",\"body\":\"Evaporation is the process by which liquid water turns into water vapor. It requires energy but does not require boiling; it occurs at any temperature. This phase change is a key step in the water cycle and is distinct from boiling, which occurs at 100°C (212°F) at standard pressure. The process is continuous and occurs in nature, such as in lakes or oceans, and is not limited to a specific temperature.\"},\"other_covered_topics\":[\"Condensation and Cloud Formation\",\"Precipitation and Water Return\",\"Limitations and Information Gaps\"]}",
+          "parent_context_kind": "grounded-v2"
+        },
+        {
+          "stage": "grandchild",
+          "hotspot_id": "water-cycle-en_child_hs_1",
+          "label": "Evaporation as a Phase Change",
+          "parent_node_id": "water-cycle-en_child",
+          "parent_context_sha256": "6199af348f313a30f6752c9221967335c4026583db31b21c5cfc0266bf5e2606",
+          "parent_context": "{\"context_version\":\"grounded-v2\",\"source\":{\"kind\":\"user_text\",\"text\":\"Water cycle: this is a contributor-authored summary based on USGS water-science material, not a complete textbook.\\nEvaporation changes liquid water into gaseous water, or water vapor. Energy is needed, but evaporation can occur without the water boiling; it is not restricted to 100 degrees Celsius.\\nCondensation changes water vapor into liquid water. Water vapor itself is invisible to the human eye; visible tiny liquid droplets in a cloud must not be equated with the gas.\\nWater in clouds may return to the surface as precipitation in liquid or solid form. Not every cloud produces rain.\\nThis brief supplies no local weather forecast, universal process duration, global percentage or controlled experimental temperature. State the information gap rather than inventing exact figures.\",\"truncated\":false},\"root_page\":{\"title\":\"Water Cycle Overview\",\"overview\":\"This page provides a summary of the water cycle, a natural process involving evaporation, condensation, and precipitation. It is based on USGS water-science material and does not include forecasts or specific experimental data. The cycle is governed by physical principles and applies universally, though local weather and environmental factors influence outcomes. The information gap includes precise duration, global percentage, and controlled temperature conditions, which are not addressed in this summary.\",\"is_original_source\":false},\"ancestor_titles\":[\"Water Cycle Overview\",\"Evaporation and Phase Change: Mechanism and Distinction\"],\"parent_page\":{\"title\":\"Evaporation and Phase Change: Mechanism and Distinction\",\"overview\":\"This section explores the scientific basis of evaporation and its relationship to phase change, clarifying how liquid water transforms into water vapor without boiling. It distinguishes evaporation from boiling and explains the physical conditions under which this process occurs, emphasizing that it is a continuous, natural phenomenon that does not require a specific temperature or pressure.\"},\"selected_section\":{\"title\":\"Evaporation as a Phase Change\",\"body\":\"Evaporation is a physical process where liquid water transitions into water vapor, a gaseous state. Unlike boiling, which occurs at 100°C (212°F) at standard pressure, evaporation happens at any temperature and is driven by the loss of molecules from the surface of a liquid. This phase change is governed by molecular motion and energy transfer, not by temperature alone.\"},\"other_covered_topics\":[\"Distinction from Boiling\",\"Energy and Molecular Process\",\"Environmental and Physical Constraints\"]}",
+          "parent_context_kind": "grounded-v2"
+        }
+      ],
+      "normalization_checks": [
+        {
+          "stage": "root",
+          "raw_invalid": false,
+          "raw_section_count": 4,
+          "normalized_section_count": 4
+        },
+        {
+          "stage": "child",
+          "raw_invalid": false,
+          "raw_section_count": 4,
+          "normalized_section_count": 4
+        },
+        {
+          "stage": "grandchild",
+          "raw_invalid": false,
+          "raw_section_count": 5,
+          "normalized_section_count": 5
+        }
+      ],
+      "calls": [
+        {
+          "stage": "root",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 3.831348,
+          "max_tokens": 4000,
+          "prompt_sha256": "52d2ea3aecd3016e81e271338343d209350aff5197e91a93c5223fc7bb9d83d8",
+          "response_sha256": "3d80dca0f4a3a874ae370b5698dab8b959da508297382e721967a3ff8bfa5df9",
+          "ok": true
+        },
+        {
+          "stage": "child",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 3.670163,
+          "max_tokens": 4000,
+          "prompt_sha256": "3962967287aa3b3018e7c3ccc950f564c61c72bb4e4430844de06ece9809fd72",
+          "response_sha256": "602ae55ac19de961d12774690b9f9af2781d8e5f17d573432700ec4ef35e505c",
+          "ok": true
+        },
+        {
+          "stage": "grandchild",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 4.764588,
+          "max_tokens": 4000,
+          "prompt_sha256": "89cb28c0e46e1b0212f6b18e9d5497c1d494c6600953e314d3cd2dcc46cce3d8",
+          "response_sha256": "512262dcda53ecb9592bed756cce85a4cd62963b08974ad6690029e9e3cdf489",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "case_id": "fictional-reservation-zh",
+      "case_sha256": "f4116d268141c4f9adfa62421cf18ac7eed9be4e44022204a732c89fa8ff0b1b",
+      "mode": "live",
+      "status": "completed",
+      "project": {
+        "project_id": "eval_fictional-reservation-zh",
+        "name": "fictional-reservation-zh",
+        "root_node_id": "fictional-reservation-zh_root",
+        "settings": {
+          "max_depth": 4,
+          "max_hotspots_per_page": 3,
+          "visual_style": "encyclopedia",
+          "language": "zh"
+        },
+        "nodes": {
+          "fictional-reservation-zh_root": {
+            "id": "fictional-reservation-zh_root",
+            "parent_id": null,
+            "depth": 0,
+            "title": "雾湾图书角预约与领取机制说明",
+            "description": "雾湾图书角为虚构机构，不对应真实服务。本页解释其预约、核对与领取流程，基于原始素材内容。读者提交书名和联系方式，每场活动限8个名额。申请不保证获得名额，需在12小时内核对确认后发放取件码，取件码48小时内有效。领取需凭取件码，过期无效。未提供延期、候补、收费、退款、地点或真实日期等信息。所有流程均以原始素材为准，虚构机构不承担外部核实责任。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "fictional-reservation-zh_child"
+            ],
+            "hotspots": [
+              {
+                "id": "fictional-reservation-zh_root_hs_1",
+                "kind": "section",
+                "label": "预约申请流程",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "fictional-reservation-zh_child"
+              },
+              {
+                "id": "fictional-reservation-zh_root_hs_2",
+                "kind": "section",
+                "label": "核对与确认机制",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-zh_root_hs_3",
+                "kind": "section",
+                "label": "领取与失效规则",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "draft",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "预约申请流程",
+                  "body": "读者需提交书名和联系方式，作为预约申请。每场活动仅限8个名额，申请不保证获得。申请提交后，工作人员将在12小时内核对名额和信息。只有确认通过后，才发放取件码。取件码从发放时起48小时内有效，逾期失效。",
+                  "hotspot_id": "fictional-reservation-zh_root_hs_1",
+                  "target_node_id": "fictional-reservation-zh_child"
+                },
+                {
+                  "id": "section_2",
+                  "title": "核对与确认机制",
+                  "body": "核对与确认环节在申请提交后12小时内进行。只有通过核对的申请，才能获得取件码。取件码从发放时起48小时内有效，过期则无法领取。此环节不涉及延期、候补、收费或退款，且未提供具体领取地点或真实日期。",
+                  "hotspot_id": "fictional-reservation-zh_root_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "领取与失效规则",
+                  "body": "读者需在取件码有效期内凭码领取图书。取件码48小时内有效，过期则无法领取。未提供延期、候补、收费、退款或地点等信息。所有流程均以原始素材为准，虚构机构不承担外部核实责任。",
+                  "hotspot_id": "fictional-reservation-zh_root_hs_3"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "text",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "fictional-reservation-zh_child": {
+            "id": "fictional-reservation-zh_child",
+            "parent_id": "fictional-reservation-zh_root",
+            "depth": 1,
+            "title": "预约申请流程详解",
+            "description": "本页聚焦预约申请流程，解释读者如何提交申请、核对确认及领取取件码的机制。每场活动限8个名额，申请不保证获得。申请提交后，工作人员将在12小时内核对信息，确认通过后发放取件码，取件码48小时内有效，逾期失效。流程基于原始素材，虚构机构不承担外部核实责任。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "fictional-reservation-zh_grandchild"
+            ],
+            "hotspots": [
+              {
+                "id": "fictional-reservation-zh_child_hs_1",
+                "kind": "section",
+                "label": "申请提交与名额限制",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "fictional-reservation-zh_grandchild"
+              },
+              {
+                "id": "fictional-reservation-zh_child_hs_2",
+                "kind": "section",
+                "label": "核对与确认机制",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-zh_child_hs_3",
+                "kind": "section",
+                "label": "领取与失效规则",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "申请提交与名额限制",
+                  "body": "读者需提交书名和联系方式，作为预约申请。每场活动仅限8个名额，申请不保证获得。申请提交后，工作人员将在12小时内核对名额和信息。只有确认通过后，才发放取件码。取件码从发放时起48小时内有效，逾期失效。",
+                  "hotspot_id": "fictional-reservation-zh_child_hs_1",
+                  "target_node_id": "fictional-reservation-zh_grandchild"
+                },
+                {
+                  "id": "section_2",
+                  "title": "核对与确认机制",
+                  "body": "申请提交后，工作人员将在12小时内核对名额和信息。只有确认通过后，才发放取件码。取件码从发放时起48小时内有效，逾期失效。核对时限和有效期的起算事件不同。",
+                  "hotspot_id": "fictional-reservation-zh_child_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "领取与失效规则",
+                  "body": "读者在有效期内凭取件码领取，过期码不能领取。未提供延期、候补、收费、退款、地点或真实日期等信息。所有流程均以原始素材为准，虚构机构不承担外部核实责任。",
+                  "hotspot_id": "fictional-reservation-zh_child_hs_3"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "fictional-reservation-zh_grandchild": {
+            "id": "fictional-reservation-zh_grandchild",
+            "parent_id": "fictional-reservation-zh_child",
+            "depth": 2,
+            "title": "申请提交与名额限制机制解析",
+            "description": "本页聚焦预约申请流程中的名额限制与提交机制。读者需提交书名和联系方式，每场活动限8个名额，申请不保证获得。提交后，工作人员将在12小时内核对信息，确认通过后发放取件码，取件码48小时内有效，逾期失效。该机制确保资源分配的公平性与时效性，但不承诺申请成功。所有流程均以原始素材为准，虚构机构不承担外部核实责任。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [],
+            "hotspots": [
+              {
+                "id": "fictional-reservation-zh_grandchild_hs_1",
+                "kind": "section",
+                "label": "名额限制与申请不保证获得",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-zh_grandchild_hs_2",
+                "kind": "section",
+                "label": "核对确认机制与取件码发放",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-zh_grandchild_hs_3",
+                "kind": "section",
+                "label": "取件码的有效期与领取限制",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "名额限制与申请不保证获得",
+                  "body": "每场活动仅限8个名额，申请不保证获得。这意味着即使读者提交了申请，也可能因名额分配规则而未被分配。名额限制是基于活动安排的预设，而非对申请者的优先级或资格进行排序。读者需在12小时内核对确认，若未在规定时间内完成核对，申请将被自动视为无效。",
+                  "hotspot_id": "fictional-reservation-zh_grandchild_hs_1"
+                },
+                {
+                  "id": "section_2",
+                  "title": "核对确认机制与取件码发放",
+                  "body": "申请提交后，工作人员将在12小时内核对名额和信息。只有确认通过后，才发放取件码。取件码从发放时起48小时内有效，逾期失效。这一机制确保了资源分配的时效性，但未提供延期、候补或收费等额外服务。若核对超时或未完成，申请将被自动视为无效。",
+                  "hotspot_id": "fictional-reservation-zh_grandchild_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "取件码的有效期与领取限制",
+                  "body": "取件码从发放时起48小时内有效，逾期失效。领取需凭取件码，过期无效。该机制确保了领取的时效性，但未提供延期或候补服务。若取件码在48小时内未被使用，将自动失效，且无法通过任何方式重新激活。",
+                  "hotspot_id": "fictional-reservation-zh_grandchild_hs_3"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          }
+        }
+      },
+      "branch_node_ids": [
+        "fictional-reservation-zh_root",
+        "fictional-reservation-zh_child",
+        "fictional-reservation-zh_grandchild"
+      ],
+      "branch_path": [
+        {
+          "stage": "child",
+          "hotspot_id": "fictional-reservation-zh_root_hs_1",
+          "label": "预约申请流程",
+          "parent_node_id": "fictional-reservation-zh_root",
+          "parent_context_sha256": "39ddd3492badf8126af47f32302414f2ecd4043764cdaa3b92a5ab12aa7aa26e",
+          "parent_context": "{\"context_version\":\"grounded-v2\",\"source\":{\"kind\":\"user_text\",\"text\":\"雾湾图书角是为本测试虚构的机构，不对应真实服务。请根据下列约定解释预约、核对和领取，不要把虚构规定说成现实政策。\\n提交申请：读者提交书名和联系方式。每场活动只有 8 个名额，提交申请不代表一定获得名额。\\n核对与确认：工作人员在申请提交后的 12 小时内核对名额和信息。只有确认通过后才发放取件码；取件码从发放时起 48 小时内有效。核对时限和有效期的起算事件不同。\\n领取与失效：读者在有效期内凭取件码领取，过期码不能领取。素材没有定义延期、候补、收费、退款、地点或真实日期。\\n解释遇到未定义事项时，应明确说资料未提供，而不是补造服务承诺。\",\"truncated\":false},\"root_page\":{\"title\":\"雾湾图书角预约与领取机制说明\",\"overview\":\"雾湾图书角为虚构机构，不对应真实服务。本页解释其预约、核对与领取流程，基于原始素材内容。读者提交书名和联系方式，每场活动限8个名额。申请不保证获得名额，需在12小时内核对确认后发放取件码，取件码48小时内有效。领取需凭取件码，过期无效。未提供延期、候补、收费、退款、地点或真实日期等信息。所有流程均以原始素材为准，虚构机构不承担外部核实责任。\",\"is_original_source\":false},\"ancestor_titles\":[\"雾湾图书角预约与领取机制说明\"],\"parent_page\":{\"title\":\"雾湾图书角预约与领取机制说明\",\"overview\":\"雾湾图书角为虚构机构，不对应真实服务。本页解释其预约、核对与领取流程，基于原始素材内容。读者提交书名和联系方式，每场活动限8个名额。申请不保证获得名额，需在12小时内核对确认后发放取件码，取件码48小时内有效。领取需凭取件码，过期无效。未提供延期、候补、收费、退款、地点或真实日期等信息。所有流程均以原始素材为准，虚构机构不承担外部核实责任。\"},\"selected_section\":{\"title\":\"预约申请流程\",\"body\":\"读者需提交书名和联系方式，作为预约申请。每场活动仅限8个名额，申请不保证获得。申请提交后，工作人员将在12小时内核对名额和信息。只有确认通过后，才发放取件码。取件码从发放时起48小时内有效，逾期失效。\"},\"other_covered_topics\":[\"核对与确认机制\",\"领取与失效规则\"]}",
+          "parent_context_kind": "grounded-v2"
+        },
+        {
+          "stage": "grandchild",
+          "hotspot_id": "fictional-reservation-zh_child_hs_1",
+          "label": "申请提交与名额限制",
+          "parent_node_id": "fictional-reservation-zh_child",
+          "parent_context_sha256": "bf321e3ce1549f05b52625d680c2a39ca42331cb07475f244543a0fea8bc321c",
+          "parent_context": "{\"context_version\":\"grounded-v2\",\"source\":{\"kind\":\"user_text\",\"text\":\"雾湾图书角是为本测试虚构的机构，不对应真实服务。请根据下列约定解释预约、核对和领取，不要把虚构规定说成现实政策。\\n提交申请：读者提交书名和联系方式。每场活动只有 8 个名额，提交申请不代表一定获得名额。\\n核对与确认：工作人员在申请提交后的 12 小时内核对名额和信息。只有确认通过后才发放取件码；取件码从发放时起 48 小时内有效。核对时限和有效期的起算事件不同。\\n领取与失效：读者在有效期内凭取件码领取，过期码不能领取。素材没有定义延期、候补、收费、退款、地点或真实日期。\\n解释遇到未定义事项时，应明确说资料未提供，而不是补造服务承诺。\",\"truncated\":false},\"root_page\":{\"title\":\"雾湾图书角预约与领取机制说明\",\"overview\":\"雾湾图书角为虚构机构，不对应真实服务。本页解释其预约、核对与领取流程，基于原始素材内容。读者提交书名和联系方式，每场活动限8个名额。申请不保证获得名额，需在12小时内核对确认后发放取件码，取件码48小时内有效。领取需凭取件码，过期无效。未提供延期、候补、收费、退款、地点或真实日期等信息。所有流程均以原始素材为准，虚构机构不承担外部核实责任。\",\"is_original_source\":false},\"ancestor_titles\":[\"雾湾图书角预约与领取机制说明\",\"预约申请流程详解\"],\"parent_page\":{\"title\":\"预约申请流程详解\",\"overview\":\"本页聚焦预约申请流程，解释读者如何提交申请、核对确认及领取取件码的机制。每场活动限8个名额，申请不保证获得。申请提交后，工作人员将在12小时内核对信息，确认通过后发放取件码，取件码48小时内有效，逾期失效。流程基于原始素材，虚构机构不承担外部核实责任。\"},\"selected_section\":{\"title\":\"申请提交与名额限制\",\"body\":\"读者需提交书名和联系方式，作为预约申请。每场活动仅限8个名额，申请不保证获得。申请提交后，工作人员将在12小时内核对名额和信息。只有确认通过后，才发放取件码。取件码从发放时起48小时内有效，逾期失效。\"},\"other_covered_topics\":[\"核对与确认机制\",\"领取与失效规则\"]}",
+          "parent_context_kind": "grounded-v2"
+        }
+      ],
+      "normalization_checks": [
+        {
+          "stage": "root",
+          "raw_invalid": false,
+          "raw_section_count": 3,
+          "normalized_section_count": 3
+        },
+        {
+          "stage": "child",
+          "raw_invalid": false,
+          "raw_section_count": 3,
+          "normalized_section_count": 3
+        },
+        {
+          "stage": "grandchild",
+          "raw_invalid": false,
+          "raw_section_count": 3,
+          "normalized_section_count": 3
+        }
+      ],
+      "calls": [
+        {
+          "stage": "root",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 2.786867,
+          "max_tokens": 4000,
+          "prompt_sha256": "ffe27f2e2010f0977e9073ebe3fef31f905072ee308209c5bcc3aa42ba2f06f8",
+          "response_sha256": "bf39cbecb742f7641e5aff5da19cb35752ef1259a26c47e058b5b3c504144119",
+          "ok": true
+        },
+        {
+          "stage": "child",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 2.558872,
+          "max_tokens": 4000,
+          "prompt_sha256": "3cddc041dee660c301981fe80bab994eef3dcde35ac248a67330198140870a94",
+          "response_sha256": "dd87ef17ce601789d843e26f6d0e95f0b718b46ce222be31992f79d4ea9d621e",
+          "ok": true
+        },
+        {
+          "stage": "grandchild",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 3.070849,
+          "max_tokens": 4000,
+          "prompt_sha256": "d65b8c0b17885803e748baba74331861f5368e51d23ef51d03e522576fe7cc7e",
+          "response_sha256": "6572d2590409bf2ee8337617456b4f72bdd34b75e3942a3bf7265eaa1c7a7f8b",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "case_id": "fictional-reservation-en",
+      "case_sha256": "b5e5952002d092bc673e6d7f4cb3e317c12596c3e152d991bfb2fbb03fcf3c5e",
+      "mode": "live",
+      "status": "completed",
+      "project": {
+        "project_id": "eval_fictional-reservation-en",
+        "name": "fictional-reservation-en",
+        "root_node_id": "fictional-reservation-en_root",
+        "settings": {
+          "max_depth": 4,
+          "max_hotspots_per_page": 3,
+          "visual_style": "encyclopedia",
+          "language": "en"
+        },
+        "nodes": {
+          "fictional-reservation-en_root": {
+            "id": "fictional-reservation-en_root",
+            "parent_id": null,
+            "depth": 0,
+            "title": "Mist Bay Book Corner 申请与收集机制",
+            "description": "Mist Bay Book Corner 是一个虚构机构，用于测试知识页构建逻辑。读者需提交书名和联系方式，每场活动限8个名额。申请不保证录取，确认后发放48小时有效收集码。所有信息以提交时间起算，且无延期、费用或退款。未定义细节不提供，且无真实日历或地点。各环节基于提交后12小时内确认，确认后才发码，码有效48小时。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "fictional-reservation-en_child"
+            ],
+            "hotspots": [
+              {
+                "id": "fictional-reservation-en_root_hs_1",
+                "kind": "section",
+                "label": "申请流程与名额限制",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "fictional-reservation-en_child"
+              },
+              {
+                "id": "fictional-reservation-en_root_hs_2",
+                "kind": "section",
+                "label": "确认与收集码机制",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-en_root_hs_3",
+                "kind": "section",
+                "label": "收集与有效期限制",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-en_root_hs_4",
+                "kind": "section",
+                "label": "未定义细节的处理",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-en_root_hs_5",
+                "kind": "section",
+                "label": "虚构机构的适用条件",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "draft",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "申请流程与名额限制",
+                  "body": "读者需提交书名和联系方式，每场活动限8个名额。提交请求不保证录取，需在确认后才获得名额。确认时间在提交后12小时内完成，且确认后才发放收集码。",
+                  "hotspot_id": "fictional-reservation-en_root_hs_1",
+                  "target_node_id": "fictional-reservation-en_child"
+                },
+                {
+                  "id": "section_2",
+                  "title": "确认与收集码机制",
+                  "body": "确认需在提交后12小时内完成，且确认后才发放收集码。码有效48小时，且仅在有效期内可使用。若码已过期，无法使用。",
+                  "hotspot_id": "fictional-reservation-en_root_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "收集与有效期限制",
+                  "body": "读者需使用有效收集码进行收集。码一旦过期即失效，且无延期或等待列表。所有信息以提交时间起算，且无真实日历或地点。",
+                  "hotspot_id": "fictional-reservation-en_root_hs_3"
+                },
+                {
+                  "id": "section_4",
+                  "title": "未定义细节的处理",
+                  "body": "若申请中某项细节未明确，Mist Bay Book Corner 不提供该信息。不虚构或承诺任何未说明内容。",
+                  "hotspot_id": "fictional-reservation-en_root_hs_4"
+                },
+                {
+                  "id": "section_5",
+                  "title": "虚构机构的适用条件",
+                  "body": "Mist Bay Book Corner 为虚构机构，不具真实服务属性。所有规则基于虚构设定，不反映真实机构或事件。",
+                  "hotspot_id": "fictional-reservation-en_root_hs_5"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "text",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "fictional-reservation-en_child": {
+            "id": "fictional-reservation-en_child",
+            "parent_id": "fictional-reservation-en_root",
+            "depth": 1,
+            "title": "申请流程与名额限制",
+            "description": "读者需提交书名和联系方式，每场活动限8个名额。提交请求不保证录取，需在确认后才获得名额。确认时间在提交后12小时内完成，且确认后才发放收集码。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "fictional-reservation-en_grandchild"
+            ],
+            "hotspots": [
+              {
+                "id": "fictional-reservation-en_child_hs_1",
+                "kind": "section",
+                "label": "申请提交与名额分配",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "fictional-reservation-en_grandchild"
+              },
+              {
+                "id": "fictional-reservation-en_child_hs_2",
+                "kind": "section",
+                "label": "确认机制与名额保障",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-en_child_hs_3",
+                "kind": "section",
+                "label": "收集码的有效期与使用限制",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-en_child_hs_4",
+                "kind": "section",
+                "label": "未定义细节的处理原则",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "申请提交与名额分配",
+                  "body": "读者需提交书名和联系方式，每场活动限8个名额。提交请求不保证录取，需在确认后才获得名额。确认时间在提交后12小时内完成，且确认后才发放收集码。",
+                  "hotspot_id": "fictional-reservation-en_child_hs_1",
+                  "target_node_id": "fictional-reservation-en_grandchild"
+                },
+                {
+                  "id": "section_2",
+                  "title": "确认机制与名额保障",
+                  "body": "确认时间在提交后12小时内完成，且确认后才发放收集码。确认后才发放收集码，且名额分配基于确认结果，而非提交时间。若确认后名额已满，系统将拒绝新申请。",
+                  "hotspot_id": "fictional-reservation-en_child_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "收集码的有效期与使用限制",
+                  "body": "收集码有效48小时，自发放之日起计算。若码在48小时内未被使用，将自动失效。码仅在确认后发放，且不可用于其他活动。",
+                  "hotspot_id": "fictional-reservation-en_child_hs_3"
+                },
+                {
+                  "id": "section_4",
+                  "title": "未定义细节的处理原则",
+                  "body": "若申请中涉及未定义细节，系统将不提供相关信息。读者需自行确认或补充，且无任何默认或假设性处理。",
+                  "hotspot_id": "fictional-reservation-en_child_hs_4"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "fictional-reservation-en_grandchild": {
+            "id": "fictional-reservation-en_grandchild",
+            "parent_id": "fictional-reservation-en_child",
+            "depth": 2,
+            "title": "申请提交与名额分配机制",
+            "description": "读者需提交书名和联系方式，每场活动限8个名额。提交请求不保证录取，需在确认后才获得名额。确认时间在提交后12小时内完成，且确认后才发放收集码。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [],
+            "hotspots": [
+              {
+                "id": "fictional-reservation-en_grandchild_hs_1",
+                "kind": "section",
+                "label": "申请提交的即时性与确认延迟",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-en_grandchild_hs_2",
+                "kind": "section",
+                "label": "名额分配的随机性与录取保障",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-en_grandchild_hs_3",
+                "kind": "section",
+                "label": "确认机制与名额保障的边界",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-en_grandchild_hs_4",
+                "kind": "section",
+                "label": "收集码的有效期与使用限制",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-en_grandchild_hs_5",
+                "kind": "section",
+                "label": "未定义细节的处理原则",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "申请提交的即时性与确认延迟",
+                  "body": "申请提交后，系统将在12小时内进行初步检查，以确认信息完整性与容量情况。若确认通过，将生成唯一的收集码，该码仅在确认后生效，且有效时间限制为48小时。此延迟机制确保了名额分配的公平性与资源的精准使用。",
+                  "hotspot_id": "fictional-reservation-en_grandchild_hs_1"
+                },
+                {
+                  "id": "section_2",
+                  "title": "名额分配的随机性与录取保障",
+                  "body": "尽管每场活动仅有8个名额，但申请不保证录取。名额分配基于系统确认后的优先级排序，而非提交顺序。若同一场次的申请者在确认后仍无名额，系统将自动分配给后续确认的申请人，确保名额的公平分配。",
+                  "hotspot_id": "fictional-reservation-en_grandchild_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "确认机制与名额保障的边界",
+                  "body": "确认过程是申请流程中的关键环节，它确保了信息的完整性与容量的准确性。若确认后发现名额已被占用，系统将自动拒绝后续申请，避免资源浪费。确认后发放的收集码具有唯一性，且在48小时内有效，但若在确认后未及时使用，码将失效。",
+                  "hotspot_id": "fictional-reservation-en_grandchild_hs_3"
+                },
+                {
+                  "id": "section_4",
+                  "title": "收集码的有效期与使用限制",
+                  "body": "收集码的有效期为48小时，且仅在确认后生成。若在48小时内未使用，码将自动失效。使用时需确保码的完整性，且仅限于指定的收集码。若码被重复使用或误用，系统将拒绝其使用。",
+                  "hotspot_id": "fictional-reservation-en_grandchild_hs_4"
+                },
+                {
+                  "id": "section_5",
+                  "title": "未定义细节的处理原则",
+                  "body": "若申请中涉及的细节未在系统中明确说明，系统将不提供相关服务。读者需自行理解并确认所有信息，系统不承担因信息不全导致的任何责任。",
+                  "hotspot_id": "fictional-reservation-en_grandchild_hs_5"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          }
+        }
+      },
+      "branch_node_ids": [
+        "fictional-reservation-en_root",
+        "fictional-reservation-en_child",
+        "fictional-reservation-en_grandchild"
+      ],
+      "branch_path": [
+        {
+          "stage": "child",
+          "hotspot_id": "fictional-reservation-en_root_hs_1",
+          "label": "申请流程与名额限制",
+          "parent_node_id": "fictional-reservation-en_root",
+          "parent_context_sha256": "c12db6ba6e110307cd18c596e53b49757f685cabf439918048d4d2b467d4dacc",
+          "parent_context": "{\"context_version\":\"grounded-v2\",\"source\":{\"kind\":\"user_text\",\"text\":\"Mist Bay Book Corner is a fictional institution invented for this test, not a real service. Explain application, confirmation and collection using only these conventions; do not present them as real-world policy.\\nApplication: readers submit a book title and contact details. Each session has exactly 8 places. Submitting a request does not guarantee a place.\\nChecking and confirmation: staff check the information and capacity within 12 hours after submission. A collection code is issued only after confirmation; it remains valid for 48 hours after issue. The checking window and code validity start from different events.\\nCollection and expiry: readers collect using a valid code. An expired code cannot be used. The brief defines no extension, waitlist, fees, refunds, location or real calendar date.\\nWhen a requested detail is undefined, state that the material does not supply it rather than inventing a service promise.\",\"truncated\":false},\"root_page\":{\"title\":\"Mist Bay Book Corner 申请与收集机制\",\"overview\":\"Mist Bay Book Corner 是一个虚构机构，用于测试知识页构建逻辑。读者需提交书名和联系方式，每场活动限8个名额。申请不保证录取，确认后发放48小时有效收集码。所有信息以提交时间起算，且无延期、费用或退款。未定义细节不提供，且无真实日历或地点。各环节基于提交后12小时内确认，确认后才发码，码有效48小时。\",\"is_original_source\":false},\"ancestor_titles\":[\"Mist Bay Book Corner 申请与收集机制\"],\"parent_page\":{\"title\":\"Mist Bay Book Corner 申请与收集机制\",\"overview\":\"Mist Bay Book Corner 是一个虚构机构，用于测试知识页构建逻辑。读者需提交书名和联系方式，每场活动限8个名额。申请不保证录取，确认后发放48小时有效收集码。所有信息以提交时间起算，且无延期、费用或退款。未定义细节不提供，且无真实日历或地点。各环节基于提交后12小时内确认，确认后才发码，码有效48小时。\"},\"selected_section\":{\"title\":\"申请流程与名额限制\",\"body\":\"读者需提交书名和联系方式，每场活动限8个名额。提交请求不保证录取，需在确认后才获得名额。确认时间在提交后12小时内完成，且确认后才发放收集码。\"},\"other_covered_topics\":[\"确认与收集码机制\",\"收集与有效期限制\",\"未定义细节的处理\",\"虚构机构的适用条件\"]}",
+          "parent_context_kind": "grounded-v2"
+        },
+        {
+          "stage": "grandchild",
+          "hotspot_id": "fictional-reservation-en_child_hs_1",
+          "label": "申请提交与名额分配",
+          "parent_node_id": "fictional-reservation-en_child",
+          "parent_context_sha256": "848bf3453c32b1e10c04aed0eb8b8c7cdc5e6dbe3d5263421f06b5a163adad08",
+          "parent_context": "{\"context_version\":\"grounded-v2\",\"source\":{\"kind\":\"user_text\",\"text\":\"Mist Bay Book Corner is a fictional institution invented for this test, not a real service. Explain application, confirmation and collection using only these conventions; do not present them as real-world policy.\\nApplication: readers submit a book title and contact details. Each session has exactly 8 places. Submitting a request does not guarantee a place.\\nChecking and confirmation: staff check the information and capacity within 12 hours after submission. A collection code is issued only after confirmation; it remains valid for 48 hours after issue. The checking window and code validity start from different events.\\nCollection and expiry: readers collect using a valid code. An expired code cannot be used. The brief defines no extension, waitlist, fees, refunds, location or real calendar date.\\nWhen a requested detail is undefined, state that the material does not supply it rather than inventing a service promise.\",\"truncated\":false},\"root_page\":{\"title\":\"Mist Bay Book Corner 申请与收集机制\",\"overview\":\"Mist Bay Book Corner 是一个虚构机构，用于测试知识页构建逻辑。读者需提交书名和联系方式，每场活动限8个名额。申请不保证录取，确认后发放48小时有效收集码。所有信息以提交时间起算，且无延期、费用或退款。未定义细节不提供，且无真实日历或地点。各环节基于提交后12小时内确认，确认后才发码，码有效48小时。\",\"is_original_source\":false},\"ancestor_titles\":[\"Mist Bay Book Corner 申请与收集机制\",\"申请流程与名额限制\"],\"parent_page\":{\"title\":\"申请流程与名额限制\",\"overview\":\"读者需提交书名和联系方式，每场活动限8个名额。提交请求不保证录取，需在确认后才获得名额。确认时间在提交后12小时内完成，且确认后才发放收集码。\"},\"selected_section\":{\"title\":\"申请提交与名额分配\",\"body\":\"读者需提交书名和联系方式，每场活动限8个名额。提交请求不保证录取，需在确认后才获得名额。确认时间在提交后12小时内完成，且确认后才发放收集码。\"},\"other_covered_topics\":[\"确认机制与名额保障\",\"收集码的有效期与使用限制\",\"未定义细节的处理原则\"]}",
+          "parent_context_kind": "grounded-v2"
+        }
+      ],
+      "normalization_checks": [
+        {
+          "stage": "root",
+          "raw_invalid": false,
+          "raw_section_count": 5,
+          "normalized_section_count": 5
+        },
+        {
+          "stage": "child",
+          "raw_invalid": false,
+          "raw_section_count": 4,
+          "normalized_section_count": 4
+        },
+        {
+          "stage": "grandchild",
+          "raw_invalid": false,
+          "raw_section_count": 5,
+          "normalized_section_count": 5
+        }
+      ],
+      "calls": [
+        {
+          "stage": "root",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 3.002415,
+          "max_tokens": 4000,
+          "prompt_sha256": "5a025728e3c0df08af298fa159171f816abeb0e7933b437734de775c1298a7c1",
+          "response_sha256": "acb43c252eea1cfca6a40294ca16965f2c9dc95fdad6d192d185fb970f3eceeb",
+          "ok": true
+        },
+        {
+          "stage": "child",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 2.682812,
+          "max_tokens": 4000,
+          "prompt_sha256": "09578187a36757ff2f252cbbae0548ee40962afa1f19c2744fd05f0930f80648",
+          "response_sha256": "1dfe8bcdf8ee9da1a2fbe33ef741948f43a9f74023801ae6bc18ad68c1c3ec6c",
+          "ok": true
+        },
+        {
+          "stage": "grandchild",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 3.615003,
+          "max_tokens": 4000,
+          "prompt_sha256": "1ed4edc25b0623f570f0102feb50372cce21fe2a3365c1a256cc815546185275",
+          "response_sha256": "c96f46019c2a2f11d8765164505728f25025fe1e12764e6634e317a5967cc1c3",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "case_id": "shapes-zh",
+      "case_sha256": "61120bb30a1889a66833e34352d0a950e9ab667cc75bbdddcb1b39be0c6dcb13",
+      "mode": "live",
+      "status": "completed",
+      "project": {
+        "project_id": "eval_shapes-zh",
+        "name": "shapes-zh",
+        "root_node_id": "shapes-zh_root",
+        "settings": {
+          "max_depth": 4,
+          "max_hotspots_per_page": 3,
+          "visual_style": "encyclopedia",
+          "language": "zh"
+        },
+        "nodes": {
+          "shapes-zh_root": {
+            "id": "shapes-zh_root",
+            "parent_id": null,
+            "depth": 0,
+            "title": "三组几何图形，分别为红色圆形、蓝色正方形和绿色三角形，水平排列在浅色背景上。",
+            "description": "三组几何图形，分别为红色圆形、蓝色正方形和绿色三角形，水平排列在浅色背景上。",
+            "source_type": "image",
+            "image_url": "assets/f9027b72549866fc7344d053cdfe3db16ad62286569d25d1203d10b589345587.png",
+            "children": [
+              "shapes-zh_child"
+            ],
+            "hotspots": [
+              {
+                "id": "shapes-zh_root_hs_1",
+                "kind": "image",
+                "label": "圆形",
+                "position": {
+                  "x": 0.18,
+                  "y": 0.28
+                },
+                "size": {
+                  "width": 0.22,
+                  "height": 0.44
+                },
+                "score": null,
+                "selected": true,
+                "target_node_id": "shapes-zh_child"
+              },
+              {
+                "id": "shapes-zh_root_hs_2",
+                "kind": "image",
+                "label": "正方形",
+                "position": {
+                  "x": 0.34,
+                  "y": 0.29
+                },
+                "size": {
+                  "width": 0.22,
+                  "height": 0.44
+                },
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "shapes-zh_root_hs_3",
+                "kind": "image",
+                "label": "三角形",
+                "position": {
+                  "x": 0.54,
+                  "y": 0.29
+                },
+                "size": {
+                  "width": 0.22,
+                  "height": 0.44
+                },
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "draft",
+            "scene_document": null,
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "image",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "shapes-zh_child": {
+            "id": "shapes-zh_child",
+            "parent_id": "shapes-zh_root",
+            "depth": 1,
+            "title": "圆形的视觉属性与位置关系",
+            "description": "本页聚焦于圆形在三组几何图形中的位置与视觉表现，探讨其在水平排列中的相对位置与视觉特征，以及为何其在特定条件下不被赋予其他属性。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "shapes-zh_grandchild"
+            ],
+            "hotspots": [
+              {
+                "id": "shapes-zh_child_hs_1",
+                "kind": "section",
+                "label": "圆形的视觉属性",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "shapes-zh_grandchild"
+              },
+              {
+                "id": "shapes-zh_child_hs_2",
+                "kind": "section",
+                "label": "位置关系与视觉平衡",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "shapes-zh_child_hs_3",
+                "kind": "section",
+                "label": "视觉平衡的条件限制",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "圆形的视觉属性",
+                  "body": "圆形具有对称性，其任意两点间的距离相等，且在视觉上呈现均匀的弧度。在本页中，红色圆形的视觉属性与蓝色正方形、绿色三角形形成对比，其对称性使其在水平排列中具有独特的视觉平衡。然而，圆形的视觉属性在特定条件下可能被忽略，例如当其被置于非对称的排列中时，其对称性可能被削弱。",
+                  "hotspot_id": "shapes-zh_child_hs_1",
+                  "target_node_id": "shapes-zh_grandchild"
+                },
+                {
+                  "id": "section_2",
+                  "title": "位置关系与视觉平衡",
+                  "body": "在三组几何图形中，红色圆形位于左侧，蓝色正方形居中，绿色三角形在右侧。这种水平排列使得圆形的视觉平衡与其相邻图形形成互补。然而，若圆形被置于非对称位置，其视觉平衡可能被打破，导致整体视觉效果失衡。",
+                  "hotspot_id": "shapes-zh_child_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "视觉平衡的条件限制",
+                  "body": "视觉平衡的成立依赖于图形的对称性与位置的合理性。在本页中，圆形的对称性使其在水平排列中具有视觉平衡，但若其位置被刻意调整或与其他图形形成非对称组合，视觉平衡可能不成立。此外，视觉平衡的成立还受到图形排列方式的影响，例如若圆形被置于非对称位置，其对称性可能被削弱。",
+                  "hotspot_id": "shapes-zh_child_hs_3"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "shapes-zh_grandchild": {
+            "id": "shapes-zh_grandchild",
+            "parent_id": "shapes-zh_child",
+            "depth": 2,
+            "title": "圆形的视觉属性与位置关系",
+            "description": "本页聚焦于圆形在三组几何图形中的位置与视觉表现，探讨其在水平排列中的相对位置与视觉特征，以及为何其在特定条件下不被赋予其他属性。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [],
+            "hotspots": [
+              {
+                "id": "shapes-zh_grandchild_hs_1",
+                "kind": "section",
+                "label": "圆形的视觉属性",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "shapes-zh_grandchild_hs_2",
+                "kind": "section",
+                "label": "位置关系与视觉平衡",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "shapes-zh_grandchild_hs_3",
+                "kind": "section",
+                "label": "视觉平衡的条件限制",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "圆形的视觉属性",
+                  "body": "圆形具有对称性，其任意两点间的距离相等，且在视觉上呈现均匀的弧度。在本页中，红色圆形的视觉属性与蓝色正方形、绿色三角形形成对比，其对称性使其在水平排列中具有独特的视觉平衡。然而，圆形的视觉属性在特定条件下可能被忽略，例如当其被置于非对称的排列中时，其对称性可能被削弱。",
+                  "hotspot_id": "shapes-zh_grandchild_hs_1"
+                },
+                {
+                  "id": "section_2",
+                  "title": "位置关系与视觉平衡",
+                  "body": "在水平排列中，圆形因其对称性与相邻图形形成视觉平衡，其位置与正方形、三角形的相对位置共同构成视觉和谐。然而，当圆形被置于非对称排列中，其对称性可能被削弱，导致视觉平衡被打破。",
+                  "hotspot_id": "shapes-zh_grandchild_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "视觉平衡的条件限制",
+                  "body": "视觉平衡的成立依赖于图形的对称性与位置的合理性。若圆形被置于非对称排列中，其对称性可能被削弱，导致视觉平衡被打破。此外，圆形的视觉属性在特定条件下可能被忽略，例如当其被置于非对称的排列中时，其对称性可能被削弱。",
+                  "hotspot_id": "shapes-zh_grandchild_hs_3"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          }
+        }
+      },
+      "branch_node_ids": [
+        "shapes-zh_root",
+        "shapes-zh_child",
+        "shapes-zh_grandchild"
+      ],
+      "branch_path": [
+        {
+          "stage": "child",
+          "hotspot_id": "shapes-zh_root_hs_1",
+          "label": "圆形",
+          "parent_node_id": "shapes-zh_root",
+          "parent_context_sha256": "46fe1b84e5a5ee80feeeee2fd9e0bfdaf8ad711a553d709d780b76a43ac80845",
+          "parent_context": "{\"context_version\":\"grounded-v2\",\"source\":{\"kind\":\"image_without_original_text\",\"text\":\"\",\"truncated\":false},\"root_page\":{\"title\":\"三组几何图形，分别为红色圆形、蓝色正方形和绿色三角形，水平排列在浅色背景上。\",\"overview\":\"三组几何图形，分别为红色圆形、蓝色正方形和绿色三角形，水平排列在浅色背景上。\",\"is_original_source\":false},\"ancestor_titles\":[\"三组几何图形，分别为红色圆形、蓝色正方形和绿色三角形，水平排列在浅色背景上。\"],\"parent_page\":{\"title\":\"三组几何图形，分别为红色圆形、蓝色正方形和绿色三角形，水平排列在浅色背景上。\",\"overview\":\"三组几何图形，分别为红色圆形、蓝色正方形和绿色三角形，水平排列在浅色背景上。\"},\"selected_section\":{\"title\":\"圆形\",\"body\":\"三组几何图形，分别为红色圆形、蓝色正方形和绿色三角形，水平排列在浅色背景上。\"},\"other_covered_topics\":[]}",
+          "parent_context_kind": "grounded-v2"
+        },
+        {
+          "stage": "grandchild",
+          "hotspot_id": "shapes-zh_child_hs_1",
+          "label": "圆形的视觉属性",
+          "parent_node_id": "shapes-zh_child",
+          "parent_context_sha256": "848b7408a09f57302e5274574ca79043b7ab2817111f1ed6dde9c7498144a3dc",
+          "parent_context": "{\"context_version\":\"grounded-v2\",\"source\":{\"kind\":\"image_without_original_text\",\"text\":\"\",\"truncated\":false},\"root_page\":{\"title\":\"三组几何图形，分别为红色圆形、蓝色正方形和绿色三角形，水平排列在浅色背景上。\",\"overview\":\"三组几何图形，分别为红色圆形、蓝色正方形和绿色三角形，水平排列在浅色背景上。\",\"is_original_source\":false},\"ancestor_titles\":[\"三组几何图形，分别为红色圆形、蓝色正方形和绿色三角形，水平排列在浅色背景上。\",\"圆形的视觉属性与位置关系\"],\"parent_page\":{\"title\":\"圆形的视觉属性与位置关系\",\"overview\":\"本页聚焦于圆形在三组几何图形中的位置与视觉表现，探讨其在水平排列中的相对位置与视觉特征，以及为何其在特定条件下不被赋予其他属性。\"},\"selected_section\":{\"title\":\"圆形的视觉属性\",\"body\":\"圆形具有对称性，其任意两点间的距离相等，且在视觉上呈现均匀的弧度。在本页中，红色圆形的视觉属性与蓝色正方形、绿色三角形形成对比，其对称性使其在水平排列中具有独特的视觉平衡。然而，圆形的视觉属性在特定条件下可能被忽略，例如当其被置于非对称的排列中时，其对称性可能被削弱。\"},\"other_covered_topics\":[\"位置关系与视觉平衡\",\"视觉平衡的条件限制\"]}",
+          "parent_context_kind": "grounded-v2"
+        }
+      ],
+      "normalization_checks": [
+        {
+          "stage": "root",
+          "raw_invalid": false,
+          "raw_hotspot_count": 3,
+          "normalized_hotspot_count": 3,
+          "invalid_hotspot_count": 0
+        },
+        {
+          "stage": "child",
+          "raw_invalid": false,
+          "raw_section_count": 3,
+          "normalized_section_count": 3
+        },
+        {
+          "stage": "grandchild",
+          "raw_invalid": false,
+          "raw_section_count": 3,
+          "normalized_section_count": 3
+        }
+      ],
+      "calls": [
+        {
+          "stage": "root",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 3.301499,
+          "max_tokens": 1200,
+          "prompt_sha256": "19d535ca8a8f34d56eaa399da364c253bbe15dec0088dec4d0208c9b989fe90c",
+          "response_sha256": "44578603576b736fbb6da8f52e53e205208883209833ac333abd17428051809e",
+          "ok": true
+        },
+        {
+          "stage": "child",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 2.945877,
+          "max_tokens": 4000,
+          "prompt_sha256": "8cea72e277597e0265630d13aa5b69d641d3daddfb4c4bf23b62ab735929b965",
+          "response_sha256": "4210985c6080b3cbfd5cf00f19d317023c074377b9a3e89bdfc048ecb1199a14",
+          "ok": true
+        },
+        {
+          "stage": "grandchild",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 2.680419,
+          "max_tokens": 4000,
+          "prompt_sha256": "80272b413bba335bcb5fd63384283fb29471148c53d43f2a3658b75e2d450842",
+          "response_sha256": "ca7ad76df358c592fc6a4cccba8e1c536fba4503f3949f26d338c573ea2532e7",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "case_id": "shapes-en",
+      "case_sha256": "b4731d512d01ea3b8d1215843f26687bfe99797fb06c91ec1154d418b905af01",
+      "mode": "live",
+      "status": "completed",
+      "project": {
+        "project_id": "eval_shapes-en",
+        "name": "shapes-en",
+        "root_node_id": "shapes-en_root",
+        "settings": {
+          "max_depth": 4,
+          "max_hotspots_per_page": 3,
+          "visual_style": "encyclopedia",
+          "language": "en"
+        },
+        "nodes": {
+          "shapes-en_root": {
+            "id": "shapes-en_root",
+            "parent_id": null,
+            "depth": 0,
+            "title": "一个红色的圆形、一个蓝色的正方形和一个绿色的三角形并排排列在浅色背景上。",
+            "description": "一个红色的圆形、一个蓝色的正方形和一个绿色的三角形并排排列在浅色背景上。",
+            "source_type": "image",
+            "image_url": "assets/f9027b72549866fc7344d053cdfe3db16ad62286569d25d1203d10b589345587.png",
+            "children": [
+              "shapes-en_child"
+            ],
+            "hotspots": [
+              {
+                "id": "shapes-en_root_hs_1",
+                "kind": "image",
+                "label": "圆形",
+                "position": {
+                  "x": 0.15,
+                  "y": 0.25
+                },
+                "size": {
+                  "width": 0.22,
+                  "height": 0.45
+                },
+                "score": null,
+                "selected": true,
+                "target_node_id": "shapes-en_child"
+              },
+              {
+                "id": "shapes-en_root_hs_2",
+                "kind": "image",
+                "label": "正方形",
+                "position": {
+                  "x": 0.35,
+                  "y": 0.27
+                },
+                "size": {
+                  "width": 0.22,
+                  "height": 0.45
+                },
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "shapes-en_root_hs_3",
+                "kind": "image",
+                "label": "三角形",
+                "position": {
+                  "x": 0.55,
+                  "y": 0.27
+                },
+                "size": {
+                  "width": 0.22,
+                  "height": 0.45
+                },
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "draft",
+            "scene_document": null,
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "image",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "shapes-en_child": {
+            "id": "shapes-en_child",
+            "parent_id": "shapes-en_root",
+            "depth": 1,
+            "title": "圆形的视觉属性与位置影响",
+            "description": "本页聚焦于圆形在视觉排列中的表现，探讨其与相邻图形（正方形、三角形）的相对位置及其对整体构图的影响。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "shapes-en_grandchild"
+            ],
+            "hotspots": [
+              {
+                "id": "shapes-en_child_hs_1",
+                "kind": "section",
+                "label": "圆形的视觉主导性",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "shapes-en_grandchild"
+              },
+              {
+                "id": "shapes-en_child_hs_2",
+                "kind": "section",
+                "label": "位置对视觉冲击力的影响",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "shapes-en_child_hs_3",
+                "kind": "section",
+                "label": "色彩对比与视觉平衡",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "圆形的视觉主导性",
+                  "body": "圆形因其对称性和封闭性，在视觉上具有较强的统一性和平衡感。当它与正方形、三角形并排时，其位置会直接影响整体的视觉重心。若圆形位于左侧，其对称性可能使整个构图更显稳定，但若置于中间或右侧，可能会削弱正方形和三角形的视觉对比。这种视觉主导性在色彩和形状的搭配中尤为关键。",
+                  "hotspot_id": "shapes-en_child_hs_1",
+                  "target_node_id": "shapes-en_grandchild"
+                },
+                {
+                  "id": "section_2",
+                  "title": "位置对视觉冲击力的影响",
+                  "body": "圆形的视觉冲击力主要源于其圆润的轮廓和均匀的分布。当它与正方形的方正、三角形的锐角形成对比时，会带来不同的视觉节奏。例如，若圆形位于正方形的左侧，正方形的方正会形成一种压迫感，而圆形的圆润则带来柔和的过渡。反之，若圆形位于三角形的右侧，三角形的锐角会形成一种动态的张力，而圆形则提供稳定感。这种位置差异决定了视觉的节奏与平衡。",
+                  "hotspot_id": "shapes-en_child_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "色彩对比与视觉平衡",
+                  "body": "圆形的红色与蓝色正方形、绿色三角形形成鲜明对比。红色圆形在视觉上具有较高的饱和度，能吸引注意力，但若置于正方形的左侧，可能会因正方形的方正而形成视觉上的压迫。绿色三角形则因其锐角和封闭性，能提供动态的视觉平衡。当圆形位于正方形的左侧时，正方形的方正会形成一种压迫感，而圆形的圆润则带来柔和的过渡。这种色彩对比与位置安排共同决定了视觉的平衡与节奏。",
+                  "hotspot_id": "shapes-en_child_hs_3"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "shapes-en_grandchild": {
+            "id": "shapes-en_grandchild",
+            "parent_id": "shapes-en_child",
+            "depth": 2,
+            "title": "圆形的视觉主导性",
+            "description": "本页聚焦于圆形在视觉排列中的表现，探讨其与相邻图形（正方形、三角形）的相对位置及其对整体构图的影响。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [],
+            "hotspots": [
+              {
+                "id": "shapes-en_grandchild_hs_1",
+                "kind": "section",
+                "label": "圆形的视觉主导性",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "圆形的视觉主导性",
+                  "body": "圆形因其对称性和封闭性，在视觉上具有较强的统一性和平衡感。当它与正方形、三角形并排时，其位置会直接影响整体的视觉重心。若圆形位于左侧，其对称性可能使整个构图更显稳定，但若置于中间或右侧，可能会削弱正方形和三角形的视觉对比。这种视觉主导性在色彩和形状的搭配中尤为关键。",
+                  "hotspot_id": "shapes-en_grandchild_hs_1"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          }
+        }
+      },
+      "branch_node_ids": [
+        "shapes-en_root",
+        "shapes-en_child",
+        "shapes-en_grandchild"
+      ],
+      "branch_path": [
+        {
+          "stage": "child",
+          "hotspot_id": "shapes-en_root_hs_1",
+          "label": "圆形",
+          "parent_node_id": "shapes-en_root",
+          "parent_context_sha256": "e9978f0d8f05cbadd5f0dc4d372e11af79fd45cded7c6615f8c8fa37f97959e5",
+          "parent_context": "{\"context_version\":\"grounded-v2\",\"source\":{\"kind\":\"image_without_original_text\",\"text\":\"\",\"truncated\":false},\"root_page\":{\"title\":\"一个红色的圆形、一个蓝色的正方形和一个绿色的三角形并排排列在浅色背景上。\",\"overview\":\"一个红色的圆形、一个蓝色的正方形和一个绿色的三角形并排排列在浅色背景上。\",\"is_original_source\":false},\"ancestor_titles\":[\"一个红色的圆形、一个蓝色的正方形和一个绿色的三角形并排排列在浅色背景上。\"],\"parent_page\":{\"title\":\"一个红色的圆形、一个蓝色的正方形和一个绿色的三角形并排排列在浅色背景上。\",\"overview\":\"一个红色的圆形、一个蓝色的正方形和一个绿色的三角形并排排列在浅色背景上。\"},\"selected_section\":{\"title\":\"圆形\",\"body\":\"一个红色的圆形、一个蓝色的正方形和一个绿色的三角形并排排列在浅色背景上。\"},\"other_covered_topics\":[]}",
+          "parent_context_kind": "grounded-v2"
+        },
+        {
+          "stage": "grandchild",
+          "hotspot_id": "shapes-en_child_hs_1",
+          "label": "圆形的视觉主导性",
+          "parent_node_id": "shapes-en_child",
+          "parent_context_sha256": "e71c31af76deeb33a1fcd0004e65ba0b986268437520471f42e3fbfe789a20ef",
+          "parent_context": "{\"context_version\":\"grounded-v2\",\"source\":{\"kind\":\"image_without_original_text\",\"text\":\"\",\"truncated\":false},\"root_page\":{\"title\":\"一个红色的圆形、一个蓝色的正方形和一个绿色的三角形并排排列在浅色背景上。\",\"overview\":\"一个红色的圆形、一个蓝色的正方形和一个绿色的三角形并排排列在浅色背景上。\",\"is_original_source\":false},\"ancestor_titles\":[\"一个红色的圆形、一个蓝色的正方形和一个绿色的三角形并排排列在浅色背景上。\",\"圆形的视觉属性与位置影响\"],\"parent_page\":{\"title\":\"圆形的视觉属性与位置影响\",\"overview\":\"本页聚焦于圆形在视觉排列中的表现，探讨其与相邻图形（正方形、三角形）的相对位置及其对整体构图的影响。\"},\"selected_section\":{\"title\":\"圆形的视觉主导性\",\"body\":\"圆形因其对称性和封闭性，在视觉上具有较强的统一性和平衡感。当它与正方形、三角形并排时，其位置会直接影响整体的视觉重心。若圆形位于左侧，其对称性可能使整个构图更显稳定，但若置于中间或右侧，可能会削弱正方形和三角形的视觉对比。这种视觉主导性在色彩和形状的搭配中尤为关键。\"},\"other_covered_topics\":[\"位置对视觉冲击力的影响\",\"色彩对比与视觉平衡\"]}",
+          "parent_context_kind": "grounded-v2"
+        }
+      ],
+      "normalization_checks": [
+        {
+          "stage": "root",
+          "raw_invalid": false,
+          "raw_hotspot_count": 3,
+          "normalized_hotspot_count": 3,
+          "invalid_hotspot_count": 0
+        },
+        {
+          "stage": "child",
+          "raw_invalid": false,
+          "raw_section_count": 3,
+          "normalized_section_count": 3
+        },
+        {
+          "stage": "grandchild",
+          "raw_invalid": false,
+          "raw_section_count": 1,
+          "normalized_section_count": 1
+        }
+      ],
+      "calls": [
+        {
+          "stage": "root",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 3.280137,
+          "max_tokens": 1200,
+          "prompt_sha256": "2968f5e7f6d360016af8eab6ec34fda658f2381b206a1e756ec5a68e2f94eeba",
+          "response_sha256": "b36b687c0eff66574489aa6c323af591883eccc5dbea006e2ce20c7dfa33a2ff",
+          "ok": true
+        },
+        {
+          "stage": "child",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 3.708023,
+          "max_tokens": 4000,
+          "prompt_sha256": "aa9ba4e9151d5e318adccf6797e525bf8abef4dc48dafc6daa4e8a45c5220cee",
+          "response_sha256": "12acfb1db31cabd4c6718265c9307cde77cbf45af560dbe576fe074c5b582bdd",
+          "ok": true
+        },
+        {
+          "stage": "grandchild",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 1.584656,
+          "max_tokens": 4000,
+          "prompt_sha256": "06d466cf01dc96dc4190e0315feecfb7d24cd9f1327e39faa5b9a26e54128204",
+          "response_sha256": "6e7781be3ba0051dbd3ffb8a4808d60fc11a49c8b8cc74e597aa34da285f89ac",
+          "ok": true
+        }
+      ]
+    }
+  ],
+  "run_sha256": "f3138600ec5dd78fbfe2d1cf2919a06786914ff7be5099b7957fcd68136bffbf"
+}

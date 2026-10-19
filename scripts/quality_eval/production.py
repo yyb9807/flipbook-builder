@@ -30,9 +30,10 @@ class RunConfig:
     max_output_tokens: int = 66400
     timeout_seconds: float = 300
     max_prompt_bytes: int = 262144
+    branch_selection: str = "strict-preferred-label"
 
     def validate(self):
-        if any(not isinstance(value, str) for value in (self.mode, self.base_url, self.model, self.api_key)):
+        if any(not isinstance(value, str) for value in (self.mode, self.base_url, self.model, self.api_key, self.branch_selection)):
             raise ValueError("invalid_run_configuration")
         parsed = urlsplit(self.base_url)
         if (parsed.scheme not in {"http", "https"} or not parsed.hostname or parsed.username is not None
@@ -45,6 +46,8 @@ class RunConfig:
             raise ValueError("invalid_provider_url") from None
         if self.mode not in {"replay", "live"} or not self.api_key or not self.model.strip():
             raise ValueError("invalid_run_configuration")
+        if self.branch_selection not in {"strict-preferred-label", "first-hotspot"}:
+            raise ValueError("invalid_branch_selection")
         if self.mode == "live" and (self.api_key in self.model or self.api_key in self.base_url):
             raise ValueError("credential_in_provider_identity")
         if (type(self.max_calls) is not int or not 1 <= self.max_calls <= 1000
@@ -55,7 +58,7 @@ class RunConfig:
 
     def public(self):
         return {name: getattr(self, name) for name in (
-            "mode", "base_url", "model", "max_calls", "max_output_tokens", "timeout_seconds", "max_prompt_bytes")}
+            "mode", "base_url", "model", "max_calls", "max_output_tokens", "timeout_seconds", "max_prompt_bytes", "branch_selection")}
 
 
 class CallGuard:

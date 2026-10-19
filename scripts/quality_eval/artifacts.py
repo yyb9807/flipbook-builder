@@ -43,8 +43,8 @@ def write_json(path, value):
 
 def source_hashes() -> dict[str, str]:
     paths = ["backend/agents/" + name + ".py" for name in (
-        "base", "input_analysis", "page_generation", "knowledge", "composition", "hotspot_localization")]
-    paths += ["backend/jobs/providers.py", "backend/jobs/store.py", "backend/utils.py"]
+        "base", "input_analysis", "page_generation", "knowledge", "composition", "hotspot_localization", "page_context")]
+    paths += ["backend/jobs/providers.py", "backend/jobs/page_workflows.py", "backend/jobs/store.py", "backend/utils.py"]
     return {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in paths}
 
 

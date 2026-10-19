@@ -1,0 +1,1337 @@
+{
+  "schema_version": 1,
+  "rubric_version": "quality-rubric-v2",
+  "evaluator_sha256": "56587b7e688c4e8b7388564e2930101bdeea8364e1c478be0c633eebd6a1c7f4",
+  "run_sha256": "f3138600ec5dd78fbfe2d1cf2919a06786914ff7be5099b7957fcd68136bffbf",
+  "suite_sha256": "c58fc124ea4212795bcec5c6f5a9f954387654db121469400e7249321292e5dd",
+  "reviewer": {
+    "kind": "agent",
+    "name": "Codex independent case review panel",
+    "model": "Codex session; exact model snapshot not exposed",
+    "version": "round9-source-evidence-v1/2026-10-19"
+  },
+  "cases": [
+    {
+      "case_id": "water-cycle-zh",
+      "case_sha256": "b59454a7f1077dd6f74a70c8f5ddaf847cf48540771cf12e762fec27d002de5a",
+      "inspected_node_ids": [
+        "water-cycle-zh_root",
+        "water-cycle-zh_child",
+        "water-cycle-zh_grandchild"
+      ],
+      "dimensions": {
+        "body": {
+          "score": 1,
+          "reason": "根页定义了蒸发与凝结并保留非必然降雨，但把蒸发也列作“水返回地表的机制”，混淆了液态水进入大气与降水返回地表的方向。“凝结过程本身不涉及温度变化”和后两页“不涉及任何特定温度或压力条件”均为素材未支持的无条件扩写。11段正文反复定义、不沸腾、初始步骤而实质解释有限，并遗漏气态水本身肉眼不可见；因此存在明显事实/机制问题，不能按解释充分评高分。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-zh_root",
+              "quote": "此外，水返回地表的机制也包括蒸发、凝结和降水，但并非所有过程都会导致降雨。",
+              "section_id": "section_3"
+            },
+            {
+              "node_id": "water-cycle-zh_root",
+              "quote": "凝结过程本身不涉及温度变化",
+              "section_id": "section_2"
+            },
+            {
+              "node_id": "water-cycle-zh_child",
+              "quote": "蒸发过程不涉及任何特定温度或压力条件，而是基于分子运动的普遍规律。",
+              "section_id": "section_2"
+            },
+            {
+              "node_id": "water-cycle-zh_grandchild",
+              "quote": "任何温度下，液态水均可发生蒸发",
+              "section_id": "section_2"
+            }
+          ]
+        },
+        "hotspots": {
+          "score": 2,
+          "reason": "根页蒸发、凝结、返回地表三个入口主题有区别，实际选中的蒸发入口确实展开蒸发；但子页与孙页再次使用完全相同的四个入口名，定义、条件、沸腾区别和机制局限反复覆盖同一“不需沸腾/无固定温度”内容。入口语义大体对应，继续探索的区分与新增价值明显不足。全部是正文入口，无图像矩形定位任务。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-zh_root",
+              "quote": "蒸发的定义与条件"
+            },
+            {
+              "node_id": "water-cycle-zh_child",
+              "quote": "蒸发的定义"
+            },
+            {
+              "node_id": "water-cycle-zh_grandchild",
+              "quote": "蒸发的定义"
+            },
+            {
+              "node_id": "water-cycle-zh_child",
+              "quote": "蒸发的机制与局限"
+            },
+            {
+              "node_id": "water-cycle-zh_grandchild",
+              "quote": "蒸发的机制与局限"
+            },
+            {
+              "node_id": "water-cycle-zh_grandchild",
+              "quote": "该过程不涉及剧烈沸腾，且不依赖固定温度或沸腾。",
+              "section_id": "section_4"
+            }
+          ]
+        },
+        "cross_page": {
+          "score": 1,
+          "reason": "实际路径“蒸发的定义与条件→蒸发的定义”始终相关，但子、孙页标题及四个分节结构几乎原样复用。根页已说明液到气、不需沸腾与需能量，子孙页各节继续多次重述；子页四节还重复“初始步骤”。孙页只有分子逃逸与高湿度减缓等有限新增，不能抵消大量重复；跨页将“不需沸腾”反复放大成不受任何温压条件限制。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-zh_root",
+              "quote": "蒸发是液态水转变为水蒸气的过程，不需要达到沸点（100°C），可在任何温度下发生。",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "water-cycle-zh_child",
+              "quote": "蒸发是液态水转变为水蒸气的过程，这一过程发生在任何温度下，无需达到沸点（100°C）。与沸腾不同，蒸发是水分子从液态到气态的缓慢、无剧烈沸腾的相变。",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "water-cycle-zh_grandchild",
+              "quote": "蒸发是液态水转变为水蒸气的过程，这一过程发生在任何温度下，无需达到沸点（100°C）。与沸腾不同，蒸发是水分子从液态到气态的缓慢、无剧烈沸腾的相变。",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "water-cycle-zh_grandchild",
+              "quote": "且在高湿度环境下蒸发会减缓。",
+              "section_id": "section_4"
+            }
+          ]
+        },
+        "instruction": {
+          "score": 2,
+          "reason": "三页保持中文，承认素材没有降雨预测、固定耗时、全球比例，未编造相应数字，也保留了非必然降雨。但根、子页反复保证“所有内容均基于原始素材”，同时加入原素材没有的错误返回机制、无条件温压结论及温度不变结论；根页云滴与气体区分只覆盖一半，气态水本身不可见仍未交代。素材与推断、知识限制没有可靠区分。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-zh_root",
+              "quote": "所有内容均基于原始素材，未添加虚构信息。"
+            },
+            {
+              "node_id": "water-cycle-zh_child",
+              "quote": "所有内容均基于原始素材，未添加虚构信息。"
+            },
+            {
+              "node_id": "water-cycle-zh_child",
+              "quote": "蒸发过程不涉及固定耗时或全球比例，且不涉及降雨预测或具体温度条件。",
+              "section_id": "section_4"
+            },
+            {
+              "node_id": "water-cycle-zh_root",
+              "quote": "水返回地表的机制也包括蒸发、凝结和降水",
+              "section_id": "section_3"
+            },
+            {
+              "node_id": "water-cycle-zh_grandchild",
+              "quote": "而沸腾则需要达到沸点（100°C）",
+              "section_id": "section_3"
+            }
+          ]
+        }
+      },
+      "fact_checks": [
+        {
+          "id": "water-evaporation",
+          "verdict": "supported",
+          "reason": "根页明确液态水转为水蒸气，并明示是液态到气态，满足根页范围要求。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-zh_root",
+              "quote": "蒸发是液态水转变为水蒸气的过程",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "water-cycle-zh_root",
+              "quote": "水从液态到气态",
+              "section_id": "section_1"
+            }
+          ]
+        },
+        {
+          "id": "water-condensation",
+          "verdict": "supported",
+          "reason": "根页明确水蒸气转为液态水，变化方向正确。后文不严谨的温度断言不反转这个定义，另在正文评分处理。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-zh_root",
+              "quote": "凝结是水蒸气转变为液态水的过程",
+              "section_id": "section_2"
+            }
+          ]
+        },
+        {
+          "id": "water-invisible",
+          "verdict": "not_mentioned",
+          "reason": "已完整阅读3页所有标题、说明、热点及11段正文。根页明确说可见小水滴是液态、并非等同水蒸气，覆盖了气液不可混同这一半；但整例没有说明气态水蒸气本身肉眼不可见。不能把液滴可见、与气体不同推断为已明确覆盖完整事实。",
+          "evidence": []
+        },
+        {
+          "id": "water-not-boiling",
+          "verdict": "supported",
+          "reason": "三页均明确蒸发不需要达到沸点、不依赖沸腾。无条件温压扩写的过度推断另扣分，不把它误判为只在沸点蒸发。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-zh_root",
+              "quote": "不需要达到沸点（100°C）",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "water-cycle-zh_child",
+              "quote": "蒸发需要能量，即吸收热量，但不涉及沸腾。",
+              "section_id": "section_2"
+            },
+            {
+              "node_id": "water-cycle-zh_grandchild",
+              "quote": "蒸发需要能量，但不依赖固定温度或沸腾。",
+              "section_id": "section_2"
+            }
+          ]
+        },
+        {
+          "id": "water-not-all-clouds",
+          "verdict": "supported",
+          "reason": "根页明确不是所有云都会下雨，孙页也没有引入所有云下雨的结论。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-zh_root",
+              "quote": "但并非所有云都会下雨。",
+              "section_id": "section_3"
+            },
+            {
+              "node_id": "water-cycle-zh_grandchild",
+              "quote": "且不涉及所有云都会下雨的假设。",
+              "section_id": "section_4"
+            }
+          ]
+        }
+      ],
+      "forbidden_claims": [
+        {
+          "id": "water-boiling-only",
+          "verdict": "absent",
+          "reason": "已完整阅读三页所有可读字段；没有蒸发只能在100°C发生。根页和子孙页持续明确否定需要沸腾；100°C用于沸点对照，其缺少气压限定是另一精度问题。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-zh_root",
+              "quote": "不需要达到沸点（100°C），可在任何温度下发生。",
+              "section_id": "section_1"
+            }
+          ]
+        },
+        {
+          "id": "water-vapor-visible",
+          "verdict": "absent",
+          "reason": "已完整阅读三页所有可读字段；没有将白色云团说成可见的气态水，根页还明确可见小水滴是液态而非等同水蒸气。气态水不可见被遗漏不等于禁语出现。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-zh_root",
+              "quote": "云中可见的小水滴并非等同于水蒸气，因为这些小水滴是液态水的聚集，且肉眼可见。",
+              "section_id": "section_2"
+            }
+          ]
+        },
+        {
+          "id": "water-rain-guaranteed",
+          "verdict": "absent",
+          "reason": "已完整阅读三页所有可读字段；未声称所有云必然立即下雨，根页明确否定，子孙页反复说明不提供降雨预测。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-zh_root",
+              "quote": "但并非所有云都会下雨。",
+              "section_id": "section_3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "water-cycle-en",
+      "case_sha256": "03f62a2740f05100de214f99b2fdde057af3f8c2e88ddeb2036051a058bd0469",
+      "inspected_node_ids": [
+        "water-cycle-en_root",
+        "water-cycle-en_child",
+        "water-cycle-en_grandchild"
+      ],
+      "dimensions": {
+        "body": {
+          "score": 1,
+          "reason": "根页覆盖相变、云滴非气体、可能降水和信息缺口，子孙页有表面逸出、分子间作用力及冷却等实际解释；但子页无条件断言蒸发所需能量低于沸腾，没有同质量、温度和初始状态条件，不能作为通用机制结论。子孙页又把沸腾描述为全部液体快速汽化，没有区分在整个液体体积中发生汽化与所有液体均已完成转相，表述容易误导。13段正文大量重复，气态水本身不可见仍未明确说明；明显科学与限定问题阻止高分。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-en_child",
+              "quote": "The energy required for evaporation is lower than that for boiling and is not limited to a specific temperature.",
+              "section_id": "section_2"
+            },
+            {
+              "node_id": "water-cycle-en_grandchild",
+              "quote": "involves the rapid vaporization of all liquid, forming bubbles throughout the liquid.",
+              "section_id": "section_2"
+            },
+            {
+              "node_id": "water-cycle-en_child",
+              "quote": "Evaporation requires energy to overcome intermolecular forces, allowing water molecules to escape into the gas phase. This energy is absorbed from the surrounding environment, which can lead to cooling of the liquid.",
+              "section_id": "section_3"
+            },
+            {
+              "node_id": "water-cycle-en_root",
+              "quote": "visible cloud droplets are not the same as vapor; they are liquid water droplets that are visible due to light scattering.",
+              "section_id": "section_2"
+            }
+          ]
+        },
+        "hotspots": {
+          "score": 2,
+          "reason": "根页四个入口互有区别且实际展开页与蒸发主题吻合；子页和孙页仍大体兑现相变、沸腾区别、分子能量、环境限制等标签。但孙页几乎复用父页整个入口集合，相变首段更逐字重复；“Limitations and Misconceptions”又回到根页非所有云降雨。标签可用，深挖区分不足。全部为正文入口，图像定位不适用。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-en_root",
+              "quote": "Evaporation and Phase Change"
+            },
+            {
+              "node_id": "water-cycle-en_child",
+              "quote": "Evaporation as a Phase Change"
+            },
+            {
+              "node_id": "water-cycle-en_grandchild",
+              "quote": "Evaporation as a Phase Change"
+            },
+            {
+              "node_id": "water-cycle-en_child",
+              "quote": "Environmental and Physical Constraints"
+            },
+            {
+              "node_id": "water-cycle-en_grandchild",
+              "quote": "Environmental and Physical Constraints"
+            },
+            {
+              "node_id": "water-cycle-en_grandchild",
+              "quote": "In reality, not every cloud results in precipitation",
+              "section_id": "section_5"
+            }
+          ]
+        },
+        "cross_page": {
+          "score": 1,
+          "reason": "路径始终围绕蒸发，但子页与孙页section_1整段逐字相同，孙页overview也几乎复用子页；沸腾对照、任何温度、表面逸出和环境因素在两层反复出现，新增只有动能分布、其他物质等有限表述。孙页末节回收根页云雨限定，未说明它如何深化所选相变主题。大量重述使三层不互补。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-en_child",
+              "quote": "Evaporation is a physical process where liquid water transitions into water vapor, a gaseous state. Unlike boiling, which occurs at 100°C (212°F) at standard pressure, evaporation happens at any temperature and is driven by the loss of molecules from the surface of a liquid. This phase change is governed by molecular motion and energy transfer, not by temperature alone.",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "water-cycle-en_grandchild",
+              "quote": "Evaporation is a physical process where liquid water transitions into water vapor, a gaseous state. Unlike boiling, which occurs at 100°C (212°F) at standard pressure, evaporation happens at any temperature and is driven by the loss of molecules from the surface of a liquid. This phase change is governed by molecular motion and energy transfer, not by temperature alone.",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "water-cycle-en_root",
+              "quote": "Not every cloud produces rain",
+              "section_id": "section_3"
+            },
+            {
+              "node_id": "water-cycle-en_grandchild",
+              "quote": "In reality, not every cloud results in precipitation",
+              "section_id": "section_5"
+            }
+          ]
+        },
+        "instruction": {
+          "score": 2,
+          "reason": "三页完整使用英文，根页明确是contributor-authored overview并承认没有天气预报、统一耗时、全球百分比或实验温度，未捏造这些数值。但后页把素材未支持的能量高低比较和全部液体快速汽化当作定论，又把不需沸腾扩张成不需要特定温度或压力；气态水本身不可见这一明确素材边界未充分保留，仍有明显知识边界问题。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-en_root",
+              "quote": "This summary does not provide local weather forecasts, universal process duration, global percentage, or controlled experimental temperature.",
+              "section_id": "section_4"
+            },
+            {
+              "node_id": "water-cycle-en_root",
+              "quote": "as a contributor-authored overview.",
+              "section_id": "section_4"
+            },
+            {
+              "node_id": "water-cycle-en_child",
+              "quote": "does not require a specific temperature or pressure."
+            },
+            {
+              "node_id": "water-cycle-en_child",
+              "quote": "The energy required for evaporation is lower than that for boiling",
+              "section_id": "section_2"
+            },
+            {
+              "node_id": "water-cycle-en_grandchild",
+              "quote": "involves the rapid vaporization of all liquid",
+              "section_id": "section_2"
+            }
+          ]
+        }
+      },
+      "fact_checks": [
+        {
+          "id": "water-evaporation",
+          "verdict": "supported",
+          "reason": "根页明确液态水变为水蒸气，覆盖气态水的定义；所需变化方向有根页证据。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-en_root",
+              "quote": "Evaporation is the process by which liquid water turns into water vapor.",
+              "section_id": "section_1"
+            }
+          ]
+        },
+        {
+          "id": "water-condensation",
+          "verdict": "supported",
+          "reason": "根页明确水蒸气变成液态水，方向正确。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-en_root",
+              "quote": "Condensation is the reverse process of evaporation, where water vapor turns into liquid water.",
+              "section_id": "section_2"
+            }
+          ]
+        },
+        {
+          "id": "water-invisible",
+          "verdict": "not_mentioned",
+          "reason": "已完整阅读3页所有标题、说明、热点及13段正文。根页说明visible cloud droplets是液态且not the same as vapor，但全文没有说气态water vapor本身invisible、不可见或透明。已覆盖气液区分的一半，尚不能把完整事实判为supported。",
+          "evidence": []
+        },
+        {
+          "id": "water-not-boiling",
+          "verdict": "supported",
+          "reason": "根页明确不需沸腾，子孙页同样区分表面蒸发与沸腾；任何温度/压力的过度泛化另在正文和指令边界评分处理。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-en_root",
+              "quote": "It requires energy but does not require boiling",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "water-cycle-en_grandchild",
+              "quote": "does not require boiling.",
+              "section_id": "section_5"
+            }
+          ]
+        },
+        {
+          "id": "water-not-all-clouds",
+          "verdict": "supported",
+          "reason": "根页和孙页均明确不是所有云产生雨/降水，无相反断言。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-en_root",
+              "quote": "Not every cloud produces rain",
+              "section_id": "section_3"
+            },
+            {
+              "node_id": "water-cycle-en_grandchild",
+              "quote": "In reality, not every cloud results in precipitation",
+              "section_id": "section_5"
+            }
+          ]
+        }
+      ],
+      "forbidden_claims": [
+        {
+          "id": "water-boiling-only",
+          "verdict": "absent",
+          "reason": "已完整阅读三页所有可读字段；没有蒸发只能在100°C发生的结论，根页明确不需沸腾，多处100°C还附标准气压限定。无条件任何温度表述是另一边界问题。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-en_root",
+              "quote": "It requires energy but does not require boiling; it occurs at any temperature.",
+              "section_id": "section_1"
+            }
+          ]
+        },
+        {
+          "id": "water-vapor-visible",
+          "verdict": "absent",
+          "reason": "已完整阅读三页所有可读字段；没有白色云是可见气态水的结论，根页明确可见云滴是液态且不同于水蒸气。没有明确写气态水不可见不等于反向禁语出现。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-en_root",
+              "quote": "visible cloud droplets are not the same as vapor; they are liquid water droplets",
+              "section_id": "section_2"
+            }
+          ]
+        },
+        {
+          "id": "water-rain-guaranteed",
+          "verdict": "absent",
+          "reason": "已完整阅读三页所有可读字段；没有所有云必然立即下雨的说法，根页和孙页均明确否定所有云产生雨/降水。",
+          "evidence": [
+            {
+              "node_id": "water-cycle-en_root",
+              "quote": "Not every cloud produces rain",
+              "section_id": "section_3"
+            },
+            {
+              "node_id": "water-cycle-en_grandchild",
+              "quote": "In reality, not every cloud results in precipitation",
+              "section_id": "section_5"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "fictional-reservation-zh",
+      "case_sha256": "f4116d268141c4f9adfa62421cf18ac7eed9be4e44022204a732c89fa8ff0b1b",
+      "inspected_node_ids": [
+        "fictional-reservation-zh_root",
+        "fictional-reservation-zh_child",
+        "fictional-reservation-zh_grandchild"
+      ],
+      "dimensions": {
+        "body": {
+          "score": 1,
+          "reason": "根页和子页主要复述了原素材的8个名额、申请不保证名额、提交后12小时核对及发放后48小时有效；孙页却把工作人员核对改成读者义务，补造核对未完成自动作废、按活动预设而非优先级/资格排序、过期码无法以任何方式重激活等明确规则。三页反复添加机构不承担外部核实责任的承诺，素材没有这些内容，明显事实错误妨碍正文成为可靠解释。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-zh_root",
+              "section_id": "section_1",
+              "quote": "取件码从发放时起48小时内有效，逾期失效。"
+            },
+            {
+              "node_id": "fictional-reservation-zh_grandchild",
+              "section_id": "section_1",
+              "quote": "名额限制是基于活动安排的预设，而非对申请者的优先级或资格进行排序。"
+            },
+            {
+              "node_id": "fictional-reservation-zh_grandchild",
+              "section_id": "section_1",
+              "quote": "读者需在12小时内核对确认，若未在规定时间内完成核对，申请将被自动视为无效。"
+            },
+            {
+              "node_id": "fictional-reservation-zh_grandchild",
+              "section_id": "section_3",
+              "quote": "若取件码在48小时内未被使用，将自动失效，且无法通过任何方式重新激活。"
+            },
+            {
+              "node_id": "fictional-reservation-zh_child",
+              "section_id": "section_3",
+              "quote": "虚构机构不承担外部核实责任。"
+            }
+          ]
+        },
+        "hotspots": {
+          "score": 2,
+          "reason": "全部9个section入口可定位到对应标题和正文，名额、核对、有效期等标签大体相关；但根页预约申请流程和子页申请提交与名额限制实际都包含整套核对、发码及失效规则，名额与核对入口互相覆盖，三层入口主要重复相同三组主题。孙页深挖价值依靠无源规则，未达到精确区分且适合可信探索的高分锚点。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-zh_root",
+              "quote": "预约申请流程"
+            },
+            {
+              "node_id": "fictional-reservation-zh_child",
+              "quote": "申请提交与名额限制"
+            },
+            {
+              "node_id": "fictional-reservation-zh_child",
+              "section_id": "section_1",
+              "quote": "只有确认通过后，才发放取件码。取件码从发放时起48小时内有效，逾期失效。"
+            },
+            {
+              "node_id": "fictional-reservation-zh_grandchild",
+              "quote": "核对确认机制与取件码发放"
+            },
+            {
+              "node_id": "fictional-reservation-zh_grandchild",
+              "section_id": "section_2",
+              "quote": "若核对超时或未完成，申请将被自动视为无效。"
+            }
+          ]
+        },
+        "cross_page": {
+          "score": 1,
+          "reason": "核对实际两段grounded-v2上下文，均含未截断的固定来源和选中section。根页section_1与子页section_1逐字相同，三页主要围绕8个、12小时、48小时和未知项反复复述；孙页新增读者12小时义务、核对超时作废与永不重激活，既非来源递进，也改变了父页工作人员核对的机制边界。整体主题相连，但重复量大且关系不一致。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-zh_root",
+              "section_id": "section_1",
+              "quote": "读者需提交书名和联系方式，作为预约申请。每场活动仅限8个名额，申请不保证获得。申请提交后，工作人员将在12小时内核对名额和信息。只有确认通过后，才发放取件码。取件码从发放时起48小时内有效，逾期失效。"
+            },
+            {
+              "node_id": "fictional-reservation-zh_child",
+              "section_id": "section_1",
+              "quote": "读者需提交书名和联系方式，作为预约申请。每场活动仅限8个名额，申请不保证获得。申请提交后，工作人员将在12小时内核对名额和信息。只有确认通过后，才发放取件码。取件码从发放时起48小时内有效，逾期失效。"
+            },
+            {
+              "node_id": "fictional-reservation-zh_grandchild",
+              "section_id": "section_1",
+              "quote": "读者需在12小时内核对确认"
+            },
+            {
+              "node_id": "fictional-reservation-zh_grandchild",
+              "section_id": "section_3",
+              "quote": "且无法通过任何方式重新激活。"
+            }
+          ]
+        },
+        "instruction": {
+          "score": 1,
+          "reason": "中文语言、根页虚构身份及多处未知信息说明满足部分要求，但固定来源并未给免责政策、名额排序排除规则、核对超时自动作废或码永不重激活。根子页反复说以原素材为准，孙页仍将未知事项写成确定机制，多项素材边界要求未遵循。未见伪造外部来源或已核验身份。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-zh_root",
+              "quote": "雾湾图书角为虚构机构，不对应真实服务。"
+            },
+            {
+              "node_id": "fictional-reservation-zh_child",
+              "section_id": "section_3",
+              "quote": "未提供延期、候补、收费、退款、地点或真实日期等信息。"
+            },
+            {
+              "node_id": "fictional-reservation-zh_root",
+              "section_id": "section_3",
+              "quote": "虚构机构不承担外部核实责任。"
+            },
+            {
+              "node_id": "fictional-reservation-zh_grandchild",
+              "section_id": "section_2",
+              "quote": "若核对超时或未完成，申请将被自动视为无效。"
+            },
+            {
+              "node_id": "fictional-reservation-zh_grandchild",
+              "section_id": "section_3",
+              "quote": "且无法通过任何方式重新激活。"
+            }
+          ]
+        }
+      },
+      "fact_checks": [
+        {
+          "id": "reservation-capacity",
+          "verdict": "supported",
+          "reason": "根页明确每场活动仅限8个，没有改为每天；子孙页也保留每场8个。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-zh_root",
+              "section_id": "section_1",
+              "quote": "每场活动仅限8个名额"
+            }
+          ]
+        },
+        {
+          "id": "reservation-checking",
+          "verdict": "supported",
+          "reason": "根、子及孙页section_2均明确申请提交后12小时内由工作人员核对，保留此事实所要求的起算事件。孙页section_1另将核对承担者改成读者并添加自动作废，已在正文/边界维度扣分；没有另把12小时起点改为发码或其他事件。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-zh_root",
+              "section_id": "section_1",
+              "quote": "申请提交后，工作人员将在12小时内核对名额和信息。"
+            },
+            {
+              "node_id": "fictional-reservation-zh_child",
+              "section_id": "section_2",
+              "quote": "申请提交后，工作人员将在12小时内核对名额和信息。"
+            },
+            {
+              "node_id": "fictional-reservation-zh_grandchild",
+              "section_id": "section_2",
+              "quote": "申请提交后，工作人员将在12小时内核对名额和信息。"
+            }
+          ]
+        },
+        {
+          "id": "reservation-validity",
+          "verdict": "supported",
+          "reason": "完整阅读三页，三页均明确取件码从发放时起48小时内有效；简略描述未补相反起点。孙页额外的永不重激活规则不改变本项起点数字证据。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-zh_root",
+              "section_id": "section_1",
+              "quote": "取件码从发放时起48小时内有效"
+            },
+            {
+              "node_id": "fictional-reservation-zh_child",
+              "section_id": "section_2",
+              "quote": "取件码从发放时起48小时内有效"
+            },
+            {
+              "node_id": "fictional-reservation-zh_grandchild",
+              "section_id": "section_3",
+              "quote": "取件码从发放时起48小时内有效"
+            }
+          ]
+        },
+        {
+          "id": "reservation-conditional",
+          "verdict": "supported",
+          "reason": "root适用事实直接由根页申请不保证获得支持，不以孙页证据代替。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-zh_root",
+              "section_id": "section_1",
+              "quote": "每场活动仅限8个名额，申请不保证获得。"
+            }
+          ]
+        }
+      ],
+      "forbidden_claims": [
+        {
+          "id": "reservation-number-swap",
+          "verdict": "absent",
+          "reason": "已完整阅读三页全部标题、说明、9个入口及9段正文，没有48小时核对或12小时有效的互换。实际数字仍分别用于12小时核对及48小时码有效。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-zh_root",
+              "section_id": "section_1",
+              "quote": "申请提交后，工作人员将在12小时内核对名额和信息。"
+            },
+            {
+              "node_id": "fictional-reservation-zh_grandchild",
+              "section_id": "section_3",
+              "quote": "取件码从发放时起48小时内有效"
+            }
+          ]
+        },
+        {
+          "id": "reservation-clock-shift",
+          "verdict": "absent",
+          "reason": "完整三页未出现码从申请提交起算的断言；三页明确起点均为发放，孙页错误是核对责任与超时规则而非码起点移位。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-zh_root",
+              "section_id": "section_2",
+              "quote": "取件码从发放时起48小时内有效"
+            },
+            {
+              "node_id": "fictional-reservation-zh_grandchild",
+              "section_id": "section_3",
+              "quote": "取件码从发放时起48小时内有效"
+            }
+          ]
+        },
+        {
+          "id": "reservation-invented-policy",
+          "verdict": "absent",
+          "reason": "完整三页没有保证免费延期、退款或候补。实际只说未提供这些信息/服务，并新增作废、重激活限制及免责规则；这些也是素材边界错误，但不等同于本窄禁项所指的保证免费延期、退款或候补。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-zh_child",
+              "section_id": "section_3",
+              "quote": "未提供延期、候补、收费、退款、地点或真实日期等信息。"
+            },
+            {
+              "node_id": "fictional-reservation-zh_grandchild",
+              "section_id": "section_3",
+              "quote": "但未提供延期或候补服务。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "fictional-reservation-en",
+      "case_sha256": "b5e5952002d092bc673e6d7f4cb3e317c12596c3e152d991bfb2fbb03fcf3c5e",
+      "inspected_node_ids": [
+        "fictional-reservation-en_root",
+        "fictional-reservation-en_child",
+        "fictional-reservation-en_grandchild"
+      ],
+      "dimensions": {
+        "body": {
+          "score": 1,
+          "reason": "核心名额与不保证条件仍在，但根页把所有计时统一设为提交时间，子页又给发放起点，且将12小时核对扩成保证12小时完成确认。子孙页大量补造系统拒绝新申请、优先级排序、自动转配、唯一/一次使用码、其他活动限制、读者自行补充及免责规则。正文有完整段落与数值并不能抵销明显错误和新增政策。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-en_root",
+              "section_id": "section_3",
+              "quote": "所有信息以提交时间起算"
+            },
+            {
+              "node_id": "fictional-reservation-en_root",
+              "section_id": "section_1",
+              "quote": "确认时间在提交后12小时内完成"
+            },
+            {
+              "node_id": "fictional-reservation-en_child",
+              "section_id": "section_2",
+              "quote": "若确认后名额已满，系统将拒绝新申请。"
+            },
+            {
+              "node_id": "fictional-reservation-en_grandchild",
+              "section_id": "section_2",
+              "quote": "名额分配基于系统确认后的优先级排序，而非提交顺序。"
+            },
+            {
+              "node_id": "fictional-reservation-en_grandchild",
+              "section_id": "section_4",
+              "quote": "若码被重复使用或误用，系统将拒绝其使用。"
+            },
+            {
+              "node_id": "fictional-reservation-en_grandchild",
+              "section_id": "section_5",
+              "quote": "系统不承担因信息不全导致的任何责任。"
+            }
+          ]
+        },
+        "hotspots": {
+          "score": 2,
+          "reason": "完整检查14个实际section入口，申请/确认/码有效期/未知项大体对应各段正文，但均是中文，且孙页“名额分配的随机性与录取保障”实际声称确定的优先级排序，没有解释随机性或保障。父子多组标签重复同一完整流程；可用入口的区分和可信深挖价值不足。已选中文申请路径未形成英文核对和码有效期入口。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-en_root",
+              "quote": "申请流程与名额限制"
+            },
+            {
+              "node_id": "fictional-reservation-en_child",
+              "quote": "申请提交与名额分配"
+            },
+            {
+              "node_id": "fictional-reservation-en_grandchild",
+              "quote": "名额分配的随机性与录取保障"
+            },
+            {
+              "node_id": "fictional-reservation-en_grandchild",
+              "section_id": "section_2",
+              "quote": "名额分配基于系统确认后的优先级排序，而非提交顺序。"
+            },
+            {
+              "node_id": "fictional-reservation-en_grandchild",
+              "quote": "确认机制与名额保障的边界"
+            }
+          ]
+        },
+        "cross_page": {
+          "score": 0,
+          "reason": "核对两段grounded-v2实际上下文，固定英文来源完整且未截断。根页将所有时间从提交起算，子页明确码从发放起算，违反同一48小时有效期的关键时间关系；根页申请段与子页申请段逐字重复，孙页又扩展成系统优先级、自动分配与拒绝规则。存在关键跨页矛盾及无源机制推进，满足最低锚点的主要跨页矛盾。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-en_root",
+              "section_id": "section_3",
+              "quote": "所有信息以提交时间起算"
+            },
+            {
+              "node_id": "fictional-reservation-en_child",
+              "section_id": "section_3",
+              "quote": "收集码有效48小时，自发放之日起计算。"
+            },
+            {
+              "node_id": "fictional-reservation-en_root",
+              "section_id": "section_1",
+              "quote": "读者需提交书名和联系方式，每场活动限8个名额。提交请求不保证录取，需在确认后才获得名额。确认时间在提交后12小时内完成，且确认后才发放收集码。"
+            },
+            {
+              "node_id": "fictional-reservation-en_child",
+              "section_id": "section_1",
+              "quote": "读者需提交书名和联系方式，每场活动限8个名额。提交请求不保证录取，需在确认后才获得名额。确认时间在提交后12小时内完成，且确认后才发放收集码。"
+            },
+            {
+              "node_id": "fictional-reservation-en_grandchild",
+              "section_id": "section_2",
+              "quote": "系统将自动分配给后续确认的申请人"
+            }
+          ]
+        },
+        "instruction": {
+          "score": 0,
+          "reason": "英文案例的三页正文、说明、14个入口和标题主体全部为中文，核心语言约束未满足。虽然根页写机构虚构及不承诺未说明内容，实际却修改码起算事件，且补造分配、拒绝、责任豁免与读者自行确认要求；“无延期或等待列表”也把资料未定义变成服务否定。语言和固定素材的核心约束均被违反。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-en_root",
+              "quote": "Mist Bay Book Corner 申请与收集机制"
+            },
+            {
+              "node_id": "fictional-reservation-en_root",
+              "section_id": "section_5",
+              "quote": "Mist Bay Book Corner 为虚构机构，不具真实服务属性。所有规则基于虚构设定，不反映真实机构或事件。"
+            },
+            {
+              "node_id": "fictional-reservation-en_root",
+              "section_id": "section_3",
+              "quote": "码一旦过期即失效，且无延期或等待列表。所有信息以提交时间起算"
+            },
+            {
+              "node_id": "fictional-reservation-en_child",
+              "section_id": "section_4",
+              "quote": "读者需自行确认或补充，且无任何默认或假设性处理。"
+            },
+            {
+              "node_id": "fictional-reservation-en_grandchild",
+              "section_id": "section_5",
+              "quote": "系统不承担因信息不全导致的任何责任。"
+            }
+          ]
+        }
+      },
+      "fact_checks": [
+        {
+          "id": "reservation-capacity",
+          "verdict": "supported",
+          "reason": "root适用事实直接由根页每场活动8个支持，未改成每天。后两页亦沿用每场活动8个。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-en_root",
+              "section_id": "section_1",
+              "quote": "每场活动限8个名额。"
+            }
+          ]
+        },
+        {
+          "id": "reservation-checking",
+          "verdict": "supported",
+          "reason": "三页保留提交后12小时这一时间关系，孙页section_1明确申请提交后12小时内检查信息与容量；根子页将核对夸大成确认完成的承诺是另记的机制错误，没有把核对窗口起点改成发码或其他事件。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-en_root",
+              "section_id": "section_1",
+              "quote": "确认时间在提交后12小时内完成"
+            },
+            {
+              "node_id": "fictional-reservation-en_child",
+              "section_id": "section_1",
+              "quote": "确认时间在提交后12小时内完成"
+            },
+            {
+              "node_id": "fictional-reservation-en_grandchild",
+              "section_id": "section_1",
+              "quote": "申请提交后，系统将在12小时内进行初步检查，以确认信息完整性与容量情况。"
+            }
+          ]
+        },
+        {
+          "id": "reservation-validity",
+          "verdict": "contradicted",
+          "reason": "完整三页中，子页明确48小时从发放起算，但根页在码失效段和description均断言所有信息以提交时间起算，把码的计时一并移到提交。因此all_pages_if_mentioned范围存在直接冲突，不能仅用子页正确句支持。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-en_root",
+              "section_id": "section_3",
+              "quote": "码一旦过期即失效，且无延期或等待列表。所有信息以提交时间起算"
+            },
+            {
+              "node_id": "fictional-reservation-en_child",
+              "section_id": "section_3",
+              "quote": "收集码有效48小时，自发放之日起计算。"
+            }
+          ]
+        },
+        {
+          "id": "reservation-conditional",
+          "verdict": "supported",
+          "reason": "根页明确提交请求不保证录取，是root适用条件的直接支持；后续出现的分配规则并没有取消本句条件，但属于其他边界错误。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-en_root",
+              "section_id": "section_1",
+              "quote": "提交请求不保证录取"
+            }
+          ]
+        }
+      ],
+      "forbidden_claims": [
+        {
+          "id": "reservation-number-swap",
+          "verdict": "absent",
+          "reason": "已完整阅读全部三页标题、说明、14个入口及14段正文，没有48小时核对/12小时码有效的数值互换，实际仍将12用于确认或检查、48用于码有效。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-en_root",
+              "section_id": "section_2",
+              "quote": "确认需在提交后12小时内完成"
+            },
+            {
+              "node_id": "fictional-reservation-en_child",
+              "section_id": "section_3",
+              "quote": "收集码有效48小时"
+            }
+          ]
+        },
+        {
+          "id": "reservation-clock-shift",
+          "verdict": "present",
+          "reason": "根页在码使用有效期段明确“所有信息以提交时间起算”，description同样如此。这个全称起算规则覆盖码有效期，直接改变来源的发放起点；子页正确发放起算不抵销该禁项已出现。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-en_root",
+              "section_id": "section_3",
+              "quote": "所有信息以提交时间起算，且无真实日历或地点。"
+            },
+            {
+              "node_id": "fictional-reservation-en_root",
+              "quote": "申请不保证录取，确认后发放48小时有效收集码。所有信息以提交时间起算，且无延期、费用或退款。"
+            }
+          ]
+        },
+        {
+          "id": "reservation-invented-policy",
+          "verdict": "absent",
+          "reason": "已完整阅读三页，没有保证免费延期、退款或候补；根页反而说没有延期或等待列表。孙页自动转配给后续确认申请人的无源规则没有明确设立候补名单，不将其替换成未出现的候补保证。自动转配、服务否定和免责仍在正文/指令维度扣分。",
+          "evidence": [
+            {
+              "node_id": "fictional-reservation-en_root",
+              "section_id": "section_3",
+              "quote": "且无延期或等待列表。"
+            },
+            {
+              "node_id": "fictional-reservation-en_grandchild",
+              "section_id": "section_2",
+              "quote": "系统将自动分配给后续确认的申请人"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "shapes-zh",
+      "case_sha256": "61120bb30a1889a66833e34352d0a950e9ab667cc75bbdddcb1b39be0c6dcb13",
+      "inspected_node_ids": [
+        "shapes-zh_root",
+        "shapes-zh_child",
+        "shapes-zh_grandchild"
+      ],
+      "dimensions": {
+        "body": {
+          "score": 1,
+          "reason": "根页交代三类颜色图形，子页还正确说出左中右顺序，但两层正文核心都建立在“任意两点间的距离相等”的错误几何定义上；应是圆周上每一点到圆心等距，而不同弦长不相等。非对称排列会改变整体构图，不能改变圆自身对称性，输出反复混淆两者。六节大多重复“视觉平衡可能被打破/对称性可能被削弱”，没有具体解释、验证或恰当观察边界。",
+          "evidence": [
+            {
+              "node_id": "shapes-zh_root",
+              "quote": "三组几何图形，分别为红色圆形、蓝色正方形和绿色三角形，水平排列在浅色背景上。"
+            },
+            {
+              "node_id": "shapes-zh_child",
+              "quote": "其任意两点间的距离相等",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "shapes-zh_child",
+              "quote": "若圆形被置于非对称位置，其对称性可能被削弱",
+              "section_id": "section_3"
+            },
+            {
+              "node_id": "shapes-zh_grandchild",
+              "quote": "其任意两点间的距离相等",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "shapes-zh_grandchild",
+              "quote": "若圆形被置于非对称排列中，其对称性可能被削弱，导致视觉平衡被打破",
+              "section_id": "section_3"
+            }
+          ]
+        },
+        "hotspots": {
+          "score": 1,
+          "reason": "三个根标签只有形状名，实际框为(0.18,0.28,0.22,0.44)、(0.34,0.29,0.22,0.44)、(0.54,0.29,0.22,0.44)，与固定真值IoU约0.260/0.361/0.110，均覆盖大量下方空白并漏掉对象边缘；三角形框同时碰蓝方形与绿三角局部。后两层节标签虽对应同名正文，但“视觉属性”“位置关系与视觉平衡”“视觉平衡的条件限制”内容高度重叠，且被选视觉属性入口通向重复与错误，而非可区分的深挖主题。",
+          "evidence": [
+            {
+              "node_id": "shapes-zh_root",
+              "quote": "圆形"
+            },
+            {
+              "node_id": "shapes-zh_root",
+              "quote": "正方形"
+            },
+            {
+              "node_id": "shapes-zh_root",
+              "quote": "三角形"
+            },
+            {
+              "node_id": "shapes-zh_child",
+              "quote": "圆形的视觉属性"
+            },
+            {
+              "node_id": "shapes-zh_child",
+              "quote": "位置关系与视觉平衡"
+            },
+            {
+              "node_id": "shapes-zh_grandchild",
+              "quote": "视觉平衡的条件限制"
+            }
+          ]
+        },
+        "cross_page": {
+          "score": 1,
+          "reason": "实际路径圆形→圆形的视觉属性主题相连，但孙页标题、描述与子页完全相同，section_1 正文逐字重复；另外两节继续复述父页关于非对称位置削弱对称性和视觉失衡的说法。实际上下文已提供父页所选段落与其他已覆盖主题，仍重讲原段落并重复错误几何关系，符合大量重复的1分锚，没有三层互补推进。",
+          "evidence": [
+            {
+              "node_id": "shapes-zh_child",
+              "quote": "圆形的视觉属性与位置关系"
+            },
+            {
+              "node_id": "shapes-zh_grandchild",
+              "quote": "圆形的视觉属性与位置关系"
+            },
+            {
+              "node_id": "shapes-zh_child",
+              "quote": "圆形具有对称性，其任意两点间的距离相等，且在视觉上呈现均匀的弧度。",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "shapes-zh_grandchild",
+              "quote": "圆形具有对称性，其任意两点间的距离相等，且在视觉上呈现均匀的弧度。",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "shapes-zh_child",
+              "quote": "视觉平衡的成立依赖于图形的对称性与位置的合理性。",
+              "section_id": "section_3"
+            },
+            {
+              "node_id": "shapes-zh_grandchild",
+              "quote": "视觉平衡的成立依赖于图形的对称性与位置的合理性。",
+              "section_id": "section_3"
+            }
+          ]
+        },
+        "instruction": {
+          "score": 2,
+          "reason": "三页使用中文，颜色和位置事实未颠倒，无真实机构/材质/历史或参考文献编造。但将可见的圆、方、三角排列扩写成未经验证的视觉平衡机制，又混淆圆本体对称性与构图；使用“可能”不能纠正“任意两点等距”的错误，也没有区分图像观察、一般几何、主观审美或物理用途未知。核心语言满足，素材和知识边界仍明显不足。",
+          "evidence": [
+            {
+              "node_id": "shapes-zh_root",
+              "quote": "三组几何图形，分别为红色圆形、蓝色正方形和绿色三角形，水平排列在浅色背景上。"
+            },
+            {
+              "node_id": "shapes-zh_child",
+              "quote": "其对称性使其在水平排列中具有独特的视觉平衡",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "shapes-zh_grandchild",
+              "quote": "其对称性可能被削弱，导致视觉平衡被打破",
+              "section_id": "section_2"
+            }
+          ]
+        }
+      },
+      "fact_checks": [
+        {
+          "id": "image-objects",
+          "verdict": "supported",
+          "reason": "根页明确逐项区分红色圆形、蓝色正方形、绿色三角形，连同三个不同形状入口及水平/并排排列叙述，建立三个分别存在的彩色图形，与已查看的原图相符。虽未使用“互不重叠”原词，但不是仅枚举无颜色的形状类别，证据来自本案根页实际文字。",
+          "evidence": [
+            {
+              "node_id": "shapes-zh_root",
+              "quote": "三组几何图形，分别为红色圆形、蓝色正方形和绿色三角形，水平排列在浅色背景上。"
+            }
+          ]
+        },
+        {
+          "id": "image-order",
+          "verdict": "supported",
+          "reason": "子页 section_2 直接陈述本图红圆左、蓝方中、绿三角右；与原图像素一致。其他页没有相反的实际位置陈述。",
+          "evidence": [
+            {
+              "node_id": "shapes-zh_child",
+              "quote": "在三组几何图形中，红色圆形位于左侧，蓝色正方形居中，绿色三角形在右侧。",
+              "section_id": "section_2"
+            }
+          ]
+        }
+      ],
+      "forbidden_claims": [
+        {
+          "id": "image-object-invention",
+          "verdict": "absent",
+          "reason": "已完整阅读根页、子页、孙页的全部标题、描述、标签和各节正文；没有把图像对象断言为真实机构、历史事件或确定材质。大量视觉平衡/主导性推论另计正文与边界问题，但未断言本图物体材质、历史或真实机构。",
+          "evidence": []
+        },
+        {
+          "id": "image-order-reversal",
+          "verdict": "absent",
+          "reason": "已完整阅读三页所有文字与标签，未出现把本图红圆断言在最右侧的陈述。位置调整、非对称组合等为条件或假设；英文案“若圆形位于三角形的右侧”也明确由“若”限定，不能据此误判为现实图像顺序被颠倒。",
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "case_id": "shapes-en",
+      "case_sha256": "b4731d512d01ea3b8d1215843f26687bfe99797fb06c91ec1154d418b905af01",
+      "inspected_node_ids": [
+        "shapes-en_root",
+        "shapes-en_child",
+        "shapes-en_grandchild"
+      ],
+      "dimensions": {
+        "body": {
+          "score": 1,
+          "reason": "根页正确识别三个有颜色的图形，后页有轮廓和颜色的基本观察，但多数正文是未经论证的视觉稳定、压迫、主导性判断。“左侧使稳定/中右削弱对比”等关系没有从固定图像或明确机制建立，三段围绕同类形状联想反复论述。孙页唯一段落又完整照搬父页所选段落，解释浅薄，无可靠深度。条件措辞避免了把移动假设直接当现实，却没有提供这些审美结论的依据。",
+          "evidence": [
+            {
+              "node_id": "shapes-en_root",
+              "quote": "一个红色的圆形、一个蓝色的正方形和一个绿色的三角形并排排列在浅色背景上。"
+            },
+            {
+              "node_id": "shapes-en_child",
+              "quote": "若圆形位于左侧，其对称性可能使整个构图更显稳定，但若置于中间或右侧，可能会削弱正方形和三角形的视觉对比",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "shapes-en_child",
+              "quote": "正方形的方正会形成一种压迫感，而圆形的圆润则带来柔和的过渡",
+              "section_id": "section_2"
+            },
+            {
+              "node_id": "shapes-en_child",
+              "quote": "当圆形位于正方形的左侧时，正方形的方正会形成一种压迫感，而圆形的圆润则带来柔和的过渡",
+              "section_id": "section_3"
+            },
+            {
+              "node_id": "shapes-en_grandchild",
+              "quote": "圆形因其对称性和封闭性，在视觉上具有较强的统一性和平衡感",
+              "section_id": "section_1"
+            }
+          ]
+        },
+        "hotspots": {
+          "score": 1,
+          "reason": "根标签与全案同为中文且未带颜色，不适合要求英语的入口。实际框为(0.15,0.25,0.22,0.45)、(0.35,0.27,0.22,0.45)、(0.55,0.27,0.22,0.45)，对真值IoU约0.395/0.427/0.141，三框高度都过大且漏部分对象，三角形框含蓝方形和绿色三角局部及大面积空白。子页三个视觉标签虽分别对应各节，但正文重叠，孙页“视觉主导性”只重复父节，不能兑现进一步探索价值。",
+          "evidence": [
+            {
+              "node_id": "shapes-en_root",
+              "quote": "圆形"
+            },
+            {
+              "node_id": "shapes-en_root",
+              "quote": "正方形"
+            },
+            {
+              "node_id": "shapes-en_root",
+              "quote": "三角形"
+            },
+            {
+              "node_id": "shapes-en_child",
+              "quote": "圆形的视觉主导性"
+            },
+            {
+              "node_id": "shapes-en_child",
+              "quote": "位置对视觉冲击力的影响"
+            },
+            {
+              "node_id": "shapes-en_child",
+              "quote": "色彩对比与视觉平衡"
+            },
+            {
+              "node_id": "shapes-en_grandchild",
+              "quote": "圆形的视觉主导性"
+            }
+          ]
+        },
+        "cross_page": {
+          "score": 1,
+          "reason": "实际路径圆形→圆形的视觉主导性主题一致，但孙页唯一 section_1 与子页 section_1 全文逐字相同；连孙页描述也沿用父页描述，完全没有新增解释。子页 section_2 与 section_3 还重复方正造成压迫、圆润形成柔和过渡。实际上下文包含所选原文和其他已覆盖主题，最终却仍照搬，属于大量重复、深度推进失败。",
+          "evidence": [
+            {
+              "node_id": "shapes-en_child",
+              "quote": "圆形因其对称性和封闭性，在视觉上具有较强的统一性和平衡感。当它与正方形、三角形并排时，其位置会直接影响整体的视觉重心。",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "shapes-en_grandchild",
+              "quote": "圆形因其对称性和封闭性，在视觉上具有较强的统一性和平衡感。当它与正方形、三角形并排时，其位置会直接影响整体的视觉重心。",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "shapes-en_child",
+              "quote": "这种视觉主导性在色彩和形状的搭配中尤为关键。",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "shapes-en_grandchild",
+              "quote": "这种视觉主导性在色彩和形状的搭配中尤为关键。",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "shapes-en_child",
+              "quote": "正方形的方正会形成一种压迫感，而圆形的圆润则带来柔和的过渡",
+              "section_id": "section_2"
+            },
+            {
+              "node_id": "shapes-en_child",
+              "quote": "正方形的方正会形成一种压迫感，而圆形的圆润则带来柔和的过渡",
+              "section_id": "section_3"
+            }
+          ]
+        },
+        "instruction": {
+          "score": 0,
+          "reason": "要求英语，但根页、子页、孙页全部标题、描述、标签和正文均为中文，贯穿三页违反核心语言约束，按0分锚处理。未编造机构、历史、材质或来源；对虚拟换位有“若”限定，但审美主导性、压迫和平衡结论仍未明确标为主观解释，也没有说明真实尺寸、材质、用途与历史不可从本图确定。",
+          "evidence": [
+            {
+              "node_id": "shapes-en_root",
+              "quote": "一个红色的圆形、一个蓝色的正方形和一个绿色的三角形并排排列在浅色背景上。"
+            },
+            {
+              "node_id": "shapes-en_child",
+              "quote": "圆形的视觉属性与位置影响"
+            },
+            {
+              "node_id": "shapes-en_child",
+              "quote": "圆形的红色与蓝色正方形、绿色三角形形成鲜明对比",
+              "section_id": "section_3"
+            },
+            {
+              "node_id": "shapes-en_grandchild",
+              "quote": "圆形的视觉主导性"
+            },
+            {
+              "node_id": "shapes-en_grandchild",
+              "quote": "这种视觉主导性在色彩和形状的搭配中尤为关键。",
+              "section_id": "section_1"
+            }
+          ]
+        }
+      },
+      "fact_checks": [
+        {
+          "id": "image-objects",
+          "verdict": "supported",
+          "reason": "根页明确逐项区分红色圆形、蓝色正方形、绿色三角形，连同三个不同形状入口及水平/并排排列叙述，建立三个分别存在的彩色图形，与已查看的原图相符。虽未使用“互不重叠”原词，但不是仅枚举无颜色的形状类别，证据来自本案根页实际文字。",
+          "evidence": [
+            {
+              "node_id": "shapes-en_root",
+              "quote": "一个红色的圆形、一个蓝色的正方形和一个绿色的三角形并排排列在浅色背景上。"
+            }
+          ]
+        },
+        {
+          "id": "image-order",
+          "verdict": "not_mentioned",
+          "reason": "完整阅读三页后，根页只列举红圆、蓝方、绿三角并说并排，没有明确从左至右；正文的左/中/右描述由“若”“当”等引入作为假设和构图讨论，没有明确确认本图红圆左、蓝方中、绿三角右的完整实际顺序。不能把假设补写为图像事实。",
+          "evidence": [
+            {
+              "node_id": "shapes-en_root",
+              "quote": "一个红色的圆形、一个蓝色的正方形和一个绿色的三角形并排排列在浅色背景上。"
+            },
+            {
+              "node_id": "shapes-en_child",
+              "quote": "若圆形位于左侧",
+              "section_id": "section_1"
+            },
+            {
+              "node_id": "shapes-en_child",
+              "quote": "反之，若圆形位于三角形的右侧",
+              "section_id": "section_2"
+            }
+          ]
+        }
+      ],
+      "forbidden_claims": [
+        {
+          "id": "image-object-invention",
+          "verdict": "absent",
+          "reason": "已完整阅读根页、子页、孙页的全部标题、描述、标签和各节正文；没有把图像对象断言为真实机构、历史事件或确定材质。大量视觉平衡/主导性推论另计正文与边界问题，但未断言本图物体材质、历史或真实机构。",
+          "evidence": []
+        },
+        {
+          "id": "image-order-reversal",
+          "verdict": "absent",
+          "reason": "已完整阅读三页所有文字与标签，未出现把本图红圆断言在最右侧的陈述。位置调整、非对称组合等为条件或假设；英文案“若圆形位于三角形的右侧”也明确由“若”限定，不能据此误判为现实图像顺序被颠倒。",
+          "evidence": []
+        }
+      ]
+    }
+  ]
+}

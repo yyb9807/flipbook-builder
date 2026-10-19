@@ -109,6 +109,7 @@ async def test_new_text_root_and_multiple_depths_have_atomic_section_connections
     async def child(stage, config, frozen, subject, *args):
         calls.append(stage)
         assert frozen["content_format"] == "knowledge-v1"
+        assert "generation_revision" not in frozen
         assert subject["context"].startswith("Energy")
         return knowledge_result(subject["label"], "A more detailed explanation.", references=[{"url": "https://forged.invalid"}])
     monkeypatch.setattr(page_workflows, "perform_page", root)

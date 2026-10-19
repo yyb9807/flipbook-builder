@@ -45,7 +45,7 @@ data/publications/*
 !data/publications/.gitkeep
 backend/publication_runtime/
 
-# 模型评估运行含原始响应和人工评审，仅固定合成数据集入库
+# 原始模型评估运行默认私有；经审查的固定公开样例证据另存 docs/evidence/
 evals/runs/
 
 # ── 数据库 dump ──

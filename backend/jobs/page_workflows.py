@@ -10,6 +10,7 @@ from agents.hotspot_localization import HotspotLocalizationAgent, sanitize_hotsp
 from agents.image_generation import ImageGenerationAgent
 from agents.input_analysis import InputAnalysisAgent
 from agents.knowledge import compose_knowledge
+from agents.page_context import GENERATION_REVISION
 from agents.page_generation import STYLE_PROMPTS, PageGenerationAgent
 from jobs import providers
 from jobs.workflows import database_operation, read_decision, runtime
@@ -30,21 +31,25 @@ def asset_bytes(url: str, expected_sha: str | None = None) -> bytes:
 async def perform_page(stage, config, frozen, page=None, image=None):
     settings = frozen["settings"]
     language = settings.get("language", "zh")
+    revision = ({"generation_revision": GENERATION_REVISION}
+                if frozen.get("generation_revision") == GENERATION_REVISION
+                and frozen.get("content_format") in {"knowledge-v1", "image-v1"} else {})
     if stage == "analyze":
         agent = InputAnalysisAgent(config)
         agent.safe_errors = True
         if frozen["source_type"] == "image":
-            return await agent.analyze_image(base64.b64encode(asset_bytes(frozen["asset_url"], frozen["asset_sha256"])).decode(), language)
+            return await agent.analyze_image(base64.b64encode(asset_bytes(frozen["asset_url"], frozen["asset_sha256"])).decode(), language, **revision)
         return await agent.analyze_text(frozen["text"], language, style_desc=STYLE_PROMPTS.get(settings.get("visual_style"), STYLE_PROMPTS["encyclopedia"]),
-                                        **({"content_format": "knowledge-v1"} if frozen.get("content_format") == "knowledge-v1" else {}))
+                                        **({"content_format": "knowledge-v1"} if frozen.get("content_format") == "knowledge-v1" else {}), **revision)
     if stage == "plan":
         agent = PageGenerationAgent(config)
         agent.safe_errors = True
         knowledge = frozen.get("content_format") == "knowledge-v1"
         return await agent.generate(hotspot_label=frozen["subject"]["label"], parent_title=frozen["title"] if knowledge else frozen["parent_title"],
-                                    parent_description=frozen["description"] if knowledge else frozen["parent_description"],
+                                    parent_description=(frozen["generation_context"] if knowledge and revision else
+                                                        frozen["description"] if knowledge else frozen["parent_description"]),
                                     visual_style=settings.get("visual_style", "encyclopedia"), language=language,
-                                    **({"content_format": "knowledge-v1"} if frozen.get("content_format") == "knowledge-v1" else {}))
+                                    **({"content_format": "knowledge-v1"} if frozen.get("content_format") == "knowledge-v1" else {}), **revision)
     if stage == "image":
         url = await ImageGenerationAgent(config).generate(prompt=page["image_prompt"], project_id=frozen["project_id"],
                                                           node_id=frozen["subject"]["node_id"], single_attempt=True,

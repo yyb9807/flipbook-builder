@@ -177,10 +177,10 @@ class Provider:
                     system = str(body['messages'][0].get('content', ''))
                     prompt = str(body['messages'][-1]['content'])
                     if '可独立阅读' in system:
-                        stage = 'analysis' if '知识页素材：' in prompt else 'plan'
+                        stage = 'plan' if '本页探索主题：' in prompt else 'analysis'
                         label_match = re.search(r'本页探索主题：([^\n]+)', prompt)
                         label = label_match.group(1).strip() if label_match else '水循环知识页'
-                        english = '请用en写' in system
+                        english = '请用en写' in system or '读者语言：English' in system
                         content = {
                             'title': 'The water cycle' if english and stage == 'analysis' else label,
                             'description': 'A connected journey of water through air and land.' if english else '水在地表和空气之间流动，能量与温度变化连接了各个过程。',
@@ -200,7 +200,7 @@ class Provider:
                     elif '图像区域定位专家' in system:
                         stage = 'localize'
                         content = {'hotspots': [{'label': '可继续探索', 'x': 0.2, 'y': 0.2, 'width': 0.25, 'height': 0.3}]}
-                    elif '图片内容分析专家' in system:
+                    elif '图片内容分析专家' in system or '图片分析专家' in system:
                         stage = 'analysis'
                         content = {'summary': case + '根页', 'scene_type': 'other', 'keywords': [], 'hotspots': [
                             {'label': '分支甲', 'x': 0.1, 'y': 0.1, 'width': 0.2, 'height': 0.2},

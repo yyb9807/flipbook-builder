@@ -1,0 +1,2177 @@
+{
+  "schema_version": 1,
+  "run_id": "5c1d8bfd-0c59-418c-a4ab-5112f8e8afd9",
+  "mode": "live",
+  "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+  "provider": {
+    "base_url": "http://127.0.0.1:18084/v1",
+    "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+  },
+  "created_at": "2026-10-19T03:25:06.401377+00:00",
+  "suite_sha256": "c58fc124ea4212795bcec5c6f5a9f954387654db121469400e7249321292e5dd",
+  "producer_sha256": "c2d321f54bb879b736b37288671c118e4d20d91a4b38944de5bf21e84b343d36",
+  "prompt_sources_sha256": "9b5c9fb69fea8654d31541891fbb1cddbbc886e2354b05258dc5fcfbf1d24b2c",
+  "evaluator_sha256": "56587b7e688c4e8b7388564e2930101bdeea8364e1c478be0c633eebd6a1c7f4",
+  "source_hashes": {
+    "backend/agents/base.py": "718bdeb0271dd29b9bbc13e0ea9a27181e3245cd4a2c2470b9fec3ec57ab31ea",
+    "backend/agents/input_analysis.py": "e35da9c1c0c19ef84e0da143218c3f78fb026752152b69f9f4e7221c65cee8a8",
+    "backend/agents/page_generation.py": "1165f48bdea9d53049525375f9ba0752b5af48d3ec4116df0a2b503f2c9ac230",
+    "backend/agents/knowledge.py": "2148d6167d7cfef752606bffcca93bf1872d7003eba3e0b79e2fef784317d4c7",
+    "backend/agents/composition.py": "2c40fdea662015beb43a9e2cb72e0bfdd89ba973b49b73b0437205fbf3f7a632",
+    "backend/agents/hotspot_localization.py": "82d3fe4c03670da7500637d8246df11d17010b74f41a92de28ad494d64174065",
+    "backend/jobs/providers.py": "6fd4c3b3803dd2bac1ccbe6a2b3276e6bcfad657e7b573f15ef4c4c1212e3ad9",
+    "backend/jobs/store.py": "4e1ce86a9bb7af81a08a0b8302e7b6ae9d7864e2bb7ab372b3f7e904ef4fbad3",
+    "backend/utils.py": "4ad7878ec0a4fa518a24bede6879caf4eb59c5efad2b9adb54738417133516ab"
+  },
+  "budgets": {
+    "max_calls": 18,
+    "max_reserved_output_tokens": 66400,
+    "timeout_seconds": 1800.0,
+    "max_prompt_bytes": 262144
+  },
+  "policy": {
+    "branch_selection": "first-hotspot",
+    "stage_count": 3,
+    "repeat_count": 1
+  },
+  "repeat": 1,
+  "call_count": 18,
+  "reserved_output_tokens": 66400,
+  "status": "completed",
+  "evidence_kind": "live_provider",
+  "cases": [
+    {
+      "case_id": "water-cycle-zh",
+      "case_sha256": "b59454a7f1077dd6f74a70c8f5ddaf847cf48540771cf12e762fec27d002de5a",
+      "mode": "live",
+      "status": "completed",
+      "project": {
+        "project_id": "eval_water-cycle-zh",
+        "name": "water-cycle-zh",
+        "root_node_id": "water-cycle-zh_root",
+        "settings": {
+          "max_depth": 4,
+          "max_hotspots_per_page": 3,
+          "visual_style": "encyclopedia",
+          "language": "zh"
+        },
+        "nodes": {
+          "water-cycle-zh_root": {
+            "id": "water-cycle-zh_root",
+            "parent_id": null,
+            "depth": 0,
+            "title": "水循环过程解析",
+            "description": "本页介绍水循环中的关键环节，包括蒸发、凝结和水的返回，基于USGS水科学资料进行说明。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "water-cycle-zh_child"
+            ],
+            "hotspots": [
+              {
+                "id": "water-cycle-zh_root_hs_1",
+                "kind": "section",
+                "label": "蒸发",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "water-cycle-zh_child"
+              },
+              {
+                "id": "water-cycle-zh_root_hs_2",
+                "kind": "section",
+                "label": "凝结",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-zh_root_hs_3",
+                "kind": "section",
+                "label": "水的返回",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "draft",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "蒸发",
+                  "body": "蒸发是液态水转变为水蒸气的过程，它不需要达到沸点100°C，可在任何温度下发生。这一过程需要吸收能量，使分子获得足够动能以脱离液相。蒸发是水从液态到气态的自然物理变化。",
+                  "hotspot_id": "water-cycle-zh_root_hs_1",
+                  "target_node_id": "water-cycle-zh_child"
+                },
+                {
+                  "id": "section_2",
+                  "title": "凝结",
+                  "body": "凝结是水蒸气在空气中冷却并重新凝结为液态水的过程。这一过程发生在空气中的水蒸气含量达到饱和时，形成微小水滴，这些水滴聚集形成云。但并非所有云都会下雨，凝结程度和天气系统决定降水是否发生。",
+                  "hotspot_id": "water-cycle-zh_root_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "水的返回",
+                  "body": "水的返回是指云中的水滴通过降水过程返回地表。降水形式包括雨、雪、冰雹等，但并非所有云都会下雨。水的返回是水循环的关键环节，它确保了水资源的再分配。",
+                  "hotspot_id": "water-cycle-zh_root_hs_3"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "text",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "water-cycle-zh_child": {
+            "id": "water-cycle-zh_child",
+            "parent_id": "water-cycle-zh_root",
+            "depth": 1,
+            "title": "蒸发的原理与机制",
+            "description": "蒸发是液体表面分子获得足够能量后脱离液相，进入气相的过程，不依赖沸点。其核心机制在于分子动能分布，高动能分子更容易克服表面张力，实现气化。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "water-cycle-zh_grandchild"
+            ],
+            "hotspots": [
+              {
+                "id": "water-cycle-zh_child_hs_1",
+                "kind": "section",
+                "label": "分子动能与蒸发",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "water-cycle-zh_grandchild"
+              },
+              {
+                "id": "water-cycle-zh_child_hs_2",
+                "kind": "section",
+                "label": "蒸发与沸点的差异",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-zh_child_hs_3",
+                "kind": "section",
+                "label": "蒸发的速率影响因素",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "分子动能与蒸发",
+                  "body": "在液体中，分子以不同速度运动，其中一部分分子动能较高。当这些分子获得足够能量（如通过环境热量或太阳照射），它们便能克服分子间作用力，从液面逃逸，形成水蒸气。这一过程不需达到沸点，因此蒸发可在任何温度下发生。",
+                  "hotspot_id": "water-cycle-zh_child_hs_1",
+                  "target_node_id": "water-cycle-zh_grandchild"
+                },
+                {
+                  "id": "section_2",
+                  "title": "蒸发与沸点的差异",
+                  "body": "蒸发是发生在液体表面的物理变化，而沸腾是液体内部和表面同时发生的剧烈汽化现象。蒸发过程在任何温度下进行，而沸腾则需要达到沸点100°C（在标准大气压下）。",
+                  "hotspot_id": "water-cycle-zh_child_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "蒸发的速率影响因素",
+                  "body": "蒸发速率受温度、表面积、空气流动和湿度影响。温度越高，分子平均动能越大，蒸发越快；表面积越大，更多分子可接触气相，蒸发速率也提升。",
+                  "hotspot_id": "water-cycle-zh_child_hs_3"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "water-cycle-zh_grandchild": {
+            "id": "water-cycle-zh_grandchild",
+            "parent_id": "water-cycle-zh_child",
+            "depth": 2,
+            "title": "分子动能与蒸发",
+            "description": "蒸发是液体分子因动能差异而逃逸的物理过程，其核心在于分子动能的分布与温度的关系。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [],
+            "hotspots": [
+              {
+                "id": "water-cycle-zh_grandchild_hs_1",
+                "kind": "section",
+                "label": "分子动能分布",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-zh_grandchild_hs_2",
+                "kind": "section",
+                "label": "蒸发的温度依赖性",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-zh_grandchild_hs_3",
+                "kind": "section",
+                "label": "蒸发与沸点的差异",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-zh_grandchild_hs_4",
+                "kind": "section",
+                "label": "蒸发速率与动能分布",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "分子动能分布",
+                  "body": "液体中的分子并非以相同速度运动，而是遵循统计分布，其中部分分子动能较高。这种动能的差异是蒸发发生的前提。",
+                  "hotspot_id": "water-cycle-zh_grandchild_hs_1"
+                },
+                {
+                  "id": "section_2",
+                  "title": "蒸发的温度依赖性",
+                  "body": "蒸发可在任何温度下发生，因为高动能分子的逃逸不依赖于沸点，而是取决于局部分子动能的分布与环境能量的匹配。",
+                  "hotspot_id": "water-cycle-zh_grandchild_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "蒸发与沸点的差异",
+                  "body": "蒸发过程不涉及整个液体的沸腾，而是少数高动能分子克服分子间作用力，从而形成蒸气。这与沸点下所有分子均达到逃逸能级的沸腾机制不同。",
+                  "hotspot_id": "water-cycle-zh_grandchild_hs_3"
+                },
+                {
+                  "id": "section_4",
+                  "title": "蒸发速率与动能分布",
+                  "body": "蒸发速率与高动能分子的比例有关，而高动能分子的分布受温度影响。温度越高，高动能分子越多，蒸发越快。",
+                  "hotspot_id": "water-cycle-zh_grandchild_hs_4"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          }
+        }
+      },
+      "branch_node_ids": [
+        "water-cycle-zh_root",
+        "water-cycle-zh_child",
+        "water-cycle-zh_grandchild"
+      ],
+      "branch_path": [
+        {
+          "stage": "child",
+          "hotspot_id": "water-cycle-zh_root_hs_1",
+          "label": "蒸发",
+          "parent_node_id": "water-cycle-zh_root",
+          "parent_context_sha256": "bf71bf5c44d7c8c58af218120c2f65e055e5dc84f9a7229253b2cace91f1c8f6",
+          "parent_context": "蒸发是液态水转变为水蒸气的过程，它不需要达到沸点100°C，可在任何温度下发生。这一过程需要吸收能量，使分子获得足够动能以脱离液相。蒸发是水从液态到气态的自然物理变化。",
+          "parent_context_kind": "selected-section-v1"
+        },
+        {
+          "stage": "grandchild",
+          "hotspot_id": "water-cycle-zh_child_hs_1",
+          "label": "分子动能与蒸发",
+          "parent_node_id": "water-cycle-zh_child",
+          "parent_context_sha256": "23f3dbf3997ccf540751b5fbcd32242a5a234a3d9e6d23eb05cc90186e6b900d",
+          "parent_context": "在液体中，分子以不同速度运动，其中一部分分子动能较高。当这些分子获得足够能量（如通过环境热量或太阳照射），它们便能克服分子间作用力，从液面逃逸，形成水蒸气。这一过程不需达到沸点，因此蒸发可在任何温度下发生。",
+          "parent_context_kind": "selected-section-v1"
+        }
+      ],
+      "normalization_checks": [
+        {
+          "stage": "root",
+          "raw_invalid": false,
+          "raw_section_count": 3,
+          "normalized_section_count": 3
+        },
+        {
+          "stage": "child",
+          "raw_invalid": false,
+          "raw_section_count": 3,
+          "normalized_section_count": 3
+        },
+        {
+          "stage": "grandchild",
+          "raw_invalid": false,
+          "raw_section_count": 4,
+          "normalized_section_count": 4
+        }
+      ],
+      "calls": [
+        {
+          "stage": "root",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 2.232461,
+          "max_tokens": 4000,
+          "prompt_sha256": "58c2a84909f815e574dad62b59b6b87c8d86413febb5b43525442425ccf2dcb3",
+          "response_sha256": "a5902375ec4bd94b2e58c0bb552bd8fa77a4c1dce0a17f6021eb057821861862",
+          "ok": true
+        },
+        {
+          "stage": "child",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 1.940351,
+          "max_tokens": 4000,
+          "prompt_sha256": "01f91be8e92e1336ebd21b37f62bf3cfbca80c3f4e6ad385126200f6b0dd93ee",
+          "response_sha256": "7f29872a6f0395b7db2d9accee46b09f910d03cd811bad33d6adfb121b92bd7a",
+          "ok": true
+        },
+        {
+          "stage": "grandchild",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 1.779817,
+          "max_tokens": 4000,
+          "prompt_sha256": "d8b29ff58dd1a059cd0157e89fb0cb8d2ed016a57b475b71178617bd91866cbd",
+          "response_sha256": "988b01039d4ce8acb652fe5ea0366f47a61194cf67112fd3506440de0c1c1b0c",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "case_id": "water-cycle-en",
+      "case_sha256": "03f62a2740f05100de214f99b2fdde057af3f8c2e88ddeb2036051a058bd0469",
+      "mode": "live",
+      "status": "completed",
+      "project": {
+        "project_id": "eval_water-cycle-en",
+        "name": "water-cycle-en",
+        "root_node_id": "water-cycle-en_root",
+        "settings": {
+          "max_depth": 4,
+          "max_hotspots_per_page": 3,
+          "visual_style": "encyclopedia",
+          "language": "en"
+        },
+        "nodes": {
+          "water-cycle-en_root": {
+            "id": "water-cycle-en_root",
+            "parent_id": null,
+            "depth": 0,
+            "title": "水循环：蒸发与凝结",
+            "description": "本页介绍水循环中的蒸发与凝结过程，解释其基本原理及在自然环境中的作用。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "water-cycle-en_child"
+            ],
+            "hotspots": [
+              {
+                "id": "water-cycle-en_root_hs_1",
+                "kind": "section",
+                "label": "蒸发过程",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "water-cycle-en_child"
+              },
+              {
+                "id": "water-cycle-en_root_hs_2",
+                "kind": "section",
+                "label": "凝结过程",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-en_root_hs_3",
+                "kind": "section",
+                "label": "降水形成",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-en_root_hs_4",
+                "kind": "section",
+                "label": "水循环的局限性",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "draft",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "蒸发过程",
+                  "body": "蒸发是液态水转化为水蒸气的过程，需要能量，但不依赖于沸点。它可以在任何温度下发生，无需水沸腾。",
+                  "hotspot_id": "water-cycle-en_root_hs_1",
+                  "target_node_id": "water-cycle-en_child"
+                },
+                {
+                  "id": "section_2",
+                  "title": "凝结过程",
+                  "body": "凝结是水蒸气在冷却过程中转变为液态水的过程。由于水蒸气本身是透明的，因此我们看到的云是由微小水滴组成的，这些水滴并非水蒸气。",
+                  "hotspot_id": "water-cycle-en_root_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "降水形成",
+                  "body": "在云中，水滴因重力聚集，当达到一定重量时会落回地面，形成雨、雪等降水形式。并非所有云都会产生降雨。",
+                  "hotspot_id": "water-cycle-en_root_hs_3"
+                },
+                {
+                  "id": "section_4",
+                  "title": "水循环的局限性",
+                  "body": "本页内容基于美国地质调查局（USGS）的水文科学资料，为简要总结，不包含具体天气预报、时间持续性或实验数据。",
+                  "hotspot_id": "water-cycle-en_root_hs_4"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "text",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "water-cycle-en_child": {
+            "id": "water-cycle-en_child",
+            "parent_id": "water-cycle-en_root",
+            "depth": 1,
+            "title": "蒸发过程的原理与机制",
+            "description": "本页深入探讨蒸发的物理机制，解释其如何在任何温度下发生，以及能量在蒸发过程中的作用。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "water-cycle-en_grandchild"
+            ],
+            "hotspots": [
+              {
+                "id": "water-cycle-en_child_hs_1",
+                "kind": "section",
+                "label": "蒸发的定义与条件",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "water-cycle-en_grandchild"
+              },
+              {
+                "id": "water-cycle-en_child_hs_2",
+                "kind": "section",
+                "label": "蒸发的驱动力",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-en_child_hs_3",
+                "kind": "section",
+                "label": "蒸发与沸点的关系",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-en_child_hs_4",
+                "kind": "section",
+                "label": "蒸发的热力学原理",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "蒸发的定义与条件",
+                  "body": "蒸发是液体表面分子获得足够能量后脱离液相，进入气相的过程。这一过程不依赖于沸腾，可在任何温度下进行，因为分子运动具有随机性，部分分子具备足够动能以克服表面张力。",
+                  "hotspot_id": "water-cycle-en_child_hs_1",
+                  "target_node_id": "water-cycle-en_grandchild"
+                },
+                {
+                  "id": "section_2",
+                  "title": "蒸发的驱动力",
+                  "body": "蒸发的驱动力来源于分子动能分布。在液体中，分子以不同的速度运动，其中一部分分子具有足够动能以克服表面张力，从而脱离液相。这些高动能分子在表面逸出，形成水蒸气。",
+                  "hotspot_id": "water-cycle-en_child_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "蒸发与沸点的关系",
+                  "body": "蒸发过程与沸点不同，它不涉及液体整体沸腾，而是表面分子的随机运动。蒸发可以在任何温度下发生，而沸点是液体在特定压力下沸腾的温度，这与蒸发的温度范围有本质区别。",
+                  "hotspot_id": "water-cycle-en_child_hs_3"
+                },
+                {
+                  "id": "section_4",
+                  "title": "蒸发的热力学原理",
+                  "body": "蒸发过程中，液体分子从液相转移到气相，会带走热量，导致周围环境温度下降。这种现象在蒸发冷却中被广泛应用，如出汗降温原理。",
+                  "hotspot_id": "water-cycle-en_child_hs_4"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "water-cycle-en_grandchild": {
+            "id": "water-cycle-en_grandchild",
+            "parent_id": "water-cycle-en_child",
+            "depth": 2,
+            "title": "蒸发的定义与条件",
+            "description": "蒸发是液体表面分子获得足够能量后脱离液相，进入气相的过程。该过程不依赖于沸腾，可在任何温度下进行，因为分子运动具有随机性，部分分子具备足够动能以克服表面张力。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [],
+            "hotspots": [
+              {
+                "id": "water-cycle-en_grandchild_hs_1",
+                "kind": "section",
+                "label": "蒸发的定义",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-en_grandchild_hs_2",
+                "kind": "section",
+                "label": "蒸发的条件",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "water-cycle-en_grandchild_hs_3",
+                "kind": "section",
+                "label": "蒸发与沸腾的区别",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "蒸发的定义",
+                  "body": "蒸发是液体表面的分子在不经过沸腾的情况下，获得足够动能后脱离液相，进入气相的过程。这一过程发生在液体表面，且不涉及整个液体的剧烈沸腾。蒸发是液体在任何温度下发生的汽化现象，区别于需要达到沸点的沸腾。",
+                  "hotspot_id": "water-cycle-en_grandchild_hs_1"
+                },
+                {
+                  "id": "section_2",
+                  "title": "蒸发的条件",
+                  "body": "蒸发的进行依赖于液体分子的动能分布，即分子运动的随机性。并非所有分子都具有足够动能，但少数分子具备克服表面张力的动能，从而实现蒸发。蒸发的速率受温度、表面积、空气流动和湿度等因素影响。",
+                  "hotspot_id": "water-cycle-en_grandchild_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "蒸发与沸腾的区别",
+                  "body": "蒸发和沸腾是两种不同的汽化方式。蒸发发生在液体表面，且在任何温度下进行，而沸腾则需要液体达到沸点，且在液体内部形成大量气泡。蒸发是分子级的汽化过程，而沸腾是宏观的、剧烈的汽化现象。",
+                  "hotspot_id": "water-cycle-en_grandchild_hs_3"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          }
+        }
+      },
+      "branch_node_ids": [
+        "water-cycle-en_root",
+        "water-cycle-en_child",
+        "water-cycle-en_grandchild"
+      ],
+      "branch_path": [
+        {
+          "stage": "child",
+          "hotspot_id": "water-cycle-en_root_hs_1",
+          "label": "蒸发过程",
+          "parent_node_id": "water-cycle-en_root",
+          "parent_context_sha256": "d679df723baf2da0f90d4a7201b5dbbc8340f5410cddd3f891e9a416632b9b65",
+          "parent_context": "蒸发是液态水转化为水蒸气的过程，需要能量，但不依赖于沸点。它可以在任何温度下发生，无需水沸腾。",
+          "parent_context_kind": "selected-section-v1"
+        },
+        {
+          "stage": "grandchild",
+          "hotspot_id": "water-cycle-en_child_hs_1",
+          "label": "蒸发的定义与条件",
+          "parent_node_id": "water-cycle-en_child",
+          "parent_context_sha256": "b2d81a87371a74d2b7caa42bbe913d416531f15993c5c651e68162373b9ce42b",
+          "parent_context": "蒸发是液体表面分子获得足够能量后脱离液相，进入气相的过程。这一过程不依赖于沸腾，可在任何温度下进行，因为分子运动具有随机性，部分分子具备足够动能以克服表面张力。",
+          "parent_context_kind": "selected-section-v1"
+        }
+      ],
+      "normalization_checks": [
+        {
+          "stage": "root",
+          "raw_invalid": false,
+          "raw_section_count": 4,
+          "normalized_section_count": 4
+        },
+        {
+          "stage": "child",
+          "raw_invalid": false,
+          "raw_section_count": 4,
+          "normalized_section_count": 4
+        },
+        {
+          "stage": "grandchild",
+          "raw_invalid": false,
+          "raw_section_count": 3,
+          "normalized_section_count": 3
+        }
+      ],
+      "calls": [
+        {
+          "stage": "root",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 1.826936,
+          "max_tokens": 4000,
+          "prompt_sha256": "84015400dfd2719eec6d34cf1c0eb1de5d5c7e2893bad9c1e3e17413a1a0aaf1",
+          "response_sha256": "038c4f763d1bc3ddb685e338d98cf5ad03180dccff1a6d0cc868df44cfa366a2",
+          "ok": true
+        },
+        {
+          "stage": "child",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 2.045866,
+          "max_tokens": 4000,
+          "prompt_sha256": "3afa001bc1454ce676778673aa0d20d311c5937fdcad4f20cc7eb601ee234cc9",
+          "response_sha256": "282eb5659e148f3c641b44d641deb858d352d948a0fc7d0a02f9d66d666ff76f",
+          "ok": true
+        },
+        {
+          "stage": "grandchild",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 1.992206,
+          "max_tokens": 4000,
+          "prompt_sha256": "9d45b23bb8671798f345bebf4826bffd1df38a8a87d347aebd6ffd7f26e52a13",
+          "response_sha256": "da509329f13e41ffbeff6fe5ced9499975591d5fb53c086890c1c42761999392",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "case_id": "fictional-reservation-zh",
+      "case_sha256": "f4116d268141c4f9adfa62421cf18ac7eed9be4e44022204a732c89fa8ff0b1b",
+      "mode": "live",
+      "status": "completed",
+      "project": {
+        "project_id": "eval_fictional-reservation-zh",
+        "name": "fictional-reservation-zh",
+        "root_node_id": "fictional-reservation-zh_root",
+        "settings": {
+          "max_depth": 4,
+          "max_hotspots_per_page": 3,
+          "visual_style": "encyclopedia",
+          "language": "zh"
+        },
+        "nodes": {
+          "fictional-reservation-zh_root": {
+            "id": "fictional-reservation-zh_root",
+            "parent_id": null,
+            "depth": 0,
+            "title": "雾湾图书角预约与领取说明",
+            "description": "本知识页解释雾湾图书角预约、核对与领取的流程与规则，内容基于虚构设定，不对应真实政策。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "fictional-reservation-zh_child"
+            ],
+            "hotspots": [
+              {
+                "id": "fictional-reservation-zh_root_hs_1",
+                "kind": "section",
+                "label": "申请流程",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "fictional-reservation-zh_child"
+              },
+              {
+                "id": "fictional-reservation-zh_root_hs_2",
+                "kind": "section",
+                "label": "核对与确认",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-zh_root_hs_3",
+                "kind": "section",
+                "label": "领取与失效",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "draft",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "申请流程",
+                  "body": "读者需提交书名和联系方式，每场活动仅限8个名额。提交申请不代表获得名额，需等待核对确认。",
+                  "hotspot_id": "fictional-reservation-zh_root_hs_1",
+                  "target_node_id": "fictional-reservation-zh_child"
+                },
+                {
+                  "id": "section_2",
+                  "title": "核对与确认",
+                  "body": "工作人员将在申请提交后的12小时内核对信息，确认通过后发放取件码。取件码从发放时起48小时内有效，不可延期。",
+                  "hotspot_id": "fictional-reservation-zh_root_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "领取与失效",
+                  "body": "读者须在取件码有效期内凭码领取书籍。过期码无法领取。流程中未定义延期、候补、收费或退款，具体安排未提供。",
+                  "hotspot_id": "fictional-reservation-zh_root_hs_3"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "text",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "fictional-reservation-zh_child": {
+            "id": "fictional-reservation-zh_child",
+            "parent_id": "fictional-reservation-zh_root",
+            "depth": 1,
+            "title": "图书角预约申请流程",
+            "description": "本页详细说明雾湾图书角的预约与领取机制，帮助读者清晰了解申请步骤与注意事项。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "fictional-reservation-zh_grandchild"
+            ],
+            "hotspots": [
+              {
+                "id": "fictional-reservation-zh_child_hs_1",
+                "kind": "section",
+                "label": "预约条件与名额限制",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "fictional-reservation-zh_grandchild"
+              },
+              {
+                "id": "fictional-reservation-zh_child_hs_2",
+                "kind": "section",
+                "label": "申请流程与注意事项",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-zh_child_hs_3",
+                "kind": "section",
+                "label": "核对与确认机制",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-zh_child_hs_4",
+                "kind": "section",
+                "label": "领取与后续安排",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "预约条件与名额限制",
+                  "body": "每场图书角活动名额有限，仅开放8个预约资格。提交申请并不代表获得名额，需等待核对确认。",
+                  "hotspot_id": "fictional-reservation-zh_child_hs_1",
+                  "target_node_id": "fictional-reservation-zh_grandchild"
+                },
+                {
+                  "id": "section_2",
+                  "title": "申请流程与注意事项",
+                  "body": "读者需提供书名和联系方式，系统将对申请进行核对。若符合条件，将进入待确认环节。",
+                  "hotspot_id": "fictional-reservation-zh_child_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "核对与确认机制",
+                  "body": "申请提交后，工作人员将核实信息。若确认无误，名额将被锁定，无法再次申请。",
+                  "hotspot_id": "fictional-reservation-zh_child_hs_3"
+                },
+                {
+                  "id": "section_4",
+                  "title": "领取与后续安排",
+                  "body": "预约成功后，读者可前往指定地点领取图书。具体领取时间及地点将另行通知。",
+                  "hotspot_id": "fictional-reservation-zh_child_hs_4"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "fictional-reservation-zh_grandchild": {
+            "id": "fictional-reservation-zh_grandchild",
+            "parent_id": "fictional-reservation-zh_child",
+            "depth": 2,
+            "title": "图书角预约名额限制机制",
+            "description": "图书角活动名额有限，仅开放8个预约资格，申请人需等待核对确认。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [],
+            "hotspots": [
+              {
+                "id": "fictional-reservation-zh_grandchild_hs_1",
+                "kind": "section",
+                "label": "名额分配原则",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-zh_grandchild_hs_2",
+                "kind": "section",
+                "label": "预约不等于录取",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-zh_grandchild_hs_3",
+                "kind": "section",
+                "label": "核对确认机制",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-zh_grandchild_hs_4",
+                "kind": "section",
+                "label": "名额分配依据",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "名额分配原则",
+                  "body": "图书角活动名额有限，仅开放8个预约资格，申请人需等待核对确认。名额分配遵循公平、公正原则，确保资源合理分配。",
+                  "hotspot_id": "fictional-reservation-zh_grandchild_hs_1"
+                },
+                {
+                  "id": "section_2",
+                  "title": "预约不等于录取",
+                  "body": "提交申请并不代表获得名额，需等待核对确认。名额分配过程严格遵循先到先得原则，确保公平性。",
+                  "hotspot_id": "fictional-reservation-zh_grandchild_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "核对确认机制",
+                  "body": "所有预约申请均需经过系统核对，确认无误后方可分配名额。核对环节确保名额分配的准确性与公正性。",
+                  "hotspot_id": "fictional-reservation-zh_grandchild_hs_3"
+                },
+                {
+                  "id": "section_4",
+                  "title": "名额分配依据",
+                  "body": "名额分配基于申请人提交的申请信息、预约时间及优先级等综合因素。系统会根据预设规则进行排序，确保公平性。",
+                  "hotspot_id": "fictional-reservation-zh_grandchild_hs_4"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          }
+        }
+      },
+      "branch_node_ids": [
+        "fictional-reservation-zh_root",
+        "fictional-reservation-zh_child",
+        "fictional-reservation-zh_grandchild"
+      ],
+      "branch_path": [
+        {
+          "stage": "child",
+          "hotspot_id": "fictional-reservation-zh_root_hs_1",
+          "label": "申请流程",
+          "parent_node_id": "fictional-reservation-zh_root",
+          "parent_context_sha256": "e095809ed10ca73b6de6030f39d8abc3a3e17089ce3ca7f27d27c1bd46c43e88",
+          "parent_context": "读者需提交书名和联系方式，每场活动仅限8个名额。提交申请不代表获得名额，需等待核对确认。",
+          "parent_context_kind": "selected-section-v1"
+        },
+        {
+          "stage": "grandchild",
+          "hotspot_id": "fictional-reservation-zh_child_hs_1",
+          "label": "预约条件与名额限制",
+          "parent_node_id": "fictional-reservation-zh_child",
+          "parent_context_sha256": "2e451f474e78e2d1c8b95d83075626b995264506966755adb7647f383364b540",
+          "parent_context": "每场图书角活动名额有限，仅开放8个预约资格。提交申请并不代表获得名额，需等待核对确认。",
+          "parent_context_kind": "selected-section-v1"
+        }
+      ],
+      "normalization_checks": [
+        {
+          "stage": "root",
+          "raw_invalid": false,
+          "raw_section_count": 3,
+          "normalized_section_count": 3
+        },
+        {
+          "stage": "child",
+          "raw_invalid": false,
+          "raw_section_count": 4,
+          "normalized_section_count": 4
+        },
+        {
+          "stage": "grandchild",
+          "raw_invalid": false,
+          "raw_section_count": 4,
+          "normalized_section_count": 4
+        }
+      ],
+      "calls": [
+        {
+          "stage": "root",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 1.575429,
+          "max_tokens": 4000,
+          "prompt_sha256": "463940d72ad0e5f33a85f8a928776816b76c4d34bcf9ad8552315227105887bf",
+          "response_sha256": "b770baeb6c2aadb36ad7d7d6555540fa73a97e84b0c5cfa8b0d948275252d61c",
+          "ok": true
+        },
+        {
+          "stage": "child",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 1.537146,
+          "max_tokens": 4000,
+          "prompt_sha256": "92b6b62072057ef998937a0ab883d91855400e904992550ea73a6c4bc92ef460",
+          "response_sha256": "00b0b89be898b413400e66cad8763be2387d450834e944a75b76aa063d1c5261",
+          "ok": true
+        },
+        {
+          "stage": "grandchild",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 1.655152,
+          "max_tokens": 4000,
+          "prompt_sha256": "348dbbd33e04d6e995b3ba8f0d3eae0904b4974494dcd0adb01473bdca1276b8",
+          "response_sha256": "5a050c4d13ee6b052374f1a13ecb1dc3c3d19d04d823ef99d3568c5b35c563c9",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "case_id": "fictional-reservation-en",
+      "case_sha256": "b5e5952002d092bc673e6d7f4cb3e317c12596c3e152d991bfb2fbb03fcf3c5e",
+      "mode": "live",
+      "status": "completed",
+      "project": {
+        "project_id": "eval_fictional-reservation-en",
+        "name": "fictional-reservation-en",
+        "root_node_id": "fictional-reservation-en_root",
+        "settings": {
+          "max_depth": 4,
+          "max_hotspots_per_page": 3,
+          "visual_style": "encyclopedia",
+          "language": "en"
+        },
+        "nodes": {
+          "fictional-reservation-en_root": {
+            "id": "fictional-reservation-en_root",
+            "parent_id": null,
+            "depth": 0,
+            "title": "Mist Bay Book Corner 服务流程说明",
+            "description": "Mist Bay Book Corner 是一个虚构机构，用于测试知识应用。本页说明其申请、确认与领取流程，不涉及真实政策。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "fictional-reservation-en_child"
+            ],
+            "hotspots": [
+              {
+                "id": "fictional-reservation-en_root_hs_1",
+                "kind": "section",
+                "label": "申请流程",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "fictional-reservation-en_child"
+              },
+              {
+                "id": "fictional-reservation-en_root_hs_2",
+                "kind": "section",
+                "label": "确认与收据",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-en_root_hs_3",
+                "kind": "section",
+                "label": "领取与过期",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-en_root_hs_4",
+                "kind": "section",
+                "label": "信息缺失处理",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "draft",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "申请流程",
+                  "body": "读者需提交图书标题及联系方式。每个时段限8个名额，提交不保证获得席位。",
+                  "hotspot_id": "fictional-reservation-en_root_hs_1",
+                  "target_node_id": "fictional-reservation-en_child"
+                },
+                {
+                  "id": "section_2",
+                  "title": "确认与收据",
+                  "body": "工作人员在提交后12小时内核实信息与容量。只有确认后才会发放收据，其有效期为48小时。",
+                  "hotspot_id": "fictional-reservation-en_root_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "领取与过期",
+                  "body": "读者需使用有效收据领取。过期的收据无法使用。流程中不包含延期、费用、退款或具体日期。",
+                  "hotspot_id": "fictional-reservation-en_root_hs_3"
+                },
+                {
+                  "id": "section_4",
+                  "title": "信息缺失处理",
+                  "body": "若请求中的信息不明确，将说明材料无法提供该信息，而非虚构服务承诺。",
+                  "hotspot_id": "fictional-reservation-en_root_hs_4"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "text",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "fictional-reservation-en_child": {
+            "id": "fictional-reservation-en_child",
+            "parent_id": "fictional-reservation-en_root",
+            "depth": 1,
+            "title": "Mist Bay Book Corner 申请流程",
+            "description": "本页详细说明Mist Bay Book Corner的申请机制与关键步骤，帮助读者清晰了解如何参与图书角服务。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "fictional-reservation-en_grandchild"
+            ],
+            "hotspots": [
+              {
+                "id": "fictional-reservation-en_child_hs_1",
+                "kind": "section",
+                "label": "申请前提与资格",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "fictional-reservation-en_grandchild"
+              },
+              {
+                "id": "fictional-reservation-en_child_hs_2",
+                "kind": "section",
+                "label": "申请流程与时间限制",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-en_child_hs_3",
+                "kind": "section",
+                "label": "审核与席位分配",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-en_child_hs_4",
+                "kind": "section",
+                "label": "注意事项与后续步骤",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "申请前提与资格",
+                  "body": "读者需提交图书标题及联系方式，每个时段限8个名额。提交不保证获得席位，因此需尽早申请。",
+                  "hotspot_id": "fictional-reservation-en_child_hs_1",
+                  "target_node_id": "fictional-reservation-en_grandchild"
+                },
+                {
+                  "id": "section_2",
+                  "title": "申请流程与时间限制",
+                  "body": "申请流程分为两个阶段：首先提交信息，随后系统审核。每个时段仅限8个席位，且名额有限，需合理安排时间。",
+                  "hotspot_id": "fictional-reservation-en_child_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "审核与席位分配",
+                  "body": "提交后，系统将对申请进行初步审核。若符合条件，将进入候补名单，最终席位由主办方根据实际情况分配。",
+                  "hotspot_id": "fictional-reservation-en_child_hs_3"
+                },
+                {
+                  "id": "section_4",
+                  "title": "注意事项与后续步骤",
+                  "body": "请务必注意，提交不保证获得席位，且名额有限。若成功入选，需按要求准备相关材料，以确保服务顺利进行。",
+                  "hotspot_id": "fictional-reservation-en_child_hs_4"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "fictional-reservation-en_grandchild": {
+            "id": "fictional-reservation-en_grandchild",
+            "parent_id": "fictional-reservation-en_child",
+            "depth": 2,
+            "title": "申请前提与资格",
+            "description": "Mist Bay Book Corner 的席位申请需满足特定前提，包括图书标题及联系方式的提交，且每个时段限8个名额。尽管提交不保证获得席位，但早申请可提高被选中的概率。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [],
+            "hotspots": [
+              {
+                "id": "fictional-reservation-en_grandchild_hs_1",
+                "kind": "section",
+                "label": "申请前提",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-en_grandchild_hs_2",
+                "kind": "section",
+                "label": "资格限制",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "fictional-reservation-en_grandchild_hs_3",
+                "kind": "section",
+                "label": "不确定性",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "申请前提",
+                  "body": "申请者需提交图书的标题及联系方式，这是获取席位的必要前提。每个时段的名额有限，因此申请时间越早，获得席位的可能性越大。",
+                  "hotspot_id": "fictional-reservation-en_grandchild_hs_1"
+                },
+                {
+                  "id": "section_2",
+                  "title": "资格限制",
+                  "body": "每个时段的席位数量为8个，且名额有限，因此申请者需尽早提交，以提高被选中的概率。",
+                  "hotspot_id": "fictional-reservation-en_grandchild_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "不确定性",
+                  "body": "尽管提交申请不保证获得席位，但早申请可提高被选中的概率。因此，申请者应尽早提交，以增加被选中的机会。",
+                  "hotspot_id": "fictional-reservation-en_grandchild_hs_3"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          }
+        }
+      },
+      "branch_node_ids": [
+        "fictional-reservation-en_root",
+        "fictional-reservation-en_child",
+        "fictional-reservation-en_grandchild"
+      ],
+      "branch_path": [
+        {
+          "stage": "child",
+          "hotspot_id": "fictional-reservation-en_root_hs_1",
+          "label": "申请流程",
+          "parent_node_id": "fictional-reservation-en_root",
+          "parent_context_sha256": "8d86f60b7946f4fa28bb829b07b15a1129a52b6e3c115b726b4997d173c9e5ce",
+          "parent_context": "读者需提交图书标题及联系方式。每个时段限8个名额，提交不保证获得席位。",
+          "parent_context_kind": "selected-section-v1"
+        },
+        {
+          "stage": "grandchild",
+          "hotspot_id": "fictional-reservation-en_child_hs_1",
+          "label": "申请前提与资格",
+          "parent_node_id": "fictional-reservation-en_child",
+          "parent_context_sha256": "27feaccabeaef3d5ab6ce4916d6eb7e7de62d08919f8ae6f60ced0ea653d21d9",
+          "parent_context": "读者需提交图书标题及联系方式，每个时段限8个名额。提交不保证获得席位，因此需尽早申请。",
+          "parent_context_kind": "selected-section-v1"
+        }
+      ],
+      "normalization_checks": [
+        {
+          "stage": "root",
+          "raw_invalid": false,
+          "raw_section_count": 4,
+          "normalized_section_count": 4
+        },
+        {
+          "stage": "child",
+          "raw_invalid": false,
+          "raw_section_count": 4,
+          "normalized_section_count": 4
+        },
+        {
+          "stage": "grandchild",
+          "raw_invalid": false,
+          "raw_section_count": 3,
+          "normalized_section_count": 3
+        }
+      ],
+      "calls": [
+        {
+          "stage": "root",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 1.647573,
+          "max_tokens": 4000,
+          "prompt_sha256": "151cb9082834016e34258c417416ab467263ee0ccafc155133060e8d6f2f4f52",
+          "response_sha256": "5b203eff004079c5504fbe8a63425c8e3143e0270451ef86dbb3fee4e7f113b9",
+          "ok": true
+        },
+        {
+          "stage": "child",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 1.805207,
+          "max_tokens": 4000,
+          "prompt_sha256": "dcb8bf2581defa2b5bfe306873393574c077eb034d4a970cccda35f5232b1f98",
+          "response_sha256": "ff97507f43a94b915fb39fd16c5db09c1ab6329dc450778a5337f9a04244a194",
+          "ok": true
+        },
+        {
+          "stage": "grandchild",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 1.525944,
+          "max_tokens": 4000,
+          "prompt_sha256": "9c2a66683bb2b9c18b248735516113619aa64182e1d823b8d1daeb5d05000b8a",
+          "response_sha256": "851456b06fc763c44812dbf61e873832e3e12b71bca39edda713253a365f35cf",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "case_id": "shapes-zh",
+      "case_sha256": "61120bb30a1889a66833e34352d0a950e9ab667cc75bbdddcb1b39be0c6dcb13",
+      "mode": "live",
+      "status": "completed",
+      "project": {
+        "project_id": "eval_shapes-zh",
+        "name": "shapes-zh",
+        "root_node_id": "shapes-zh_root",
+        "settings": {
+          "max_depth": 4,
+          "max_hotspots_per_page": 3,
+          "visual_style": "encyclopedia",
+          "language": "zh"
+        },
+        "nodes": {
+          "shapes-zh_root": {
+            "id": "shapes-zh_root",
+            "parent_id": null,
+            "depth": 0,
+            "title": "三组几何图形：圆形、正方形和三角形。",
+            "description": "三组几何图形：圆形、正方形和三角形。",
+            "source_type": "image",
+            "image_url": "assets/f9027b72549866fc7344d053cdfe3db16ad62286569d25d1203d10b589345587.png",
+            "children": [
+              "shapes-zh_child"
+            ],
+            "hotspots": [
+              {
+                "id": "shapes-zh_root_hs_1",
+                "kind": "image",
+                "label": "圆形",
+                "position": {
+                  "x": 0.1,
+                  "y": 0.2
+                },
+                "size": {
+                  "width": 0.2,
+                  "height": 0.15
+                },
+                "score": null,
+                "selected": true,
+                "target_node_id": "shapes-zh_child"
+              },
+              {
+                "id": "shapes-zh_root_hs_2",
+                "kind": "image",
+                "label": "正方形",
+                "position": {
+                  "x": 0.3,
+                  "y": 0.2
+                },
+                "size": {
+                  "width": 0.2,
+                  "height": 0.15
+                },
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "shapes-zh_root_hs_3",
+                "kind": "image",
+                "label": "三角形",
+                "position": {
+                  "x": 0.5,
+                  "y": 0.2
+                },
+                "size": {
+                  "width": 0.2,
+                  "height": 0.15
+                },
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "draft",
+            "scene_document": null,
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "image",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "shapes-zh_child": {
+            "id": "shapes-zh_child",
+            "parent_id": "shapes-zh_root",
+            "depth": 1,
+            "title": "圆形的内在结构与视觉特性",
+            "description": "本页聚焦于圆形这一基本几何图形，探讨其独特的对称性、边界特征及在视觉中的表现规律。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "shapes-zh_grandchild"
+            ],
+            "hotspots": [
+              {
+                "id": "shapes-zh_child_hs_1",
+                "kind": "section",
+                "label": "圆形的对称性",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "shapes-zh_grandchild"
+              },
+              {
+                "id": "shapes-zh_child_hs_2",
+                "kind": "section",
+                "label": "圆形的边界特征",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "shapes-zh_child_hs_3",
+                "kind": "section",
+                "label": "圆形的视觉表现",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "圆形的对称性",
+                  "body": "圆形具有完美的旋转对称性，任何角度的中心对称都保持其完整性。这种对称性使其在数学和艺术中都具有极高的表现力。",
+                  "hotspot_id": "shapes-zh_child_hs_1",
+                  "target_node_id": "shapes-zh_grandchild"
+                },
+                {
+                  "id": "section_2",
+                  "title": "圆形的边界特征",
+                  "body": "圆形的边界由连续的曲线构成，其任意一点到圆心的距离相等，这使其成为唯一一个所有点到圆心距离相等的图形。",
+                  "hotspot_id": "shapes-zh_child_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "圆形的视觉表现",
+                  "body": "在视觉艺术中，圆形常被用作强调平衡、和谐与完整性的符号。其均匀的形态使其在设计中具有稳定性和统一性。",
+                  "hotspot_id": "shapes-zh_child_hs_3"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "shapes-zh_grandchild": {
+            "id": "shapes-zh_grandchild",
+            "parent_id": "shapes-zh_child",
+            "depth": 2,
+            "title": "圆形的对称性",
+            "description": "圆形的对称性体现在其任意方向的中心对称，任何角度的旋转都保持其完整性，这使其在数学和艺术中具有极高的表现力。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [],
+            "hotspots": [
+              {
+                "id": "shapes-zh_grandchild_hs_1",
+                "kind": "section",
+                "label": "对称性定义",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "shapes-zh_grandchild_hs_2",
+                "kind": "section",
+                "label": "数学表现",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "shapes-zh_grandchild_hs_3",
+                "kind": "section",
+                "label": "艺术应用",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "shapes-zh_grandchild_hs_4",
+                "kind": "section",
+                "label": "物理现象",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "对称性定义",
+                  "body": "圆形的对称性是指其任意点绕中心旋转后都能与自身重合，这种特性称为中心对称。由于所有方向的旋转都保持完整性，圆形具有完美的旋转对称性。这种对称性是其内在结构的直接体现。",
+                  "hotspot_id": "shapes-zh_grandchild_hs_1"
+                },
+                {
+                  "id": "section_2",
+                  "title": "数学表现",
+                  "body": "在数学中，圆形的对称性体现在其方程的对称性，即圆心为原点的方程 x² + y² = r²，无论变量取值如何，图形都保持不变。这种对称性也体现在其在几何变换下的不变性，如旋转、反射和缩放。",
+                  "hotspot_id": "shapes-zh_grandchild_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "艺术应用",
+                  "body": "在艺术领域，圆形的对称性被广泛用于设计和构图，如圆形的花环、对称的建筑结构和抽象画作。这种对称性不仅增强了视觉美感，还常用于传达平衡、和谐与统一的美学理念。",
+                  "hotspot_id": "shapes-zh_grandchild_hs_3"
+                },
+                {
+                  "id": "section_4",
+                  "title": "物理现象",
+                  "body": "在物理中，圆形的对称性也体现在自然现象中，如太阳系的行星轨道、分子结构的对称性以及流体的环形流动。这些现象都体现了圆形在自然界中的普遍性和稳定性。",
+                  "hotspot_id": "shapes-zh_grandchild_hs_4"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          }
+        }
+      },
+      "branch_node_ids": [
+        "shapes-zh_root",
+        "shapes-zh_child",
+        "shapes-zh_grandchild"
+      ],
+      "branch_path": [
+        {
+          "stage": "child",
+          "hotspot_id": "shapes-zh_root_hs_1",
+          "label": "圆形",
+          "parent_node_id": "shapes-zh_root",
+          "parent_context_sha256": "15a518196fd221f4dff3db912a146896c0df3da7e74bb15e8cc2aa2bce9bafe0",
+          "parent_context": "三组几何图形：圆形、正方形和三角形。",
+          "parent_context_kind": "selected-section-v1"
+        },
+        {
+          "stage": "grandchild",
+          "hotspot_id": "shapes-zh_child_hs_1",
+          "label": "圆形的对称性",
+          "parent_node_id": "shapes-zh_child",
+          "parent_context_sha256": "c035fc2abc13549a4412a453c4d3dff39bbe3e3c21692f233702ab74a9a89c6d",
+          "parent_context": "圆形具有完美的旋转对称性，任何角度的中心对称都保持其完整性。这种对称性使其在数学和艺术中都具有极高的表现力。",
+          "parent_context_kind": "selected-section-v1"
+        }
+      ],
+      "normalization_checks": [
+        {
+          "stage": "root",
+          "raw_invalid": false,
+          "raw_hotspot_count": 3,
+          "normalized_hotspot_count": 3,
+          "invalid_hotspot_count": 0
+        },
+        {
+          "stage": "child",
+          "raw_invalid": false,
+          "raw_section_count": 3,
+          "normalized_section_count": 3
+        },
+        {
+          "stage": "grandchild",
+          "raw_invalid": false,
+          "raw_section_count": 4,
+          "normalized_section_count": 4
+        }
+      ],
+      "calls": [
+        {
+          "stage": "root",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 3.050114,
+          "max_tokens": 1200,
+          "prompt_sha256": "fa73cd3957660225a313fb1c8fc038ccd0cffcf2acbc1397eda4082d17239bae",
+          "response_sha256": "efec5813d07de62f9a565df172928528664aa5670842b1e61501363f35feb7c0",
+          "ok": true
+        },
+        {
+          "stage": "child",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 1.776834,
+          "max_tokens": 4000,
+          "prompt_sha256": "4e0678b0fd9efde0f7079113fde92eb6f5ed03cfdf95928051978ad58abef9d6",
+          "response_sha256": "583e73ce60a4ab92ebbec0e619e9e906a695c0523c01a6bd5bb52f072a71fcf9",
+          "ok": true
+        },
+        {
+          "stage": "grandchild",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 2.572519,
+          "max_tokens": 4000,
+          "prompt_sha256": "44bea93927ce707d3fbfeefd3db59852951998787932f66667d1ccccf9134a7b",
+          "response_sha256": "eea54bb8ddbfca6f76afe4eb1d86d4abe3d5212473df1c3c028dc1693e613f39",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "case_id": "shapes-en",
+      "case_sha256": "b4731d512d01ea3b8d1215843f26687bfe99797fb06c91ec1154d418b905af01",
+      "mode": "live",
+      "status": "completed",
+      "project": {
+        "project_id": "eval_shapes-en",
+        "name": "shapes-en",
+        "root_node_id": "shapes-en_root",
+        "settings": {
+          "max_depth": 4,
+          "max_hotspots_per_page": 3,
+          "visual_style": "encyclopedia",
+          "language": "en"
+        },
+        "nodes": {
+          "shapes-en_root": {
+            "id": "shapes-en_root",
+            "parent_id": null,
+            "depth": 0,
+            "title": "三组几何图形：圆形、正方形和三角形。",
+            "description": "三组几何图形：圆形、正方形和三角形。",
+            "source_type": "image",
+            "image_url": "assets/f9027b72549866fc7344d053cdfe3db16ad62286569d25d1203d10b589345587.png",
+            "children": [
+              "shapes-en_child"
+            ],
+            "hotspots": [
+              {
+                "id": "shapes-en_root_hs_1",
+                "kind": "image",
+                "label": "圆形",
+                "position": {
+                  "x": 0.1,
+                  "y": 0.2
+                },
+                "size": {
+                  "width": 0.2,
+                  "height": 0.15
+                },
+                "score": null,
+                "selected": true,
+                "target_node_id": "shapes-en_child"
+              },
+              {
+                "id": "shapes-en_root_hs_2",
+                "kind": "image",
+                "label": "正方形",
+                "position": {
+                  "x": 0.3,
+                  "y": 0.2
+                },
+                "size": {
+                  "width": 0.2,
+                  "height": 0.15
+                },
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "shapes-en_root_hs_3",
+                "kind": "image",
+                "label": "三角形",
+                "position": {
+                  "x": 0.5,
+                  "y": 0.2
+                },
+                "size": {
+                  "width": 0.2,
+                  "height": 0.15
+                },
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "draft",
+            "scene_document": null,
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "image",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "shapes-en_child": {
+            "id": "shapes-en_child",
+            "parent_id": "shapes-en_root",
+            "depth": 1,
+            "title": "圆形的内在结构与视觉特性",
+            "description": "本页聚焦于圆形这一基本几何图形，探讨其在视觉与数学中的独特属性，以及如何通过其对称性与连续弧线体现内在规律。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [
+              "shapes-en_grandchild"
+            ],
+            "hotspots": [
+              {
+                "id": "shapes-en_child_hs_1",
+                "kind": "section",
+                "label": "圆形的对称性",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": true,
+                "target_node_id": "shapes-en_grandchild"
+              },
+              {
+                "id": "shapes-en_child_hs_2",
+                "kind": "section",
+                "label": "圆形的弧线连续性",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "shapes-en_child_hs_3",
+                "kind": "section",
+                "label": "圆形的视觉表现",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "圆形的对称性",
+                  "body": "圆形具有完美的对称性，任何通过圆心的直线（直径）都能将圆形分成两个完全相同的部分。这种对称性使其在数学和艺术中具有极高的应用价值。",
+                  "hotspot_id": "shapes-en_child_hs_1",
+                  "target_node_id": "shapes-en_grandchild"
+                },
+                {
+                  "id": "section_2",
+                  "title": "圆形的弧线连续性",
+                  "body": "圆形的边界由无数个连续的点组成，这些点在圆心处形成一个平滑的曲线，没有断裂或突变，体现了数学中的连续性概念。",
+                  "hotspot_id": "shapes-en_child_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "圆形的视觉表现",
+                  "body": "在视觉艺术中，圆形常被用作表现完整、和谐与平衡的象征。其均匀的弧度和对称性使其在设计中具有稳定性和美感。",
+                  "hotspot_id": "shapes-en_child_hs_3"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          },
+          "shapes-en_grandchild": {
+            "id": "shapes-en_grandchild",
+            "parent_id": "shapes-en_child",
+            "depth": 2,
+            "title": "圆形的对称性",
+            "description": "圆形的对称性体现在其任意直径将圆分成两个完全相同的半圆，且所有方向的对称性都保持一致。",
+            "source_type": "text",
+            "image_url": null,
+            "children": [],
+            "hotspots": [
+              {
+                "id": "shapes-en_grandchild_hs_1",
+                "kind": "section",
+                "label": "对称性定义",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "shapes-en_grandchild_hs_2",
+                "kind": "section",
+                "label": "数学基础",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "shapes-en_grandchild_hs_3",
+                "kind": "section",
+                "label": "视觉表现",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              },
+              {
+                "id": "shapes-en_grandchild_hs_4",
+                "kind": "section",
+                "label": "应用与影响",
+                "position": null,
+                "size": null,
+                "score": null,
+                "selected": false,
+                "target_node_id": null
+              }
+            ],
+            "status": "generated",
+            "scene_document": {
+              "version": 1,
+              "layout": "sequence",
+              "sections": [
+                {
+                  "id": "section_1",
+                  "title": "对称性定义",
+                  "body": "圆形的对称性意味着无论从哪个方向观察，其形状和大小都保持不变。任何通过圆心的直线（直径）都能将圆均匀地分为两个完全相同的部分，这体现了其高度的对称性。这种特性在数学和艺术中广泛应用。",
+                  "hotspot_id": "shapes-en_grandchild_hs_1"
+                },
+                {
+                  "id": "section_2",
+                  "title": "数学基础",
+                  "body": "在数学中，圆形的对称性表现为其所有点到圆心的距离相等，这使得圆在旋转180度后与自身重合。这种不变性是圆作为几何图形的核心特征。",
+                  "hotspot_id": "shapes-en_grandchild_hs_2"
+                },
+                {
+                  "id": "section_3",
+                  "title": "视觉表现",
+                  "body": "在视觉艺术中，圆形的对称性常被用于设计平衡的构图，如圆形的对称排列能带来稳定和和谐的视觉感受。这种特性也影响了建筑、图案和现代设计的美学选择。",
+                  "hotspot_id": "shapes-en_grandchild_hs_3"
+                },
+                {
+                  "id": "section_4",
+                  "title": "应用与影响",
+                  "body": "圆形的对称性不仅在数学中具有基础地位，还在工程、建筑和自然界中广泛体现，例如太阳系的行星轨道、花朵的花瓣排列等都遵循圆形对称的规律。",
+                  "hotspot_id": "shapes-en_grandchild_hs_4"
+                }
+              ]
+            },
+            "content_metadata": {
+              "version": 1,
+              "provenance": {
+                "kind": "ai",
+                "input_kind": "parent_page",
+                "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit"
+              },
+              "references": [],
+              "review_status": "unreviewed"
+            }
+          }
+        }
+      },
+      "branch_node_ids": [
+        "shapes-en_root",
+        "shapes-en_child",
+        "shapes-en_grandchild"
+      ],
+      "branch_path": [
+        {
+          "stage": "child",
+          "hotspot_id": "shapes-en_root_hs_1",
+          "label": "圆形",
+          "parent_node_id": "shapes-en_root",
+          "parent_context_sha256": "15a518196fd221f4dff3db912a146896c0df3da7e74bb15e8cc2aa2bce9bafe0",
+          "parent_context": "三组几何图形：圆形、正方形和三角形。",
+          "parent_context_kind": "selected-section-v1"
+        },
+        {
+          "stage": "grandchild",
+          "hotspot_id": "shapes-en_child_hs_1",
+          "label": "圆形的对称性",
+          "parent_node_id": "shapes-en_child",
+          "parent_context_sha256": "d120b203992b1f27b87b327cfa7579a0b863ca2142dc09283c766d484a6467bf",
+          "parent_context": "圆形具有完美的对称性，任何通过圆心的直线（直径）都能将圆形分成两个完全相同的部分。这种对称性使其在数学和艺术中具有极高的应用价值。",
+          "parent_context_kind": "selected-section-v1"
+        }
+      ],
+      "normalization_checks": [
+        {
+          "stage": "root",
+          "raw_invalid": false,
+          "raw_hotspot_count": 3,
+          "normalized_hotspot_count": 3,
+          "invalid_hotspot_count": 0
+        },
+        {
+          "stage": "child",
+          "raw_invalid": false,
+          "raw_section_count": 3,
+          "normalized_section_count": 3
+        },
+        {
+          "stage": "grandchild",
+          "raw_invalid": false,
+          "raw_section_count": 4,
+          "normalized_section_count": 4
+        }
+      ],
+      "calls": [
+        {
+          "stage": "root",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 3.804044,
+          "max_tokens": 1200,
+          "prompt_sha256": "16aa7238f0f606cfeb0625e6fff64e9f40a45a1046821ccef9d6109ba7b6ba19",
+          "response_sha256": "cd4d0a1ff6e1e3aff10f124bffbf25a92cb2830955c28c1e8b885e06ddd4a801",
+          "ok": true
+        },
+        {
+          "stage": "child",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 1.766092,
+          "max_tokens": 4000,
+          "prompt_sha256": "39cea3c4f8dc1728f5636737fc24e6ad3353787a0de37b5107211be7ae90c321",
+          "response_sha256": "112382b99492c1120c0f966d35770f013a8942c439a1dcada6df6b53f135a3a9",
+          "ok": true
+        },
+        {
+          "stage": "grandchild",
+          "state": "completed",
+          "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+          "latency_seconds": 2.266266,
+          "max_tokens": 4000,
+          "prompt_sha256": "5f3d6eedb71e8c5580bcded2ce4e258ddc27f1586f998676e791e92b9b083ea5",
+          "response_sha256": "8d5751271142acb78d4f1be15a91170cbdbeda444e3f4ca884271c46295cbb37",
+          "ok": true
+        }
+      ]
+    }
+  ],
+  "run_sha256": "6f7ba4775263e2768afca9ead8cab4fd87f75b951c492c2056629d78aa6eb0eb"
+}
