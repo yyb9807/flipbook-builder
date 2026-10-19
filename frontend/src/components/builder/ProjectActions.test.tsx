@@ -61,7 +61,8 @@ describe('ProjectActions publication contract', () => {
     expect(screen.getByRole('menu', { name: '作品导出' })).toBeInTheDocument()
     expect(screen.getByRole('menuitem', { name: /导出 JSON/ })).toBeInTheDocument()
     expect(screen.getByRole('menuitem', { name: /导出离线 ZIP/ })).toBeInTheDocument()
-    expect(screen.queryByRole('menuitem', { name: /复制当前实例链接/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('menuitem', { name: /复制当前实例预览/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('menuitem', { name: /发布固定版本/ })).not.toBeInTheDocument()
   })
 
   it('closes the menu when its trigger is pressed again', () => {
@@ -91,9 +92,9 @@ describe('ProjectActions publication contract', () => {
     useProjectStore.setState({ origin: 'server' })
     render(<><ProjectActions /><ToastHost /></>)
     openMenu()
-    fireEvent.click(screen.getByRole('menuitem', { name: /复制当前实例链接/ }))
+    fireEvent.click(screen.getByRole('menuitem', { name: /复制当前实例预览/ }))
     await waitFor(() => expect(navigator.clipboard.writeText).toHaveBeenCalledWith(`${window.location.origin}/v/proj_abc`))
-    expect(await screen.findByText('当前实例链接已复制。访问者需能连接此实例。')).toBeInTheDocument()
+    expect(await screen.findByText('当前实例预览链接已复制。内容会随编辑变化，需要此实例在线。')).toBeInTheDocument()
     expect(screen.queryByRole('menu')).not.toBeInTheDocument()
   })
 
@@ -103,7 +104,7 @@ describe('ProjectActions publication contract', () => {
     const prompt = vi.spyOn(window, 'prompt').mockReturnValue('')
     render(<ProjectActions />)
     openMenu()
-    fireEvent.click(screen.getByRole('menuitem', { name: /复制当前实例链接/ }))
+    fireEvent.click(screen.getByRole('menuitem', { name: /复制当前实例预览/ }))
     await waitFor(() => expect(prompt).toHaveBeenCalledWith('复制此链接：', `${window.location.origin}/v/proj_abc`))
   })
 

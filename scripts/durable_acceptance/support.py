@@ -66,16 +66,18 @@ class Database:
 
 
 class Server:
-    def __init__(self, directory, database_url, *, port=None, gates=None, ready=True):
+    def __init__(self, directory, database_url, *, port=None, gates=None, ready=True, environment=None):
         self.directory = Path(directory)
         self.directory.mkdir(parents=True, exist_ok=True)
         self.port = port or free_port()
         self.base = f'http://127.0.0.1:{self.port}'
         self.log_path = self.directory / 'server.log'
         self.log = self.log_path.open('ab')
+        process_environment = {key: value for key, value in os.environ.items()
+                               if key not in ('LLM_API_KEY', 'IMG_GEN_API_KEY')}
+        process_environment.update(environment or {})
         self.process = subprocess.Popen([sys.executable, '-u', str(HERE / 'worker.py')], stdin=subprocess.PIPE,
-                                        stdout=self.log, stderr=self.log, env={key: value for key, value in os.environ.items()
-                                                                            if key not in ('LLM_API_KEY', 'IMG_GEN_API_KEY')})
+                                        stdout=self.log, stderr=self.log, env=process_environment)
         self.process.stdin.write((json.dumps({'database_url': database_url, 'port': self.port,
                                              'storage': str(self.directory / 'assets'), 'gates': gates or []}) + '\n').encode())
         self.process.stdin.flush()
@@ -126,7 +128,7 @@ class Server:
 
 
 class Provider:
-    def __init__(self, *, port=None, key=None, delay=0):
+    def __init__(self, *, port=None, key=None, delay=0, host='127.0.0.1'):
         self.port = port or free_port()
         self.base = f'http://127.0.0.1:{self.port}/v1'
         self.key = key or 'FAKE_ACCEPTANCE_ONLY_' + secrets.token_urlsafe(32)
@@ -246,7 +248,7 @@ class Provider:
                 except (BrokenPipeError, ConnectionResetError):
                     pass
 
-        self.server = ThreadingHTTPServer(('127.0.0.1', self.port), Handler)
+        self.server = ThreadingHTTPServer((host, self.port), Handler)
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
 
@@ -328,12 +330,17 @@ def audit(database_url, directory, keys, *, dump_command=None, require_checkpoin
     database_oid = sql(database_url, 'SELECT oid FROM pg_database WHERE datname=current_database()')[0]['oid']
     relation_dir = 'base/' + str(database_oid)
     relations = sql(database_url, 'SELECT name FROM pg_ls_dir($1) AS name', relation_dir)
-    raw_files = raw_bytes = 0
+    raw_files = raw_bytes = disappeared_files = 0
     for relation in relations:
         name = relation['name']
         if not name[0].isdigit():
             continue
-        raw = sql(database_url, 'SELECT pg_read_binary_file($1) AS data', relation_dir + '/' + name)[0]['data']
+        # Postgres can unlink transient relation files after the directory listing
+        # (for example after autovacuum). Missing files have no bytes to inspect.
+        raw = sql(database_url, 'SELECT pg_read_binary_file($1, true) AS data', relation_dir + '/' + name)[0]['data']
+        if raw is None:
+            disappeared_files += 1
+            continue
         raw_files += 1
         raw_bytes += len(raw)
         for key in keys:
@@ -357,4 +364,5 @@ def audit(database_url, directory, keys, *, dump_command=None, require_checkpoin
     return {'tables_scanned': len(tables), 'cells_scanned': cells, 'checkpoint_cells_inspected': checkpoints,
             'base64_decoded_candidates_inspected': decoded, 'raw_postgres_relation_files_scanned': raw_files,
             'raw_postgres_relation_bytes_scanned': raw_bytes, 'worker_log_and_asset_files_clean': True,
+            'raw_postgres_relation_files_disappeared_before_read': disappeared_files,
             'logical_sql_rows_clean': True, 'pg_dump_sql_clean': dumped, 'serialized_negative_control_detected': True}

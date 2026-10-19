@@ -1,0 +1,62 @@
+{
+  "provider": "local HTTP fake",
+  "paid_calls": 0,
+  "scenarios": [
+    {
+      "scenario": "three_level_snapshot_preserves_sources_and_excludes_private_state",
+      "passed": true,
+      "pages": 3
+    },
+    {
+      "scenario": "same_operation_is_idempotent_and_parameter_reuse_conflicts",
+      "passed": true
+    },
+    {
+      "scenario": "editing_restoration_and_new_branch_never_change_old_bytes_new_publish_has_new_url",
+      "passed": true
+    },
+    {
+      "scenario": "publication_management_and_frozen_resources_survive_editor_restart",
+      "passed": true
+    },
+    {
+      "scenario": "image_bytes_are_independent_and_missing_source_rejects_without_partial_release",
+      "passed": true
+    },
+    {
+      "scenario": "deleting_sources_keeps_published_pages_images_and_management_receipts",
+      "passed": true
+    },
+    {
+      "scenario": "reader_only_serves_allowlisted_get_head_without_editor_docs_private_files_or_traversal",
+      "passed": true
+    },
+    {
+      "scenario": "withdrawal_is_idempotent_and_old_operation_cannot_resurrect_link",
+      "passed": true
+    },
+    {
+      "scenario": "reader_remains_functional_with_editor_and_provider_processes_stopped",
+      "passed": true
+    },
+    {
+      "scenario": "trusted_reader_runtime_is_frozen_per_publication",
+      "passed": true,
+      "javascript_sha256": "fa5bb8495b2e8e192e66e978d008ace2b0cc6e84cfb8a9d6d9a9fd662755cb36"
+    }
+  ],
+  "credential_audit": {
+    "tables_scanned": 22,
+    "cells_scanned": 483,
+    "checkpoint_cells_inspected": 31,
+    "base64_decoded_candidates_inspected": 67,
+    "raw_postgres_relation_files_scanned": 428,
+    "raw_postgres_relation_bytes_scanned": 9601024,
+    "worker_log_and_asset_files_clean": true,
+    "raw_postgres_relation_files_disappeared_before_read": 0,
+    "logical_sql_rows_clean": true,
+    "pg_dump_sql_clean": false,
+    "serialized_negative_control_detected": true
+  },
+  "isolated_database_cleaned": true
+}

@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
+import { api } from '../api/client'
 import type { Project, FlipNode, Hotspot, Keyword } from '../types'
 import { useLibraryStore } from './libraryStore'
 
@@ -158,7 +159,7 @@ export const useProjectStore = create<ProjectState>()(persist((set, get) => ({
         if (local) restore(local)
         else useProjectStore.getState().resetProject()
       } else {
-        import('../api/client').then(({ api }) => api.getProject(pid)).then((project) => restore(project as Project)).catch(() => {
+        api.getProject(pid).then((project) => restore(project as Project)).catch(() => {
           if (!useProjectStore.getState().project) useProjectStore.getState().resetProject()
         })
       }

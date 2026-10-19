@@ -27,13 +27,13 @@ cp .env.example .env
 docker compose up -d --build
 ```
 
-Open http://localhost:8080. The default binding is localhost. nginx serves React and proxies FastAPI; Postgres stores server projects and `data/` holds images.
+Open http://localhost:8080; the independent reader defaults to http://localhost:8081. Both bind to localhost by default. nginx serves the editor and proxies FastAPI; Postgres stores server projects and `data/` holds images and publications.
 
 Configure a content provider in AI settings. Topic creation and new child pages generate editable knowledge content; illustrations require an explicit choice and an image provider. Uploaded images retain actual image hotspots. The content model must support the required text/vision input. Invalid knowledge output fails explicitly, without fabricated content or automatic paid retries.
 
 Keys stay in page memory by default. Explicitly remembering a key stores it as plain text in browser storage. AI requests send credentials through this instance’s backend to the selected provider; ordinary editing, project and export requests do not send model keys. Endpoint, model and key form one configuration group, so a client endpoint never inherits a deployment key. Connection tests use unsaved drafts; text probes may cost money and image probes do not generate an image.
 
-**This is one shared workspace with no login, roles or user isolation, intended for a personal or trusted environment.** Users bring their own keys; deployment defaults are also supported. A read-only viewer route is not an API access boundary. Share exported static projects with public readers. Run one backend worker and one replica.
+**The editor is one shared workspace with no login, roles or user isolation, intended for a personal or trusted environment.** Users bring their own keys; deployment defaults are also supported. Public readers should use the independent publication service or exported static files. Keep the editor in a trusted network. Run one editor backend worker and one replica.
 
 ## Editing, recovery and attribution
 
@@ -51,25 +51,22 @@ Local history keeps the latest 50 versions per page in the same storage entry as
 
 | Format | Contents and requirements |
 |---|---|
+| Fixed publication | Frozen project, branches, copied images and reader code, served by an independent read-only service. Each publication has a new link; later edits, restores, source deletion and upgrades do not change old content. |
 | Offline ZIP | Shared player, images and project data. Extract the whole folder and open `index.html`; no backend, account or key is required. Page history is excluded. |
 | JSON | Project content, structure and attribution, without image binaries, provider settings or page history. |
 | Instance link | Read-only interface requiring a running instance. It reads current project data, not an immutable publication snapshot. |
+
+Publish server projects through “Export & share → Publish a fixed version”. “Published versions” in the library also manages publications whose sources have been deleted. Finish all drafts, saves and generation first; stale revisions are rejected. Withdrawal stops future reads but cannot recall downloaded copies. Anyone with the link can read it; random addresses are not private access control. Local projects continue to use offline ZIPs.
+
+For other devices, set `PUBLICATION_BASE_URL` to a reachable HTTPS reader address and configure `READER_BIND` / `READER_PORT` for your deployment. Expose only the reader to public visitors. It mounts `data/publications/` read-only and needs no database, model credentials or editor API. Retain and back up this directory independently of source projects.
 
 Keep the ZIP files together. Publish the entire extracted folder as static files. Actual browser acceptance covers HTTP playback; the independent player verifier covers JSDOM file URLs. Cross-browser acceptance of double-clicked `file://` files remains pending.
 
 ## Development and verification
 
-Use Node.js 24, Python 3.13 and Postgres 16. For the frontend:
+Use Node.js 24, Python 3.13 and Postgres 16. The [frontend guide](frontend/README.md) covers shared rendering, browser state and builds; the [backend guide](backend/README.md) covers local startup, configuration and API contracts. See the [architecture](docs/ARCHITECTURE.md) for modules and data flow.
 
-```sh
-cd frontend
-npm run lint
-npm test
-npm run verify:player
-npm run build
-```
-
-See [backend development](backend/README.md), [current architecture](docs/ARCHITECTURE.md) and [verification commands and limits](docs/VERIFICATION.md). GitHub Actions is configured for frontend checks, real Postgres backend tests and process recovery verification using controlled providers, with no paid model calls. The verification guide records local results; remote CI status comes from the actual run for each commit.
+All check commands, recent local results and limits live in the [verification guide](docs/VERIFICATION.md). GitHub Actions is configured for frontend checks, real Postgres backend tests and process recovery verification using controlled providers, with no paid model calls. Remote CI status comes from the actual run for each commit.
 
 Back up the database and `data/`; `docker compose down -v` removes database volumes. [Historical reports](docs/archive/README.md) are retained for traceability, not as current setup instructions.
 

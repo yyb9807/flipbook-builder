@@ -1,5 +1,15 @@
-# Backend: FastAPI + uvicorn
+ARG NODE_IMAGE=node:24-alpine
 ARG PYTHON_IMAGE=python:3.13-slim
+
+# Build the trusted shared reader; publishers never accept executable client files.
+FROM ${NODE_IMAGE} AS reader-build
+WORKDIR /frontend
+COPY frontend/package*.json ./
+RUN npm ci
+COPY frontend/ ./
+RUN node scripts/write-publication-runtime.mjs /publication-runtime
+
+# Backend and independent reader use the same image, with separate entrypoints.
 FROM ${PYTHON_IMAGE}
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -11,11 +21,12 @@ WORKDIR /app
 
 # Pillow 在 python:3.13-slim 上有预编译 wheel，不需要额外系统库
 # 先装依赖（利用 layer 缓存）
-COPY requirements.txt ./
+COPY backend/requirements.txt ./
 RUN pip install -r requirements.txt
 
 # 再拷代码
-COPY . .
+COPY backend/ .
+COPY --from=reader-build /publication-runtime ./publication_runtime
 
 EXPOSE 8000
 

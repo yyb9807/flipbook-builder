@@ -1,0 +1,213 @@
+{
+  "date": "2026-10-19",
+  "baseline": "c277eb57de351d97af296edfc6cd946b79ba1d6f",
+  "branch": "codex/immutable-publications",
+  "backend": {
+    "passed": 290,
+    "seconds": 59.8,
+    "real_postgres": true,
+    "dedicated_test_database_cleaned": true
+  },
+  "frontend": {
+    "files": 37,
+    "passed": 299,
+    "final_ui_targeted_passed": 32
+  },
+  "checks": {
+    "ruff": "passed",
+    "eslint": "passed",
+    "typescript_production_build": "passed",
+    "compose_four_services": "passed",
+    "player_development_bytes": 198984,
+    "player_production_bytes": 198984,
+    "publication_process": 10,
+    "history_process": 10,
+    "knowledge_process": 7,
+    "stack_http": 19,
+    "reader_isolation": "passed",
+    "actual_browser": "passed",
+    "independent_code_review": "ship",
+    "independent_visual_review": "ship",
+    "detector_findings": 0
+  },
+  "paid_calls": 0,
+  "remote_ci_run": false,
+  "raw_evidence_files": [
+    "round7-publication-process.json",
+    "round7-history-process.json",
+    "round7-knowledge-process.json",
+    "round7-postgres-stack.json",
+    "round7-isolation.json",
+    "round7-browser.json"
+  ],
+  "cleanup": {
+    "synthetic_projects": 0,
+    "synthetic_publications": 0,
+    "provider_stopped": true,
+    "temporary_browser_tabs_closed": true,
+    "viewport_reset": true,
+    "locale": "zh",
+    "test_databases_removed": true
+  },
+  "documentation": {
+    "markdown_files": 43,
+    "local_links": 263,
+    "broken_links": 0
+  },
+  "pre_commit_cleanup": {
+    "frontend": {
+      "files": 37,
+      "passed": 299
+    },
+    "backend_publications": {
+      "suite": "backend/tests/test_publications.py",
+      "passed": 22,
+      "elapsed_seconds": 4.34,
+      "isolated_database_cleaned": true
+    },
+    "publication_process": {
+      "provider": "local HTTP fake",
+      "paid_calls": 0,
+      "scenarios": [
+        {
+          "scenario": "three_level_snapshot_preserves_sources_and_excludes_private_state",
+          "passed": true,
+          "pages": 3
+        },
+        {
+          "scenario": "same_operation_is_idempotent_and_parameter_reuse_conflicts",
+          "passed": true
+        },
+        {
+          "scenario": "editing_restoration_and_new_branch_never_change_old_bytes_new_publish_has_new_url",
+          "passed": true
+        },
+        {
+          "scenario": "publication_management_and_frozen_resources_survive_editor_restart",
+          "passed": true
+        },
+        {
+          "scenario": "image_bytes_are_independent_and_missing_source_rejects_without_partial_release",
+          "passed": true
+        },
+        {
+          "scenario": "deleting_sources_keeps_published_pages_images_and_management_receipts",
+          "passed": true
+        },
+        {
+          "scenario": "reader_only_serves_allowlisted_get_head_without_editor_docs_private_files_or_traversal",
+          "passed": true
+        },
+        {
+          "scenario": "withdrawal_is_idempotent_and_old_operation_cannot_resurrect_link",
+          "passed": true
+        },
+        {
+          "scenario": "reader_remains_functional_with_editor_and_provider_processes_stopped",
+          "passed": true
+        },
+        {
+          "scenario": "trusted_reader_runtime_is_frozen_per_publication",
+          "passed": true,
+          "javascript_sha256": "fa5bb8495b2e8e192e66e978d008ace2b0cc6e84cfb8a9d6d9a9fd662755cb36"
+        }
+      ],
+      "credential_audit": {
+        "tables_scanned": 22,
+        "cells_scanned": 483,
+        "checkpoint_cells_inspected": 31,
+        "base64_decoded_candidates_inspected": 67,
+        "raw_postgres_relation_files_scanned": 441,
+        "raw_postgres_relation_bytes_scanned": 9641984,
+        "worker_log_and_asset_files_clean": true,
+        "raw_postgres_relation_files_disappeared_before_read": 0,
+        "logical_sql_rows_clean": true,
+        "pg_dump_sql_clean": false,
+        "serialized_negative_control_detected": true
+      },
+      "isolated_database_cleaned": true
+    },
+    "ruff": "passed",
+    "eslint": "passed",
+    "typescript_production_build": "passed without build warnings",
+    "trusted_player_runtime": "player.js/css byte-identical; unused runtime.json removed",
+    "docker_compose_four_services": "rebuilt and healthy",
+    "deployed_frontend_assets_match": {
+      "_virtual_offline-player-BBUlGe0T.js": "069c3ab19695b4cc967fa270753c48d1e9fdafd4f6f1244761f4b4983cc1c00c",
+      "index-BGjKyF37.js": "55412d20a338fc338bd58de785627bd1105245a6533942ebac8cdb388f4cfeeb",
+      "index-k-j2-U4I.css": "0cd30f5ff43a240a0c11e783b65a61cc983a13ab617bbf835ce7e1c2701333ff",
+      "offlineExport-BEl1BfRH.js": "6d7f0311bf5dc77f47608d59c3f2f311f9414e73ee56c9e93c56c235dacb0b33"
+    },
+    "ignore_rule_cases": 14,
+    "archive_raw_files_byte_identical": [
+      {
+        "from": "docs/evidence/round6-browser-export.json",
+        "to": "docs/archive/evidence/round6-browser-export.json",
+        "bytes": 1114,
+        "sha256": "45ba4c759131b48b3a5d635915ff4123a7778e2f7863123e6576a6c869c3544e",
+        "unchanged": true,
+        "matches_git_head": true
+      },
+      {
+        "from": "docs/evidence/round6-browser-runtime.json",
+        "to": "docs/archive/evidence/round6-browser-runtime.json",
+        "bytes": 2532,
+        "sha256": "2b5a1fe53388122e680e8c1339405e6a48268293ff1012f2bb520d0d59e972c0",
+        "unchanged": true,
+        "matches_git_head": true
+      },
+      {
+        "from": "docs/evidence/round6-history-process.json",
+        "to": "docs/archive/evidence/round6-history-process.json",
+        "bytes": 1707,
+        "sha256": "a3008481d96646a9e376aa205ff1687d96fe596ac68fbab73fb3949463a7f02b",
+        "unchanged": true,
+        "matches_git_head": true
+      },
+      {
+        "from": "docs/evidence/round6-knowledge-process.json",
+        "to": "docs/archive/evidence/round6-knowledge-process.json",
+        "bytes": 1861,
+        "sha256": "11bd26dc40f2ce831dd391c0c5c8c487165ad903d3ef60600ccde7c6ded1ad46",
+        "unchanged": true,
+        "matches_git_head": true
+      },
+      {
+        "from": "docs/evidence/round6-postgres-stack.json",
+        "to": "docs/archive/evidence/round6-postgres-stack.json",
+        "bytes": 2201,
+        "sha256": "7f8e89501e5367f823c7ad475ae35b5a8246ae098bae2be0a48c9e7246402b6b",
+        "unchanged": true,
+        "matches_git_head": true
+      },
+      {
+        "from": "docs/evidence/round6-verification.json",
+        "to": "docs/archive/evidence/round6-verification.json",
+        "bytes": 4771,
+        "sha256": "570fce792aa33327382b49a9b3c77975f4229266999050bc36e80b6715523fcc",
+        "unchanged": true,
+        "matches_git_head": true
+      }
+    ],
+    "source_cleanup": [
+      "unused hook enabled switch",
+      "unused test fixture",
+      "unused runtime metadata file",
+      "obsolete backend Docker ignore file",
+      "duplicate environment ignore rules",
+      "ineffective API dynamic import"
+    ],
+    "documentation_cleanup": "round6 plans/reports/evidence archived; current guides consolidated",
+    "working_data": {
+      "formal_projects": 0,
+      "formal_publications": 0
+    },
+    "documentation": {
+      "tracked_markdown_files": 41,
+      "local_file_links": 284,
+      "heading_fragments_checked": 7,
+      "broken_links": 0
+    },
+    "staged_secret_or_generated_artifact_findings": 0
+  }
+}

@@ -1,4 +1,4 @@
-# 三服务编排：postgres + backend (FastAPI) + frontend (nginx 静态 + 反代)
+# 编辑栈与独立阅读服务：postgres + backend + frontend + reader
 #
 # 使用：
 #   docker compose up -d --build
@@ -29,9 +29,11 @@ services:
 
   backend:
     build:
-      context: ./backend
+      context: .
+      dockerfile: backend/Dockerfile
       args:
         PYTHON_IMAGE: ${PYTHON_IMAGE:-python:3.13-slim}
+        NODE_IMAGE: ${NODE_IMAGE:-node:24-alpine}
     restart: unless-stopped
     environment:
       # 容器内连库走 service 名 + 默认端口 5432
@@ -45,6 +47,9 @@ services:
       IMG_GEN_API_KEY: ${IMG_GEN_API_KEY:-}
       IMG_GEN_BASE_URL: ${IMG_GEN_BASE_URL:-https://api.openai.com/v1}
       IMG_GEN_MODEL: ${IMG_GEN_MODEL:-dall-e-3}
+      PUBLICATION_DIR: /data/publications
+      PUBLICATION_RUNTIME_DIR: /app/publication_runtime
+      PUBLICATION_BASE_URL: ${PUBLICATION_BASE_URL:-http://localhost:8081}
     volumes:
       # 上传图片 + 缓存图片持久化到宿主机 ./data
       - ./data:/data
@@ -63,6 +68,35 @@ services:
       - "${FRONTEND_BIND:-127.0.0.1}:${FRONTEND_PORT:-8080}:80"
     depends_on:
       - backend
+
+  reader:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      args:
+        PYTHON_IMAGE: ${PYTHON_IMAGE:-python:3.13-slim}
+        NODE_IMAGE: ${NODE_IMAGE:-node:24-alpine}
+    command: ["uvicorn", "reader:app", "--host", "0.0.0.0", "--port", "8001"]
+    restart: unless-stopped
+    ports:
+      - "${READER_BIND:-127.0.0.1}:${READER_PORT:-8081}:8001"
+    environment:
+      PUBLICATION_DIR: /data/publications
+    volumes:
+      - ./data/publications:/data/publications:ro
+    read_only: true
+    user: "10001:10001"
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/healthz', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
 volumes:
   postgres_data:

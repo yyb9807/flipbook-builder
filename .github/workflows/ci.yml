@@ -60,10 +60,19 @@ jobs:
           cache-dependency-path: |
             backend/requirements.txt
             backend/requirements-dev.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
       - run: python -m pip install -r requirements-dev.txt
+      - run: npm --prefix ../frontend ci
+      - run: npm --prefix ../frontend run build:publication
       - run: ruff check . ../scripts
       - run: python -m pytest -q
       - name: Verify knowledge generation across process crashes
         run: python ../scripts/verify_knowledge_generation.py --database-url "$DATABASE_URL" --evidence "$RUNNER_TEMP/flipbook-knowledge-acceptance.json"
       - name: Verify version restoration preserves branch relationships
         run: python ../scripts/verify_version_history.py --database-url "$DATABASE_URL" --evidence "$RUNNER_TEMP/flipbook-history-acceptance.json"
+      - name: Verify frozen publications and independent reader
+        run: python ../scripts/verify_publications.py --database-url "$DATABASE_URL" --evidence "$RUNNER_TEMP/flipbook-publications-acceptance.json"

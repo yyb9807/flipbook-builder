@@ -2,6 +2,7 @@ import { useSettingsStore, type ModelSettings } from '../store/settingsStore'
 import type { TestConfigResult } from '../types/api'
 import type { GenerationJob, PendingAnalysis, PendingChildren, PendingRegeneration } from '../types/jobs'
 import type { PageRestoreResult, PageVersionDetail, PageVersionList } from '../types/history'
+import type { PublicationList, PublicationResult } from '../types/publications'
 
 function getModelHeaders(s: ModelSettings = useSettingsStore.getState()): Record<string, string> {
   return {
@@ -144,6 +145,15 @@ export const api = {
 
   deleteProject: (projectId: string) =>
     apiFetch(`/projects/${projectId}`, { method: 'DELETE' }),
+
+  listPublications: (projectId: string) => apiFetch<PublicationList>(`/projects/${encodeURIComponent(projectId)}/publications`),
+  listAllPublications: () => apiFetch<PublicationList>('/publications'),
+  createPublication: (projectId: string, operationId: string, expectedRevision: number) =>
+    apiFetch<PublicationResult>(`/projects/${encodeURIComponent(projectId)}/publications`, {
+      method: 'POST', body: JSON.stringify({ operation_id: operationId, expected_revision: expectedRevision }),
+    }),
+  withdrawPublication: (projectId: string, publicationId: string) =>
+    apiFetch<PublicationResult>(`/projects/${encodeURIComponent(projectId)}/publications/${encodeURIComponent(publicationId)}`, { method: 'DELETE' }),
 
   listPageVersions: (projectId: string, nodeId: string) => apiFetch<PageVersionList>(`/projects/${projectId}/nodes/${nodeId}/versions`),
   getPageVersion: (projectId: string, nodeId: string, versionId: string) => apiFetch<PageVersionDetail>(`/projects/${projectId}/nodes/${nodeId}/versions/${versionId}`),

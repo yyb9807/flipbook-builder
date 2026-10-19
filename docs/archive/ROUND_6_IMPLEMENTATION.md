@@ -1,6 +1,8 @@
 # 第六轮实施与验收：撤销与页面版本恢复
 
-完成于 2026-10-19。实施前方案见[第六轮计划](ROUND_6_PLAN.md)，基线 `e80a6b0`，本轮工作分支 `codex/page-history`。当前使用说明见[文档导航](README.md)和[验证入口](VERIFICATION.md)。
+> 历史记录（2026-10-19）。保留当轮方案、功能与测量值；当前使用及复测入口见[文档导航](../README.md)和[验证说明](../VERIFICATION.md)。
+
+完成于 2026-10-19。实施前方案见[第六轮计划](ROUND_6_PLAN.md)，基线 `e80a6b0`，本轮工作分支 `codex/page-history`。当前使用说明见[文档导航](../README.md)和[验证入口](../VERIFICATION.md)。
 
 ## 已完成的使用流程
 
@@ -35,7 +37,7 @@ Postgres 增加项目修订号、页面版本和恢复操作幂等记录；普�
 | 独立播放器 | development / production宿主均通过；各198,984 bytes，实际产物启动、三层导航及来源显示 |
 | 界面静态检测 | 0项；执行一次 |
 
-复测命令、各项覆盖和机器文件见[验证说明](VERIFICATION.md)；集中结果见[round6-verification.json](evidence/round6-verification.json)。这些是本地结果；远端 GitHub Actions 是否通过，以对应提交的实际运行结果为准。
+复测命令、各项覆盖和机器文件见[验证说明](../VERIFICATION.md)；集中结果见[round6-verification.json](evidence/round6-verification.json)。这些是本地结果；远端 GitHub Actions 是否通过，以对应提交的实际运行结果为准。
 
 ## 实际浏览器流程
 
@@ -62,7 +64,7 @@ Postgres 增加项目修订号、页面版本和恢复操作幂等记录；普�
 | 快捷恢复跳过可见的真实预览 | resolved：先选中并展示预览，再从预览确认恢复 |
 | 服务器允许合并出第13个热点 | resolved：预览/恢复均409，真实Postgres回归确认内容、版本、修订与分支不变 |
 
-独立审查读取截图、实现和测试代码；浏览器操作与测试执行由主代理完成，不将独立审查等同于第二次端到端执行。界面证据：[桌面](images/round6-final-desktop-history.png)、[英文手机](images/round6-final-mobile-history.png)。
+独立审查读取截图、实现和测试代码；浏览器操作与测试执行由主代理完成，不将独立审查等同于第二次端到端执行。界面证据：[桌面](../images/round6-final-desktop-history.png)、[英文手机](../images/round6-final-mobile-history.png)。
 
 ## 后续边界
 

@@ -1,0 +1,126 @@
+{
+  "provider": "local HTTP fake; fixtures prepared through real generation APIs",
+  "paid_calls": 0,
+  "browser": "Codex in-app browser via CUA",
+  "editor_base": "http://127.0.0.1:18080",
+  "reader_base": "http://127.0.0.1:18082",
+  "steps": [
+    {
+      "action": "publish A from actual editor UI",
+      "source_revision": 6,
+      "pages": 3,
+      "passed": true
+    },
+    {
+      "action": "edit root draft; publish disabled until save",
+      "passed": true
+    },
+    {
+      "action": "save new title then preview and restore previous page version; branches retained",
+      "passed": true
+    },
+    {
+      "action": "old A reload keeps original title, reviewed statement and three-level navigation",
+      "passed": true
+    },
+    {
+      "action": "save new title and publish B via UI",
+      "source_revision": 9,
+      "new_url": true,
+      "review_status": "unreviewed",
+      "passed": true
+    },
+    {
+      "action": "trusted reader CSS updated between A and B; old A keeps old CSS bytes",
+      "passed": true
+    },
+    {
+      "action": "copy link UI success feedback and open fixed reader; system clipboard not proven by bridge",
+      "passed": true
+    },
+    {
+      "action": "publish image project via UI; independent assets PNG loads at160x100",
+      "passed": true
+    },
+    {
+      "action": "source deletion confirmation explains publication retention; cancel UI; delete only own two synthetic sources via test API",
+      "passed": true
+    },
+    {
+      "action": "stop actual backend and db containers; reader reload, 3-level navigation and copied PNG still work",
+      "passed": true
+    },
+    {
+      "action": "restart services; global publication library lists deleted-source versions; withdraw A via UI",
+      "passed": true
+    },
+    {
+      "action": "withdrawn A returns404 and bilingual browser HTML without editor link; B unaffected",
+      "passed": true
+    }
+  ],
+  "responsive": {
+    "english_publish_panel": {
+      "inner_width": 390,
+      "scroll_width": 390,
+      "left": 12,
+      "width": 366
+    },
+    "english_long_library_final": {
+      "inner_width": 390,
+      "client_width": 375,
+      "scroll_width": 375,
+      "left": 12,
+      "right": 363,
+      "width": 351,
+      "records": 3,
+      "withdrawn_records": 1
+    },
+    "reader_final": {
+      "inner_width": 390,
+      "scroll_width": 390,
+      "body_margin": "0px"
+    }
+  },
+  "review": {
+    "code": "ship; busy409 changed503 to retain idempotency",
+    "visual": "ship; reader margin and mobile scrollbar clipping resolved",
+    "detector": []
+  },
+  "build_proof": {
+    "served_frontend_assets_match_local_dist": {
+      "_virtual_offline-player-BBUlGe0T.js": "069c3ab19695b4cc967fa270753c48d1e9fdafd4f6f1244761f4b4983cc1c00c",
+      "index-Bfgn162P.js": "6b6074b52613763eb1e0cc857933cd19b11b200e5f4e50da750c08f08f6cdfb8",
+      "index-k-j2-U4I.css": "0cd30f5ff43a240a0c11e783b65a61cc983a13ab617bbf835ce7e1c2701333ff",
+      "offlineExport-1H7iYvWh.js": "86c88c796cac5c775c85a407b7050f0449b7d1d818543026224959d173d80cf2"
+    },
+    "running_backend_matches_source": {
+      "main.py": "26934d881dbc567abb7edc93088f8ca890fa2955b3a3e3af971e06e8e70f31f0",
+      "publications.py": "3f70c862f0d2dd603225faadce0a855dc65a085c56aadc0157c232de9f3b4c0a",
+      "publication_files.py": "64dbbc222c9d1c9d3883877b091eada4f7aaaa76af512393e131cedb78d46476",
+      "reader.py": "a27c9d431fc81bc847881c13fa66b104f0c878152fb4495b0996afdbcaba8e70",
+      "routers/publications.py": "a2a950f869467914d8a424e2d77666306049f596c33fd743d65146c8e9b46c3b"
+    }
+  },
+  "limits": [
+    "No paid model quality evaluation",
+    "No real browser file://, cross-browser or assistive-technology acceptance",
+    "No live collaboration, multiple editor workers or long-term load test"
+  ],
+  "final_console_errors_and_warnings": {
+    "readerB": [],
+    "imageReader": [],
+    "library": []
+  },
+  "cleanup": {
+    "synthetic_sources_deleted": 2,
+    "synthetic_publications_withdrawn_and_receipts_purged": 3,
+    "formal_project_count": 0,
+    "formal_publication_count": 0,
+    "repo_data_only_gitkeep": true,
+    "locale_restored": "zh",
+    "provider_stopped": true,
+    "temporary_browser_tabs_closed": true,
+    "viewport_override_reset": true
+  }
+}

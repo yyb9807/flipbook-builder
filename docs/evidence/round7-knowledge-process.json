@@ -1,0 +1,70 @@
+{
+  "provider": "local HTTP fake",
+  "paid_calls": 0,
+  "database": "flipbook_acceptance_b1b8c24b08e4",
+  "scenarios": [
+    {
+      "scenario": "root_knowledge_SIGKILL_after_analysis",
+      "passed": true,
+      "same_operation_reused": true,
+      "analysis_calls": 1,
+      "source_and_scene_saved": true
+    },
+    {
+      "scenario": "child_knowledge_SIGKILL_after_plan",
+      "passed": true,
+      "plan_calls": 1,
+      "image_calls": 1,
+      "localize_calls": 0,
+      "parent_references_atomic": true
+    },
+    {
+      "scenario": "second_level_knowledge_without_image_despite_image_key",
+      "passed": true,
+      "pages": 3,
+      "image_calls": 0
+    },
+    {
+      "scenario": "unknown_image_accept_retains_knowledge",
+      "passed": true,
+      "additional_remote_calls": 0,
+      "warnings_visible": true
+    },
+    {
+      "scenario": "invalid_knowledge_response_known_failure",
+      "passed": true,
+      "automatic_retries": 0,
+      "fabricated_content": false
+    },
+    {
+      "scenario": "legacy_page_regeneration_keeps_author_references",
+      "passed": true,
+      "same_node_id": true,
+      "review_reset": true
+    },
+    {
+      "scenario": "uploaded_image_retains_real_hotspots_and_provenance",
+      "passed": true,
+      "image_mode": true,
+      "extra_localize_calls": 0
+    }
+  ],
+  "provider_calls": {
+    "analysis": 4,
+    "plan": 3,
+    "image": 2
+  },
+  "credential_audit": {
+    "tables_scanned": 22,
+    "cells_scanned": 1609,
+    "checkpoint_cells_inspected": 53,
+    "base64_decoded_candidates_inspected": 218,
+    "raw_postgres_relation_files_scanned": 428,
+    "raw_postgres_relation_bytes_scanned": 9691136,
+    "worker_log_and_asset_files_clean": true,
+    "logical_sql_rows_clean": true,
+    "pg_dump_sql_clean": false,
+    "serialized_negative_control_detected": true
+  },
+  "cleanup_complete": true
+}

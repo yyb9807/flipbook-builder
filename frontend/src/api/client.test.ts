@@ -22,6 +22,10 @@ describe('model credential request scope', () => {
     await api.listPageVersions('p1', 'n1')
     await api.getPageVersion('p1', 'n1', 'v1')
     await api.restorePageVersion('p1', 'n1', 'v1', 'operation', 4)
+    await api.listPublications('p1')
+    await api.listAllPublications()
+    await api.createPublication('p1', 'fixed-operation', 4)
+    await api.withdrawPublication('p1', 'publication')
     await api.deleteProject('p1')
     await api.exportProjectJson('p1')
     await api.exportProjectZip('p1')
@@ -54,6 +58,17 @@ describe('model credential request scope', () => {
       expect(headers.get('x-imggen-api-key')).toBe('saved-image-key')
     }
     expect(new Headers(fetchMock.mock.calls[0][1]?.headers).has('Content-Type')).toBe(false)
+  })
+
+  it('publishes only the original revision and operation identity, without uploading editor content or runtime', async () => {
+    await api.createPublication('p1', 'fixed-operation', 7)
+    expect(fetchMock.mock.calls[0][0]).toBe('/api/projects/p1/publications')
+    expect(JSON.parse(fetchMock.mock.calls[0][1]!.body as string)).toEqual({ operation_id: 'fixed-operation', expected_revision: 7 })
+    await api.withdrawPublication('p1', 'fixed-version')
+    expect(fetchMock.mock.calls[1][0]).toBe('/api/projects/p1/publications/fixed-version')
+    expect(fetchMock.mock.calls[1][1]?.method).toBe('DELETE')
+    await api.listAllPublications()
+    expect(fetchMock.mock.calls[2][0]).toBe('/api/publications')
   })
 
   it('tests draft credentials without modifying the active or persisted settings', async () => {

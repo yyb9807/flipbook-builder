@@ -6,6 +6,8 @@ Before proposing a change, run the relevant checks. Frontend changes normally re
 
 For bug reports, include the screen, steps, expected result, actual result and relevant versions. Use synthetic content and remove keys, secret-bearing provider responses and private images. Do not commit `.env`, local databases, uploads, generated distributions or machine-specific screenshots and logs.
 
+Publication changes also require the [publication process checks](docs/VERIFICATION.md#真实进程验收), including the trusted player build and independent reader. Preserve immutable snapshot bytes and test source deletion, withdrawal, asset failures and reader isolation. The verifier creates and cleans its own database and storage and uses a fake provider.
+
 Keep image/knowledge rendering in the shared scene components. Preserve legacy project reads and frozen workflow step paths when changing content formats. New model capabilities must be explicit; an OpenAI-compatible URL does not imply vision, image editing or structured-output support. Keep provider credentials out of workflow arguments, checkpoints, events and publications.
 
 Generated content, references and hotspot placement need human evaluation. References are author-supplied and are not automatically fetched or verified. Record actual measurements and provider versions; do not invent cost or quality claims.

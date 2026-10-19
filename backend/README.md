@@ -39,7 +39,7 @@ DATABASE_URL=postgresql://flipbook:flipbook@localhost:5434/flipbook_test python 
 
 ## 配置与数据边界
 
-- 默认免账号、单实例共享工作区。能访问编辑 API 的人能够操作其中的作品；只读浏览地址不构成访问权限隔离。
+- 默认免账号、单实例共享工作区。能访问编辑 API 的人能够操作其中的作品；`/v/{pid}` 当前实例预览不构成访问权限隔离。公开读者使用独立 reader 或离线静态作品。
 - 供应商的 URL、Key、model 作为一组选择。请求带任意一项供应商配置头时，整个供应商使用请求配置，缺少的 Key 保持空；只有完全没有该组配置头时，才使用部署环境配置。
 - 自定义 HTTP(S) 地址支持本地模型。服务地址不能包含 URL 凭据、查询参数或片段。不要对不受信任的访客公开持有部署密钥的编辑实例。
 - 图片上传最多 20 MB，只接受实际可解码的 JPG、PNG、WEBP 静态图，最大 4000 万像素、单边 12000 像素。服务器统一重编码为 PNG、去除元数据并生成不可变文件地址；ASGI 层另设 22 MB 总请求限额，在 multipart 解析前限制带或不带 Content-Length 的请求。不能仅凭文件后缀或 MIME 判断图片安全。
@@ -74,7 +74,36 @@ DATABASE_URL=postgresql://flipbook:flipbook@localhost:5434/flipbook_test python 
 
 `version_history.py` 在普通编辑、资料核对、热点内容/几何修改及生成的同一事务中留存白名单快照；生成子页同时记录父页连接和新子页。旧项目首次读取历史或变更前惰性补当前 `initial` 基线，相同内容不会重复留版。快照排除父子树、工作流、原始输入与凭据；图片只记录项目内不可变资产引用。Postgres 不主动裁剪版本，删除项目通过外键一并删除版本和恢复幂等记录。
 
-恢复合并以当前有效连接目标为准，不复活旧目标、不删除已有子页，也不修改父节点、层级或运行状态。历史中没有的已连接区块/热点继续保留；有内容变化的恢复追加版本，并清除旧人工核对声明。历史中的旧 provenance 来自服务端记录的历史，可以恢复，但混合页面没有区块级出处。版本不替代数据库与 `data/` 备份；独立只读发布、整树时间回滚和多人协作不在当前范围。
+恢复合并以当前有效连接目标为准，不复活旧目标、不删除已有子页，也不修改父节点、层级或运行状态。历史中没有的已连接区块/热点继续保留；有内容变化的恢复追加版本，并清除旧人工核对声明。历史中的旧 provenance 来自服务端记录的历史，可以恢复，但混合页面没有区块级出处。版本不替代数据库与 `data/` 备份；整树时间回滚和多人协作不在当前范围。
+
+## 固定版本发布与独立 reader
+
+编辑管理接口均包含 `/api`，仅在可信编辑服务开放：
+
+| 接口 | 合约 |
+|---|---|
+| `POST /projects/{pid}/publications` | 严格 JSON `{operation_id, expected_revision}`；201 新发布 / 200 幂等重放，返回 `{publication}` |
+| `GET /projects/{pid}/publications` | `{publications}`，包含已撤下记录；源项目删除后仍可查询 |
+| `GET /publications` | 全局发布记录，作品库用于管理删源后的固定版本 |
+| `DELETE /projects/{pid}/publications/{id}` | 幂等撤下，返回 `{publication}`；错误归属 404 |
+
+摘要为 `{id, project_id, name, source_revision, created_at, page_count, content_hash, state, url}`，`state` 为 `published` / `withdrawn`。操作 ID 规则和恢复相同；新发布需非负预期修订。相同操作与修订返回原回执，撤下后重放不会重新上线；参数不同 409。活动任务、陈旧修订、不完整树或缺失图片返回 409；阅读器未构建返回 503。并发文件锁忙返回 503 和 `Retry-After`，客户端必须保留原操作及修订重试，不能按内容冲突另建发布。发布不写页面/历史/任务，也不调用模型。
+
+可信播放器需 Node.js 24 构建一次（在根目录执行），Compose 已自动构建：
+
+```sh
+npm --prefix frontend ci
+npm --prefix frontend run build:publication
+# 独立终端，无需 DATABASE_URL / 模型 Key；默认 http://localhost:8081
+cd backend
+uvicorn reader:app --host 127.0.0.1 --port 8081
+```
+
+本地默认发布目录是仓库 `data/publications/`，可用 `PUBLICATION_DIR` 覆盖；可信产物默认 `backend/publication_runtime/`，可用 `PUBLICATION_RUNTIME_DIR` 覆盖。编辑后端加载 `.env`，reader 故意不加载，独立启动需在环境中明确设置目录。`PUBLICATION_BASE_URL` 是链接的完整公开服务地址，不是浏览器编辑地址。
+
+reader 不导入 main/database/jobs，不连接 Postgres；只挂发布目录读权限，仅开放 `/p/{id}/` 及精确资源白名单的 GET/HEAD 和 `/healthz`。图片、正文和播放器均复制到各自固定目录；源图片删除和后续升级不改变旧发布。私有清单不对读者开放。撤下后未来请求 404，已下载或已渲染的内容无法追回。发布目录的锁和 rename 需要支持 POSIX flock/原子目录 rename 的本地文件系统；本轮不支持跨机器多写入者或对象存储。
+
+公开部署的 Compose 快速开始与 reader 地址配置见[根说明](../README.md#阅读与导出)；独立发布和进程验收命令统一见[验证说明](../docs/VERIFICATION.md#真实进程验收)。
 
 ## 持久生成接口
 
@@ -94,4 +123,4 @@ Snapshot 的 `kind` 为 `children`、`analyze` 或 `regenerate`，旧记录默�
 
 旧 `/generate-children` 保留持久任务的 SSE 适配器，请使用稳定 `x-operation-id`。**旧 `/analyze` 与 `/regenerate` 地址均升级为202任务协议，分别不再返回原 SSE 和同步终态节点**；旧客户端需查询任务或迁移到新接口，仍支持 `x-operation-id`。旧 `children-v1` workflow 的名称与步骤序列保留，新入口使用独立 `root-analysis-v1` / `regenerate-v1` 名称；本轮没有宣称解决跨版本任意代码迁移。
 
-浏览器与真实进程验收见[第六轮报告](../docs/ROUND_6_IMPLEMENTATION.md)和[当前验证说明](../docs/VERIFICATION.md)；[第五轮报告](../docs/archive/ROUND_5_IMPLEMENTATION.md)及更早记录保留为当时合约的历史证据。
+浏览器与真实进程验收见[第七轮报告](../docs/ROUND_7_IMPLEMENTATION.md)和[当前验证说明](../docs/VERIFICATION.md)；[第六轮报告](../docs/archive/ROUND_6_IMPLEMENTATION.md)及更早记录保留为当时合约的历史证据。

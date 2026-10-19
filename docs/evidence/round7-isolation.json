@@ -1,0 +1,75 @@
+{
+  "container_states": {
+    "backend": "exited",
+    "db": "exited",
+    "reader": "running",
+    "frontend": "running"
+  },
+  "editor_health_status": "unavailable (connection timeout)",
+  "publications_verified": 3,
+  "all_html_json_js_css_png_byte_hashes_unchanged": true,
+  "read_only_rootfs": true,
+  "reader_user": "10001:10001",
+  "publication_only_read_only_mount": true,
+  "no_database_or_model_environment": true,
+  "publications": [
+    {
+      "publication": {
+        "id": "pub_b0663e9231c74ec5a5a6931ea229b2da",
+        "project_id": "proj_i04gpoqk5n",
+        "name": "Acceptance / round7_browser_image",
+        "source_revision": 1,
+        "created_at": "2026-10-19T02:10:48.081658+00:00",
+        "page_count": 1,
+        "content_hash": "e37c1284fa9cdbdac88ac2ff9c0df9753f063a0ff15de13083c1933949350dcf",
+        "state": "published",
+        "url": "http://127.0.0.1:18082/p/pub_b0663e9231c74ec5a5a6931ea229b2da/"
+      },
+      "resources": {
+        "index.html": "8b50fcf7fe75e3ad7160922ea227d27b004690d5aa287e51d49f9410babfc6c2",
+        "project.json": "71ba33abcc8bc791ad7d99afac084258b9de42d6a99f940a841af07c5fc6631e",
+        "player.js": "fa5bb8495b2e8e192e66e978d008ace2b0cc6e84cfb8a9d6d9a9fd662755cb36",
+        "player.css": "42ab01c4f02021896976322ad133cdd7bc7a84160ccb7f85541bd870bfd4214d",
+        "assets/bcfa474ded8bd8312cfb2d304ffb3c6d77ae6534f1b09fa955a45e92deb1819a.png": "bcfa474ded8bd8312cfb2d304ffb3c6d77ae6534f1b09fa955a45e92deb1819a"
+      }
+    },
+    {
+      "publication": {
+        "id": "pub_2cab6745c84a4f549388672cd5662c93",
+        "project_id": "proj_rtnzka76kc",
+        "name": "Acceptance / round7_browser_root",
+        "source_revision": 9,
+        "created_at": "2026-10-19T02:00:48.662143+00:00",
+        "page_count": 3,
+        "content_hash": "3a3bc56a76283b5d936168d1ea84c14f6b0640e1c94892b9c7540ea5f4ee6b77",
+        "state": "published",
+        "url": "http://127.0.0.1:18082/p/pub_2cab6745c84a4f549388672cd5662c93/"
+      },
+      "resources": {
+        "index.html": "00a35da309be0f5bd4bc8dcf5f50d452cd5b7eb80ba64493e9beec48638e4e69",
+        "project.json": "64082cc2e8407f687fca8e531b2ba917dce37688a1b82efa0fe6f746e3b997a9",
+        "player.js": "fa5bb8495b2e8e192e66e978d008ace2b0cc6e84cfb8a9d6d9a9fd662755cb36",
+        "player.css": "42ab01c4f02021896976322ad133cdd7bc7a84160ccb7f85541bd870bfd4214d"
+      }
+    },
+    {
+      "publication": {
+        "id": "pub_d52bc27578034abc821fe5dddd99f323",
+        "project_id": "proj_rtnzka76kc",
+        "name": "Acceptance / round7_browser_root",
+        "source_revision": 6,
+        "created_at": "2026-10-19T01:56:02.115419+00:00",
+        "page_count": 3,
+        "content_hash": "de6fa0f8fbbe7a803f21df348e77aae8992fcc0c43e90682ab54df7860fedb73",
+        "state": "published",
+        "url": "http://127.0.0.1:18082/p/pub_d52bc27578034abc821fe5dddd99f323/"
+      },
+      "resources": {
+        "index.html": "0755b5105ed0f80a6fa5853e38200950bd5bf6c6e915b9c585087a07dd2efbf2",
+        "project.json": "2f023e1016012fa167014abbbe834cbd19408cd3c2514ffa33b8cdbabd77ac6b",
+        "player.js": "fa5bb8495b2e8e192e66e978d008ace2b0cc6e84cfb8a9d6d9a9fd662755cb36",
+        "player.css": "581f864c0845af06c35420a155bec06b80b2aa744679ad507f62e69cbb87970b"
+      }
+    }
+  ]
+}

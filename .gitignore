@@ -1,13 +1,7 @@
 # ── 敏感文件 ──
 .env
-.env.local
-.env.*.local
 .env.*
 !.env.example
-!*/.env.example
-*/.env
-backend/.env
-frontend/.env
 
 # ── Python ──
 __pycache__/
@@ -47,6 +41,9 @@ data/uploads/*
 !data/uploads/.gitkeep
 data/img_cache/*
 !data/img_cache/.gitkeep
+data/publications/*
+!data/publications/.gitkeep
+backend/publication_runtime/
 
 # ── 数据库 dump ──
 *.sql.bak

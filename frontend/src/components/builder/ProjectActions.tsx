@@ -5,6 +5,7 @@ import { useToast } from '../shared/Toast'
 import { Icon } from '../shared/Icon'
 import { useCopy } from '../../i18n/workspace'
 import { useNodeDraftStore } from '../../store/nodeDraftStore'
+import { PublishPanel } from './PublishPanel'
 
 export function ProjectActions() {
   const c = useCopy()
@@ -12,6 +13,7 @@ export function ProjectActions() {
   const origin = useProjectStore((s) => s.origin)
   const hasDrafts = useNodeDraftStore((s) => Object.keys(s.drafts[project?.project_id ?? ''] ?? {}).length > 0)
   const [open, setOpen] = useState(false)
+  const [publishingProject, setPublishingProject] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const trigger = useRef<HTMLButtonElement>(null)
   const menu = useRef<HTMLDivElement>(null)
@@ -40,7 +42,7 @@ export function ProjectActions() {
   if (!project) return null
   async function share() {
     const url = window.location.origin + '/v/' + project!.project_id
-    try { await navigator.clipboard.writeText(url); show(c('当前实例链接已复制。访问者需能连接此实例。', 'Instance link copied. Readers need access to this instance.'), 'success') }
+    try { await navigator.clipboard.writeText(url); show(c('当前实例预览链接已复制。内容会随编辑变化，需要此实例在线。', 'Live preview link copied. It follows edits and requires this instance online.'), 'success') }
     catch { window.prompt(c('复制此链接：', 'Copy this link:'), url) }
     close()
   }
@@ -65,11 +67,16 @@ export function ProjectActions() {
     {open && createPortal(<>
       <div className="menu-backdrop" onClick={close} />
       <div role="menu" aria-label={c('作品导出', 'Export project')} ref={menu} className="project-menu" style={position}>
-        {origin === 'server' && <button role="menuitem" onClick={() => void share()}><Icon name="link" /><span><strong>{c('复制当前实例链接', 'Copy instance link')}</strong><small>{c('需要实例在线，非独立发布', 'Requires this instance to stay online')}</small></span></button>}
+        {origin === 'server' && <>
+          <button role="menuitem" onClick={() => { setOpen(false); setPublishingProject(project.project_id) }}><Icon name="share" /><span><strong>{c('发布固定版本', 'Publish a fixed version')}</strong><small>{c('独立只读地址，后续编辑不改变已发布内容', 'A read-only snapshot that stays unchanged by edits')}</small></span></button>
+          <button role="menuitem" onClick={() => void share()}><Icon name="link" /><span><strong>{c('复制当前实例预览', 'Copy live instance preview')}</strong><small>{c('内容随编辑变化，需要此实例在线', 'Follows edits and requires this instance online')}</small></span></button>
+        </>}
         {hasDrafts && <p className="menu-draft-note">{c('有未保存的页面草稿。请先在内容面板保存，再导出。', 'Save page drafts in the content panel before exporting.')}</p>}
         <button role="menuitem" disabled={busy || hasDrafts} onClick={() => void exportProject('zip')}><Icon name="zip" /><span><strong>{c('导出离线 ZIP', 'Export offline ZIP')}</strong><small>{c('包含图片与播放器，解压即可阅读', 'Includes images and player. Open after extraction.')}</small></span></button>
         <button role="menuitem" disabled={busy || hasDrafts} onClick={() => void exportProject('json')}><Icon name="json" /><span><strong>{c('导出 JSON', 'Export JSON')}</strong><small>{c('作品结构与内容，不包含密钥', 'Project data, without credentials')}</small></span></button>
       </div>
-    </>, document.body)}{ToastEl}
+    </>, document.body)}
+    {origin === 'server' && publishingProject === project.project_id && <PublishPanel key={project.project_id} onClose={() => { setPublishingProject(null); trigger.current?.focus() }} />}
+    {ToastEl}
   </div>
 }
