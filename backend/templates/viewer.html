@@ -219,6 +219,10 @@
   .scene-section h2 { margin: 0 0 10px; font-size: 20px; }
   .scene-section p { margin: 0; white-space: pre-wrap; line-height: 1.7; }
   .scene-section button { margin-top: 14px; min-height: 44px; padding: 8px 14px; font: inherit; cursor: pointer; }
+  .scene-section, .content-sources li { scroll-margin-block-start: 90px; }
+  .scene-section:focus, .content-sources li:focus { outline: 2px solid #1b6355; outline-offset: 6px; }
+  .section-citations { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; font-size: 13px; }
+  .section-citations a { display: inline-flex; align-items: center; min-height: 36px; color: #1b6355; text-underline-offset: 3px; }
   .knowledge-header { padding: 28px 28px 0; }
   .knowledge-header h1 { margin: 0 0 12px; font-size: 28px; line-height: 1.25; }
   .knowledge-header p { margin: 0; white-space: pre-wrap; line-height: 1.7; color: var(--label-secondary); }
@@ -228,6 +232,12 @@
   .content-sources ol { padding-left: 20px; }
   .content-sources a { color: #1b6355; text-underline-offset: 3px; }
   .content-sources .source-note { color: var(--label-secondary); }
+  .content-sources li { margin-bottom: 20px; }
+  .content-sources blockquote { margin: 10px 0; padding: 10px 14px; border-left: 3px solid #1b6355; background: #f4f7f5; white-space: pre-wrap; }
+  .content-sources details summary { cursor: pointer; min-height: 36px; padding-top: 6px; }
+  .content-sources .source-version { font-size: 12px; color: var(--label-secondary); }
+  .source-return { display: flex; flex-wrap: wrap; gap: 12px; }
+  .source-return a { display: inline-flex; align-items: center; min-height: 36px; }
   .pin:focus-visible { outline: 3px solid var(--pink); outline-offset: 4px; }
   .pin:focus-visible .pin-label { opacity: 1; }
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
@@ -364,14 +374,32 @@ function render() {
   if (structured) {
     const sections = document.createElement('div');
     sections.className = 'scene-sections' + (scene.layout === 'sequence' ? ' sequence' : '');
-    for (const section of scene.sections) {
+    for (const [sectionIndex, section] of scene.sections.entries()) {
       const article = document.createElement('article');
       article.className = 'scene-section';
+      article.id = 'reader-section-' + sectionIndex;
+      article.tabIndex = -1;
       const heading = document.createElement('h2');
       heading.textContent = section.title || '';
       const body = document.createElement('p');
       body.textContent = section.body || '';
       article.append(heading, body);
+      const references = node.content_metadata && Array.isArray(node.content_metadata.references) ? node.content_metadata.references : [];
+      const referenceIds = Array.isArray(section.reference_ids) ? section.reference_ids : [];
+      if (referenceIds.length) {
+        const citations = document.createElement('nav');
+        citations.className = 'section-citations';
+        citations.setAttribute('aria-label', '本区块关联资料');
+        const caption = document.createElement('span');
+        caption.textContent = '关联资料';
+        citations.appendChild(caption);
+        for (const referenceId of referenceIds) {
+          const index = references.findIndex(reference => reference.id === referenceId);
+          if (index < 0) continue;
+          citations.appendChild(readerJumpLink('reader-reference-' + index, '[' + (index + 1) + ']', references[index].title));
+        }
+        article.appendChild(citations);
+      }
       const hotspot = hotspots.find(h => h.id === section.hotspot_id);
       const target = section.target_node_id || (hotspot && hotspot.target_node_id);
       if (target && nodesById[target]) {
@@ -384,7 +412,7 @@ function render() {
     }
     canvas.appendChild(sections);
   }
-  renderContentMetadata(canvas, node.content_metadata);
+  renderContentMetadata(canvas, node.content_metadata, structured ? scene.sections : []);
   wrap.appendChild(canvas);
 
   // breadcrumb
@@ -427,12 +455,25 @@ function safeReferenceUrl(value) {
   } catch { return null; }
 }
 
-function renderContentMetadata(canvas, metadata) {
+function readerJumpLink(targetId, label, accessibleLabel) {
+  const link = document.createElement('a');
+  link.href = '#' + targetId;
+  link.textContent = label;
+  if (accessibleLabel) link.setAttribute('aria-label', accessibleLabel);
+  link.onclick = event => {
+    event.preventDefault();
+    const target = document.getElementById(targetId);
+    if (target) { target.focus({preventScroll: true}); target.scrollIntoView({block: 'start'}); }
+  };
+  return link;
+}
+
+function renderContentMetadata(canvas, metadata, sections) {
   if (!metadata || metadata.version !== 1) return;
   const sources = document.createElement('footer');
   sources.className = 'content-sources';
   const heading = document.createElement('h2');
-  heading.textContent = '生成与参考资料';
+  heading.textContent = '参考资料与来源摘录';
   sources.appendChild(heading);
   const provenance = metadata.provenance;
   if (provenance && provenance.kind === 'ai') {
@@ -447,8 +488,10 @@ function renderContentMetadata(canvas, metadata) {
   const references = Array.isArray(metadata.references) ? metadata.references : [];
   if (references.length) {
     const list = document.createElement('ol');
-    for (const reference of references.slice(0, 12)) {
+    for (const [referenceIndex, reference] of references.slice(0, 12).entries()) {
       const item = document.createElement('li');
+      item.id = 'reader-reference-' + referenceIndex;
+      item.tabIndex = -1;
       const url = safeReferenceUrl(reference.url);
       const title = document.createElement(url ? 'a' : 'span');
       title.textContent = reference.title || '';
@@ -459,6 +502,45 @@ function renderContentMetadata(canvas, metadata) {
         note.textContent = reference.note;
         item.appendChild(note);
       }
+      if (typeof reference.excerpt === 'string') {
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.textContent = '作者保存的来源摘录';
+        const excerpt = document.createElement('blockquote');
+        excerpt.textContent = reference.excerpt || '未保存摘录文字。';
+        details.append(summary, excerpt);
+        item.appendChild(details);
+      }
+      const version = [reference.locator, reference.source_revision ? '原文版本：' + reference.source_revision : '',
+        reference.retrieved_at ? '保存时刻：' + reference.retrieved_at : ''].filter(Boolean);
+      if (version.length) {
+        const record = document.createElement('p');
+        record.className = 'source-version';
+        record.textContent = version.join(' · ');
+        item.appendChild(record);
+      }
+      if (reference.license_title) {
+        const licenseUrl = safeReferenceUrl(reference.license_url);
+        const license = document.createElement(licenseUrl ? 'a' : 'span');
+        license.textContent = reference.license_title;
+        if (licenseUrl) { license.href = licenseUrl; license.target = '_blank'; license.rel = 'noopener noreferrer'; }
+        item.appendChild(license);
+      }
+      if (reference.snapshot_sha256) {
+        const digest = document.createElement('p');
+        digest.className = 'source-version';
+        digest.textContent = '摘录版本摘要：' + reference.snapshot_sha256;
+        item.appendChild(digest);
+      }
+      const returns = document.createElement('nav');
+      returns.className = 'source-return';
+      returns.setAttribute('aria-label', '返回引用区块');
+      for (const [sectionIndex, section] of sections.entries()) {
+        if (Array.isArray(section.reference_ids) && section.reference_ids.includes(reference.id)) {
+          returns.appendChild(readerJumpLink('reader-section-' + sectionIndex, '返回区块：' + section.title));
+        }
+      }
+      if (returns.childNodes.length) item.appendChild(returns);
       list.appendChild(item);
     }
     sources.appendChild(list);
@@ -469,7 +551,9 @@ function renderContentMetadata(canvas, metadata) {
   }
   const disclaimer = document.createElement('p');
   disclaimer.className = 'source-note';
-  disclaimer.textContent = '参考资料由作者填写，系统未抓取或核验。';
+  disclaimer.textContent = references.some(reference => typeof reference.excerpt === 'string')
+    ? '资料由作者保存，摘录版本摘要仅用于辨认此副本；引用关联不表示系统已核验其支持正文。'
+    : '参考资料由作者填写，系统未抓取或核验，也不表示已逐条支持正文。';
   sources.appendChild(disclaimer);
   canvas.appendChild(sources);
 }

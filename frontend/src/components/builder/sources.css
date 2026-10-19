@@ -1,0 +1,328 @@
+.sources-panel {
+  min-width: 0
+}
+
+.sources-intro {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--label-secondary);
+  margin: 0 0 20px
+}
+
+.sources-section-picker {
+  margin-bottom: 24px
+}
+
+.source-discovery {
+  padding: 20px 0;
+  border-top: 1px solid var(--separator);
+  border-bottom: 1px solid var(--separator)
+}
+
+.sources-search-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px
+}
+
+.sources-panel h3 {
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 650;
+  color: var(--label)
+}
+
+.sources-search-heading>span,.sources-library-heading h3>span {
+  color: var(--label-secondary);
+  font-size: 13px;
+  font-weight: 400
+}
+
+.sources-search-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  margin-top: 12px
+}
+
+.sources-search-controls .field {
+  flex: 1;
+  min-width: 0;
+  margin: 0
+}
+
+.sources-search-controls .btn {
+  min-height: 44px;
+  flex: none
+}
+
+.sources-panel .field-hint {
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-wrap: anywhere
+}
+
+.sources-panel input,.sources-panel textarea,.sources-panel select {
+  max-width: 100%;
+  min-width: 0
+}
+
+.sources-feedback {
+  font-size: 13px;
+  line-height: 1.7;
+  margin: 16px 0;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid var(--separator);
+  padding: 12px;
+  border-radius: 6px
+}
+
+.sources-error {
+  margin: 16px 0;
+  color: var(--red);
+  border: 1px solid var(--red);
+  border-radius: 6px;
+  padding: 12px
+}
+
+.sources-error p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7
+}
+
+.sources-error p+p {
+  margin-top: 6px
+}
+
+.sources-result-count {
+  font-size: 13px;
+  color: var(--label-secondary);
+  margin: 20px 0 4px
+}
+
+.source-candidate {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--separator);
+  min-width: 0
+}
+
+.source-candidate:last-child {
+  border-bottom: 0;
+  padding-bottom: 0
+}
+
+.source-candidate h4,.source-preview h4 {
+  font-size: 14px;
+  line-height: 1.65;
+  font-weight: 650;
+  margin: 0 0 4px;
+  overflow-wrap: anywhere
+}
+
+.source-domain {
+  font-size: 12px;
+  color: var(--label-secondary)
+}
+
+.source-candidate>p {
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--label-secondary);
+  margin: 8px 0;
+  overflow-wrap: anywhere
+}
+
+.source-candidate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 20px
+}
+
+.source-candidate-actions a,.source-candidate-actions button {
+  font-size: 13px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--accent)
+}
+
+.source-preview {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--separator)
+}
+
+.source-preview blockquote {
+  max-height: 260px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding: 12px;
+  margin: 12px 0;
+  font-size: 13px;
+  line-height: 1.8;
+  background: var(--bg);
+  border: 1px solid var(--separator);
+  border-radius: 6px
+}
+
+.source-preview-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  margin-top: 12px
+}
+
+.source-preview-actions .btn {
+  white-space: normal;
+  min-height: 44px;
+  text-align: left;
+  justify-content: center
+}
+
+.sources-library-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 28px
+}
+
+.sources-library-heading h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 8px
+}
+
+.sources-library-heading>.text-button {
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px
+}
+
+.source-library-item .reference-editor-heading {
+  margin: 0
+}
+
+.source-library-item .reference-editor-heading strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+  line-height: 1.65
+}
+
+.source-library-item .reference-editor-heading .icon-button {
+  flex: none
+}
+
+.source-link-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 13px;
+  line-height: 1.7;
+  padding: 10px 0;
+  cursor: pointer
+}
+
+.source-link-toggle input {
+  margin-top: 4px;
+  flex: none;
+  accent-color: var(--accent)
+}
+
+.source-link-toggle span {
+  overflow-wrap: anywhere
+}
+
+.source-library-item .field-hint {
+  margin: 0 0 8px
+}
+
+.source-reference-fields>summary,.sources-creation-details>summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 12px 0;
+  font-size: 13px;
+  color: var(--accent)
+}
+
+.source-reference-fields .field {
+  margin: 12px 0
+}
+
+.sources-review {
+  border-top: 1px solid var(--separator);
+  margin-top: 20px;
+  padding-top: 8px
+}
+
+.sources-review .reference-review-toggle {
+  font-size: 13px
+}
+
+.sources-creation-details {
+  margin-top: 12px
+}
+
+.sources-panel button:disabled {
+  cursor: not-allowed
+}
+
+.sources-panel summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px
+}
+
+.content-sources-link {
+  width: 100%;
+  margin-top: 20px;
+  min-height: 44px
+}
+
+@media(max-width:680px) {
+  .sources-panel input,.sources-panel textarea,.sources-panel select {
+    font-size: 16px
+  }
+  .source-candidate h4,.source-preview h4 {
+    font-size: 15px
+  }
+  .source-domain {
+    font-size: 13px
+  }
+  .source-candidate>p,.source-preview blockquote {
+    font-size: 14px
+  }
+  .sources-search-controls .btn {
+    min-width: 88px
+  }
+  .source-preview blockquote {
+    max-height: 240px
+  }
+}
+
+.source-preview,.source-library-item,.source-candidate-actions button {
+  scroll-margin-block: 84px 20px;
+}
+
+.source-library-item:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+@media(max-width:680px) {
+  .source-preview,.source-library-item,.source-candidate-actions button {
+    scroll-margin-top: 196px
+  }
+}

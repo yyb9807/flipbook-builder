@@ -2,7 +2,7 @@
 
 完成于 2026-10-19，实施前基线 `cd39498a206826b9b87716be419a7148db1b9f67`，分支 `codex/provider-neutral-quality`。按用户补充“现在不需要放具体的模型”，本轮不预置或绑定模型，不执行真实推理。此前的下载准备已终止，本轮临时权重缓存已删除；新增模型运行器改动已撤回，第九轮工具和历史测量保留。
 
-本轮完成的是可选生成约束、独立保留样例和完整功能验收。**受控回放与假供应商 HTTP 不能证明正文、定位或跨页语义有所改善；真实模型质量、Agent 质量评审与人工质量评审均未测。** 新实验默认关闭。实施范围见[计划](ROUND_10_PLAN.md)，可核验摘要见[验收证据](evidence/round10-verification.json)。
+本轮完成的是可选生成约束、独立保留样例和完整功能验收。**受控回放与假供应商 HTTP 不能证明正文、定位或跨页语义有所改善；真实模型质量、Agent 质量评审与人工质量评审均未测。** 新实验默认关闭。实施范围见[计划](ROUND_10_PLAN.md)，可核验摘要见[验收证据](../evidence/round10-verification.json)。
 
 ## 生成与恢复
 
@@ -16,7 +16,7 @@
 
 ## 独立保留集与方法冻结
 
-新增 [`quality-holdout-v1`](../evals/datasets/quality-holdout-v1/)：虚构地图数字化流程、月相几何及一幅原创多尺度遮挡场景，各中英文，共 6 案例、18 阶段。文件含来源、事实锚点、禁止结论、原创图形与像素支持框、作者录制及 MIT 许可。独立策划者只依据数据合约建立素材，不读取提示词或第九轮真实输出。
+新增 [`quality-holdout-v1`](../../evals/datasets/quality-holdout-v1/)：虚构地图数字化流程、月相几何及一幅原创多尺度遮挡场景，各中英文，共 6 案例、18 阶段。文件含来源、事实锚点、禁止结论、原创图形与像素支持框、作者录制及 MIT 许可。独立策划者只依据数据合约建立素材，不读取提示词或第九轮真实输出。
 
 保留集于 `2026-10-19T05:15:12+00:00` 冻结，候选于 `05:33:47.547047+00:00` 冻结；实现侧此前只收到数量、摘要及校验状态，候选冻结后才打开具体素材。没有依据保留集修改提示词、适配器或评分方法。完整来源与文件清单由数据集 `FREEZE.json` 验证；像素重建、可见范围和三层可达性校验通过。未来依据这些结果调优时，它将成为回归集，需要另建保留集验证泛化。
 
@@ -27,7 +27,7 @@
 | 原开发集 | `c58fc124ea4212795bcec5c6f5a9f954387654db121469400e7249321292e5dd` |
 | 独立保留集 | `a8ba1f95f5b8dc494d71c174c9475b49cbed36eb74c85687a47b82a8a493576e` |
 
-[候选冻结记录](evidence/round10-candidate-freeze.json)保存逐文件摘要。最终生产、运行器与评估器摘要仍与冻结时一致。原开发集的素材、用例、选择器、录制，以及第九轮历史输出、源码补丁没有改写。第九轮补丁应在该轮记录的基线检出后复原，不能直接套用到本轮源码上。
+[候选冻结记录](../evidence/round10-candidate-freeze.json)保存逐文件摘要。最终生产、运行器与评估器摘要仍与冻结时一致。原开发集的素材、用例、选择器、录制，以及第九轮历史输出、源码补丁没有改写。第九轮补丁应在该轮记录的基线检出后复原，不能直接套用到本轮源码上。
 
 ## 受控回放与可复现性
 
@@ -46,7 +46,7 @@
 
 108 次是读取受控录制的 transport 调用，实际模型调用为 0。各修订的作者正文与标签相同，坐标仅等价编码；两次已完成运行恢复均保持运行文件原字节，不新增调用。策略不同的比较显示不可直接比较，分差与优胜者为空。没有给这些作者录制补一份模型质量通过评审。
 
-公开的[保留集旧实验运行](evidence/round10-holdout-grounded-v2-run.json)和[新实验运行](evidence/round10-holdout-focused-v3-run.json)保留实际运行字节；其余四组的运行摘要在总证据中，原始本地目录被 Git 忽略。以下仅执行离线回放：
+公开的[保留集旧实验运行](../evidence/round10-holdout-grounded-v2-run.json)和[新实验运行](../evidence/round10-holdout-focused-v3-run.json)保留实际运行字节；其余四组的运行摘要在总证据中，原始本地目录被 Git 忽略。以下仅执行离线回放：
 
 ```sh
 python evals/datasets/quality-holdout-v1/validate_fixture.py
@@ -59,7 +59,7 @@ python scripts/evaluate_quality.py run \
   --resume evals/runs/holdout-focused
 ```
 
-换用不同修订或开发集时使用新的目录。具体参数与真实供应商的显式额度入口见[质量评估手册](MODEL_QUALITY.md)；本轮没有配置真实供应商或给出具体模型推荐。
+换用不同修订或开发集时使用新的目录。具体参数与真实供应商的显式额度入口见[质量评估手册](../MODEL_QUALITY.md)；本轮没有配置真实供应商或给出具体模型推荐。
 
 ## 完整流程验收
 
@@ -86,11 +86,11 @@ python scripts/evaluate_quality.py run \
 
 浏览器产生 4 个受控生成请求；数据库中的 4 个任务均成功，冻结实际 `focused-v3`，跨页上下文版本和原始文字来源匹配。验收结束后，专属服务、随机数据库、临时存储和验收下载均已清理；Compose 四服务恢复运行，数据库和独立阅读服务健康。没有新增 GitHub Actions。
 
-![恢复旧内容并保留后来新增的分支](images/round10-desktop-history.png)
+![恢复旧内容并保留后来新增的分支](../images/round10-desktop-history.png)
 
-![受控图片的两个热点](images/round10-image-protocol.png)
+![受控图片的两个热点](../images/round10-image-protocol.png)
 
-[移动阅读截图](images/round10-mobile-reader.png)、[移动评估报告](images/round10-mobile-quality.png)、[隔离后的独立阅读](images/round10-reader-isolated.png)和[桌面评估报告](images/round10-quality-report.png)均记录在总证据的文件摘要中。
+[移动阅读截图](../images/round10-mobile-reader.png)、[移动评估报告](../images/round10-mobile-quality.png)、[隔离后的独立阅读](../images/round10-reader-isolated.png)和[桌面评估报告](../images/round10-quality-report.png)均记录在总证据的文件摘要中。
 
 ## 后续使用边界
 
@@ -98,6 +98,6 @@ python scripts/evaluate_quality.py run \
 
 ## 提交前整理与复测
 
-第九轮计划和报告归入[历史目录](archive/ROUND_9_IMPLEMENTATION.md)，保留原始测量，修正相对链接；历史机器证据、源码补丁和截图留在原位。当前指南收敛重复结果说明，比较示例两侧统一显式热点上限。开发集 README 仅更新当前配置与历史入口，素材、用例和录制未动。
+第九轮计划和报告归入[历史目录](ROUND_9_IMPLEMENTATION.md)，保留原始测量，修正相对链接；历史机器证据、源码补丁和截图留在原位。当前指南收敛重复结果说明，比较示例两侧统一显式热点上限。开发集 README 仅更新当前配置与历史入口，素材、用例和录制未动。
 
 提交前重新运行评估测试，163 项及 27 个 subtests 通过；仓库根目录 Ruff、保留集完整校验、文档链接和差异检查通过。生成源码、运行器、评估器与保留集保持冻结摘要，原有后端 434 项、前端 299 项及完整浏览器结果继续对应同一实现，本次文档整理未重复这些验收。具体复测命令和范围写入机器证据的 `pre_commit_cleanup`。

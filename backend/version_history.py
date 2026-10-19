@@ -7,7 +7,7 @@ import json
 
 from fastapi import HTTPException
 
-from content_metadata import public_content_metadata
+from content_metadata import public_content_metadata, validate_section_references
 from hotspots import public_hotspot
 from storage import url_to_disk_path
 from utils import gen_id
@@ -22,7 +22,7 @@ def content_snapshot(node, hotspots) -> dict:
     scene = decoded(node.get("scene_document"))
     if scene is not None:
         scene = {"version": 1, "layout": scene["layout"], "sections": [
-            {key: section[key] for key in ("id", "title", "body", "hotspot_id", "target_node_id") if key in section}
+            {key: section[key] for key in ("id", "title", "body", "hotspot_id", "target_node_id", "reference_ids") if key in section}
             for section in scene.get("sections", [])
         ]}
     image = node.get("image_url")
@@ -118,6 +118,10 @@ def merge_restore(historical: dict, current: dict) -> tuple[dict, int]:
     targets, reassign a current target, or delete a connector with a live child.
     """
     restored = copy.deepcopy(historical)
+    # Historical JSON may predate the derived digest, or contain a formerly
+    # supplied stale value. Preview and persistence use the same public copy.
+    if restored.get("content_metadata") is not None:
+        restored["content_metadata"] = public_content_metadata(restored["content_metadata"])
     current_hotspots = {hotspot["id"]: hotspot for hotspot in current["hotspots"]}
     historical_hotspots = {hotspot["id"]: hotspot for hotspot in restored["hotspots"]}
     preserved = 0
@@ -137,6 +141,7 @@ def merge_restore(historical: dict, current: dict) -> tuple[dict, int]:
     scene = restored.get("scene_document")
     sections = [] if scene is None else scene["sections"]
     retained = set()
+    retained_sections = []
     for section in sections:
         hotspot = by_id.get(section.get("hotspot_id"))
         section.pop("target_node_id", None)
@@ -162,13 +167,45 @@ def merge_restore(historical: dict, current: dict) -> tuple[dict, int]:
                 section["id"] = candidate
             section["target_node_id"] = hotspot["target_node_id"]
             sections.append(section)
+            retained_sections.append(section)
     if len(sections) > 12:
         raise HTTPException(409, "恢复内容与现有分支合并后超过 12 个区块；请先整理正文，本次没有修改内容")
     if len(restored["hotspots"]) > 12:
         raise HTTPException(409, "恢复热点与现有分支合并后超过 12 个热点；请先整理页面，本次没有修改内容")
     if sections and scene is None:
         restored["scene_document"] = {"version": 1, "layout": (current_scene or {}).get("layout", "atlas"), "sections": sections}
+    # A newer connected section survives restoration with its own source copy.
+    # The same id can mean different public content across versions. Reject
+    # that conflict rather than silently citing the historical source version.
+    current_metadata = public_content_metadata(current.get("content_metadata"))
+    current_references = {reference["id"]: reference for reference in (current_metadata or {}).get("references", [])}
     metadata = restored.get("content_metadata")
+    references = (metadata or {}).get("references", [])
+    references_by_id = {reference["id"]: reference for reference in references}
+    for section in retained_sections:
+        for identity in section.get("reference_ids", []):
+            reference = current_references.get(identity)
+            if reference is None:
+                raise HTTPException(409, "现有分支的来源资料缺失，无法安全恢复；本次没有修改内容")
+            existing = references_by_id.get(identity)
+            if existing is not None and (
+                {key: value for key, value in existing.items() if key != "snapshot_sha256"}
+                != {key: value for key, value in reference.items() if key != "snapshot_sha256"}
+            ):
+                raise HTTPException(409, "来源版本冲突，请先整理当前分支与历史资料后再恢复；本次没有修改内容")
+            if existing is None:
+                saved = copy.deepcopy(reference)
+                references.append(saved)
+                references_by_id[identity] = saved
+    if len(references) > 12:
+        raise HTTPException(409, "恢复内容与现有分支合并后超过 12 条资料；请先整理来源，本次没有修改内容")
+    if metadata is None and references:
+        metadata = {"version": 1, "references": references, "review_status": "unreviewed"}
+        restored["content_metadata"] = metadata
+    try:
+        validate_section_references(restored.get("scene_document"), metadata)
+    except ValueError as exc:
+        raise HTTPException(409, "该版本的引用关联不完整，无法安全恢复；本次没有修改内容") from exc
     if metadata:
         metadata["review_status"] = "unreviewed"
     return restored, preserved

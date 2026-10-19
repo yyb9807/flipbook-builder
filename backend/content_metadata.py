@@ -1,9 +1,11 @@
 """Public, bounded authorship metadata. References are author supplied, not verified."""
 from __future__ import annotations
 
+import hashlib
 import ipaddress
 import json
 import unicodedata
+from datetime import datetime
 from typing import Literal
 from urllib.parse import urlsplit
 
@@ -60,6 +62,15 @@ class ContentReference(BaseModel):
     title: str = Field(min_length=1, max_length=200)
     url: str | None = Field(default=None, max_length=2000)
     note: str | None = Field(default=None, max_length=1000)
+    excerpt: str | None = Field(default=None, max_length=3000)
+    locator: str | None = Field(default=None, max_length=200)
+    source_revision: str | None = Field(default=None, max_length=100)
+    retrieved_at: str | None = Field(default=None, max_length=100)
+    source_provider: Literal["wikipedia"] | None = None
+    source_language: Literal["zh", "en"] | None = None
+    license_title: str | None = Field(default=None, max_length=200)
+    license_url: str | None = Field(default=None, max_length=2000)
+    snapshot_sha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
 
     @field_validator("id", "title")
     @classmethod
@@ -68,10 +79,55 @@ class ContentReference(BaseModel):
             raise ValueError("参考资料 id 和标题不能为空")
         return value
 
-    @field_validator("url")
+    @field_validator("url", "license_url")
     @classmethod
     def valid_url(cls, value: str | None) -> str | None:
         return safe_reference_url(value) if value else None
+
+    @field_validator("retrieved_at")
+    @classmethod
+    def valid_retrieval_time(cls, value: str | None) -> str | None:
+        if value is not None:
+            try:
+                parsed = datetime.fromisoformat(value)
+                if "T" not in value or parsed.tzinfo is None or parsed.utcoffset() is None:
+                    raise ValueError
+            except ValueError as exc:
+                raise ValueError("摘录保存时间必须是带时区的 ISO 时刻") from exc
+        return value
+
+    @model_validator(mode="after")
+    def refresh_snapshot_digest(self):
+        # This identifies the author-saved public copy, not an authenticated web
+        # capture or a factual review. Never trust a stale client-supplied hash.
+        if self.excerpt is not None:
+            public_copy = self.model_dump(exclude_none=True, exclude={"id", "snapshot_sha256"})
+            self.snapshot_sha256 = hashlib.sha256(json.dumps(
+                public_copy, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False,
+            ).encode("utf-8")).hexdigest()
+        else:
+            self.snapshot_sha256 = None
+        return self
+
+
+REFERENCE_FIELDS = tuple(ContentReference.model_fields)
+
+
+def validate_section_references(scene: dict | None, metadata: dict | None) -> None:
+    """Cross-check one page's complete draft before any persistence/export."""
+    if scene is not None and (not isinstance(scene, dict) or not isinstance(scene.get("sections"), list)):
+        raise ValueError("页面正文格式无效，无法检查来源关联")
+    references = {reference["id"] for reference in (metadata or {}).get("references", [])}
+    for section in (scene or {}).get("sections", []):
+        if not isinstance(section, dict):
+            raise ValueError("正文区块格式无效，无法检查来源关联")
+        identities = section.get("reference_ids", [])
+        if (not isinstance(identities, list) or len(identities) > 6
+                or any(not isinstance(identity, str) or not 1 <= len(identity) <= 100 for identity in identities)
+                or len(set(identities)) != len(identities)):
+            raise ValueError("每个正文区块最多关联 6 条不同的参考资料")
+        if any(identity not in references for identity in identities):
+            raise ValueError("正文区块引用的资料不存在；删除资料前请先解除区块关联")
 
 
 class ContentMetadata(BaseModel):
@@ -104,7 +160,7 @@ def public_content_metadata(value: object) -> dict | None:
         selected["provenance"] = {key: provenance[key] for key in ("kind", "input_kind", "model") if key in provenance}
     references = selected.get("references")
     if isinstance(references, list):
-        selected["references"] = [{key: reference[key] for key in ("id", "title", "url", "note") if key in reference}
+        selected["references"] = [{key: reference[key] for key in REFERENCE_FIELDS if key in reference}
                                   if isinstance(reference, dict) else reference for reference in references]
     try:
         return ContentMetadata.model_validate(selected).model_dump(exclude_none=True)

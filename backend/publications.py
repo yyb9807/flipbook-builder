@@ -15,7 +15,7 @@ from pathlib import Path
 from fastapi import HTTPException
 
 import storage
-from content_metadata import public_content_metadata
+from content_metadata import public_content_metadata, validate_section_references
 from jobs.locking import lock_project_write
 from publication_files import PUBLICATION_ID, publication_directory
 
@@ -132,6 +132,8 @@ def _scene(value, hotspots):
                 or not isinstance(item["body"], str) or len(item["body"]) > 5000):
             _conflict()
         ids.add(item["id"])
+        if "reference_ids" in section:
+            item["reference_ids"] = section["reference_ids"]
         hotspot_id, target = section.get("hotspot_id"), section.get("target_node_id")
         if hotspot_id:
             hotspot = hotspots.get(hotspot_id)
@@ -215,6 +217,10 @@ def snapshot_project(project, rows, hotspot_rows):
         if scene is not None:
             node["scene_document"] = scene
         metadata = public_content_metadata(row.get("content_metadata"))
+        try:
+            validate_section_references(scene, metadata)
+        except ValueError as exc:
+            raise HTTPException(409, "正文引用的来源资料缺失或无效，请先整理引用后发布") from exc
         if metadata is not None:
             node["content_metadata"] = metadata
         nodes[identity] = node

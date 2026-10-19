@@ -1,13 +1,16 @@
 import { strToU8, zip } from 'fflate'
 import type { FlipNode, Project } from '../types'
 import { isImageHotspot } from '../types'
-import { safeReferenceUrl } from './sourceUrl'
+import { citationProblem, publicReference } from './citations'
 
 interface Runtime { playerJs: string; playerCss: string }
 interface Asset { bytes: Uint8Array; mime: string; path: string }
 
 /** Explicit allowlist: configuration, credentials and execution metadata never travel with a work. */
 export function publicationSnapshot(project: Project): Project {
+  for (const node of Object.values(project.nodes)) {
+    if (citationProblem(node.scene_document, node.content_metadata)) throw new Error('请先修复页面引用关联，再导出。 / Resolve page citations before exporting.')
+  }
   const ids = new Set(Object.keys(project.nodes))
   const nodes: Record<string, FlipNode> = Object.fromEntries(Object.values(project.nodes).map((node) => [node.id, {
     id: node.id, parent_id: node.parent_id && ids.has(node.parent_id) ? node.parent_id : null,
@@ -29,6 +32,7 @@ export function publicationSnapshot(project: Project): Project {
         id: section.id, title: section.title, body: section.body,
         ...(section.hotspot_id ? { hotspot_id: section.hotspot_id } : {}),
         ...(section.target_node_id && ids.has(section.target_node_id) ? { target_node_id: section.target_node_id } : {}),
+        ...(section.reference_ids?.length ? { reference_ids: [...section.reference_ids] } : {}),
       })),
     } } : {}),
     ...(node.content_metadata?.version === 1 ? { content_metadata: {
@@ -37,11 +41,7 @@ export function publicationSnapshot(project: Project): Project {
         kind: 'ai' as const, input_kind: node.content_metadata.provenance.input_kind,
         model: node.content_metadata.provenance.model,
       } } : {}),
-      references: node.content_metadata.references.map((reference) => ({
-        id: reference.id, title: reference.title,
-        ...(reference.url && safeReferenceUrl(reference.url) ? { url: safeReferenceUrl(reference.url)! } : {}),
-        ...(reference.note ? { note: reference.note } : {}),
-      })),
+      references: node.content_metadata.references.map(publicReference),
       review_status: node.content_metadata.review_status,
     } } : {}),
   }]))

@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import type { FlipNode, Hotspot } from '../../types'
 import { isImageHotspot } from '../../types'
 import { hotspotCenter } from './geometry'
 import { sectionHotspot } from './sectionHotspot'
 import './scene.css'
-import { ContentAttribution } from './ContentAttribution'
+import { citationAnchor, ContentAttribution, focusCitation } from './ContentAttribution'
 
 export { sectionHotspot } from './sectionHotspot'
 
@@ -29,6 +29,7 @@ export function SceneRenderer({
   showHotspots = true, renderOverlay, className = '', locale = 'zh',
 }: SceneRendererProps) {
   const frame = useRef<HTMLDivElement>(null)
+  const citationPrefix = useId()
   const [aspect, setAspect] = useState(1.6)
   const [metrics, setMetrics] = useState<SceneMetrics>({ width: 0, height: 0 })
   const document = node.scene_document
@@ -61,7 +62,7 @@ export function SceneRenderer({
               const selected = hotspot.id === selectedHotspotId
               const linked = !!hotspot.target_node_id
               return (
-                <article className={`scene-section${selected ? ' is-selected' : ''}`} key={section.id}>
+                <article className={`scene-section${selected ? ' is-selected' : ''}`} key={section.id} id={citationAnchor(citationPrefix, 'section', section.id)} tabIndex={-1}>
                   {document.layout === 'sequence' && <span className="scene-section-step" aria-hidden="true">{index + 1}</span>}
                   <div className="scene-section-content">
                     <h3>
@@ -70,6 +71,13 @@ export function SceneRenderer({
                       ) : section.title}
                     </h3>
                     <p>{section.body}</p>
+                    {!!section.reference_ids?.length && <nav className="section-citations" aria-label={locale === 'zh' ? `${section.title}的引用` : `Citations for ${section.title}`}>{section.reference_ids.map((id) => {
+                      const index = node.content_metadata?.references.findIndex((reference) => reference.id === id) ?? -1
+                      if (index < 0) return null
+                      const reference = node.content_metadata!.references[index]
+                      const target = citationAnchor(citationPrefix, 'reference', id)
+                      return <a key={id} href={`#${target}`} aria-label={`${locale === 'zh' ? '查看参考资料' : 'Read reference'} ${index + 1}: ${reference.title}`} onClick={(event) => focusCitation(event, target)}>[{index + 1}]</a>
+                    })}</nav>}
                     {linked && (onHotspotOpen || onHotspotActivate) && (
                       <button type="button" className="scene-section-link" onClick={() => (onHotspotOpen ?? onHotspotActivate)?.(hotspot)}>
                         {locale === 'zh' ? '打开页面' : 'Open page'}<ArrowIcon />
@@ -114,7 +122,7 @@ export function SceneRenderer({
           </div>
         </div>
       )}
-      <ContentAttribution metadata={node.content_metadata} locale={locale} />
+      <ContentAttribution metadata={node.content_metadata} sections={document?.sections} citationPrefix={citationPrefix} locale={locale} />
     </div>
   )
 }

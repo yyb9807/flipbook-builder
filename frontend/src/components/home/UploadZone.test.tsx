@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { UploadZone } from './UploadZone'
 import { useCreationStore } from '../../store/creationStore'
 import { DEFAULT_MODEL_SETTINGS, useSettingsStore } from '../../store/settingsStore'
+import { useProjectStore } from '../../store/projectStore'
 
 beforeEach(() => {
   useCreationStore.setState({ tab: 'text', topic: '水循环', generateImages: false, file: null })
@@ -28,5 +29,23 @@ describe('knowledge-page creation choices', () => {
     fireEvent.click(screen.getByRole('checkbox', { name: '同时生成插图（可选）' }))
     expect(screen.getByRole('button', { name: '用 AI 创建' })).toBeEnabled()
     expect(useCreationStore.getState().topic).toBe('水循环')
+  })
+})
+
+
+describe('manual-first creation', () => {
+  it('creates a local knowledge page without model credentials or AI calls', () => {
+    useSettingsStore.setState({ llmApiKey: '', imgGenApiKey: '' })
+    const onText = vi.fn()
+    const onFile = vi.fn()
+    render(<MemoryRouter><UploadZone loading={false} onText={onText} onFile={onFile} /></MemoryRouter>)
+    const manual = screen.getByRole('button', { name: '手动创建知识页' })
+    expect(manual).toHaveClass('btn-primary')
+    expect(screen.getByRole('link', { name: '配置 AI 服务' })).not.toHaveClass('btn-primary')
+    expect(screen.queryByRole('checkbox', { name: '同时生成插图（可选）' })).not.toBeInTheDocument()
+    fireEvent.click(manual)
+    expect(useProjectStore.getState()).toMatchObject({ origin: 'local', project: { name: '水循环' } })
+    expect(onText).not.toHaveBeenCalled()
+    expect(onFile).not.toHaveBeenCalled()
   })
 })

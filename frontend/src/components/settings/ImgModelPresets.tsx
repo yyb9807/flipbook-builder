@@ -6,6 +6,8 @@ import {
 } from '../../utils/llmProviders'
 import type { LLMModel } from '../../utils/llmProviders'
 import { Chip } from './Chip'
+import { useI18n } from '../../i18n'
+import { localizedModelHint } from './modelHint'
 
 interface Props {
   baseUrl: string
@@ -18,6 +20,7 @@ interface Props {
  * fallback 到所有 provider imageModels 的去重并集（覆盖常见三档：flux / dall-e-3 / gpt-image）。
  */
 export function ImgModelPresets({ baseUrl, current, onPick }: Props) {
+  const { locale } = useI18n()
   const provider = findProviderByBaseUrl(baseUrl)
   const providerModels = provider?.imageModels ?? []
   const models: LLMModel[] = providerModels.length > 0 ? providerModels : collectAllImageModels()
@@ -34,9 +37,9 @@ export function ImgModelPresets({ baseUrl, current, onPick }: Props) {
             label={m.label || m.id}
             active={current === m.id}
             tone={meta?.tone ?? 'blue'}
-            hint={m.hint || m.speedLabel}
+            hint={localizedModelHint(m.hint || m.speedLabel, locale)}
             recommended={m.recommended}
-            title={m.hint}
+            title={localizedModelHint(m.hint, locale)}
             onClick={() => onPick(m.id)}
           />
         )

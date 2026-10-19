@@ -3,6 +3,7 @@ import type { TestConfigResult } from '../types/api'
 import type { GenerationJob, PendingAnalysis, PendingChildren, PendingRegeneration } from '../types/jobs'
 import type { PageRestoreResult, PageVersionDetail, PageVersionList } from '../types/history'
 import type { PublicationList, PublicationResult } from '../types/publications'
+import type { SourcePageResult, SourceSearchResult } from '../types/sources'
 
 function getModelHeaders(s: ModelSettings = useSettingsStore.getState()): Record<string, string> {
   return {
@@ -39,9 +40,20 @@ async function fetchOrThrow(url: string, options: RequestInit, modelSettings?: M
   if (!res.ok) {
     const text = await res.text()
     let message = text || `HTTP ${res.status}`
-    try { const body = JSON.parse(text); if (typeof body.detail === 'string') message = body.detail } catch { /* Non-JSON provider/proxy responses remain readable. */ }
-    const error = new Error(message) as Error & { status: number }
+    let code: string | undefined
+    try {
+      const body = JSON.parse(text)
+      if (typeof body.detail === 'string') message = body.detail
+      else if (body.detail && typeof body.detail.message === 'string') {
+        message = body.detail.message
+        if (typeof body.detail.code === 'string') code = body.detail.code
+      }
+    } catch { /* Non-JSON provider/proxy responses remain readable. */ }
+    const error = new Error(message) as Error & { status: number; code?: string; retryAfter?: number }
     error.status = res.status
+    if (code) error.code = code
+    const retryAfter = Number(res.headers.get('Retry-After'))
+    if (res.headers.has('Retry-After') && Number.isFinite(retryAfter) && retryAfter >= 0) error.retryAfter = retryAfter
     throw error
   }
   return res
@@ -87,6 +99,10 @@ export async function* readJobEvents(response: Response): AsyncGenerator<Generat
 }
 
 export const api = {
+  searchSources: (query: string, language: 'zh' | 'en', signal?: AbortSignal) =>
+    apiFetch<SourceSearchResult>(`/sources/search?q=${encodeURIComponent(query)}&language=${language}`, { signal }),
+  getSourcePage: (key: string, language: 'zh' | 'en', signal?: AbortSignal) =>
+    apiFetch<SourcePageResult>(`/sources/page?key=${encodeURIComponent(key)}&language=${language}`, { signal }),
   createGenerationJob: (pending: PendingChildren, settings: ModelSettings) =>
     apiFetch<GenerationJob>(`/projects/${pending.project_id}/nodes/${pending.node_id}/generation-jobs`, {
       method: 'POST', body: JSON.stringify({ operation_id: pending.operation_id, selected_keywords: pending.selected_keywords, ...(pending.generate_images !== undefined ? { generate_images: pending.generate_images } : {}) }),

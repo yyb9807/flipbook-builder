@@ -8,7 +8,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
 from agents.base import get_imggen_config, get_llm_config
-from content_metadata import ContentMetadata, public_content_metadata
+from content_metadata import ContentMetadata, public_content_metadata, validate_section_references
 from database import get_pool
 from hotspots import insert_hotspots, public_hotspot, synchronize_scene_sections
 from jobs.locking import lock_project_write
@@ -26,6 +26,15 @@ class SceneSection(BaseModel):
     body: str = Field(max_length=5000)
     hotspot_id: str | None = Field(default=None, min_length=1, max_length=160)
     target_node_id: str | None = Field(default=None, min_length=1, max_length=160)
+    reference_ids: list[Annotated[str, StringConstraints(min_length=1, max_length=100)]] = Field(
+        default_factory=list, max_length=6,
+    )
+
+    @model_validator(mode="after")
+    def unique_references(self):
+        if len(set(self.reference_ids)) != len(self.reference_ids):
+            raise ValueError("正文区块不能重复关联同一条参考资料")
+        return self
 
 
 class SceneDocument(BaseModel):
@@ -82,7 +91,7 @@ async def update_node(
         scene = None
         saved_hotspots = None
         if "scene_document" in body.model_fields_set:
-            scene = body.scene_document.model_dump(exclude_none=True) if body.scene_document else None
+            scene = body.scene_document.model_dump(exclude_none=True, exclude_unset=True) if body.scene_document else None
             scene, saved_hotspots = await synchronize_scene_sections(conn, node_id, scene, node.get("scene_document"))
         original_metadata = public_content_metadata(node.get("content_metadata"))
         metadata = original_metadata
@@ -105,6 +114,13 @@ async def update_node(
             changed = changed or ("scene_document" in body.model_fields_set and scene != previous_scene)
             if changed:
                 metadata = {**original_metadata, "review_status": "unreviewed"}
+        effective_scene = scene if "scene_document" in body.model_fields_set else node.get("scene_document")
+        if isinstance(effective_scene, str):
+            effective_scene = json.loads(effective_scene)
+        try:
+            validate_section_references(effective_scene, metadata)
+        except ValueError as exc:
+            raise HTTPException(400, str(exc)) from exc
         values = []
         sets = []
         for field in ("title", "description", "scene_document"):

@@ -1,4 +1,5 @@
 import { useRef, useState, type ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import { sameEndpoint, useSettingsStore, type ModelSettings } from '../store/settingsStore'
 import { api } from '../api/client'
 import type { TestConfigResult } from '../types/api'
@@ -17,6 +18,8 @@ import { QuickStartHint } from '../components/settings/QuickStartHint'
 import { Collapse } from '../components/settings/Collapse'
 import { useI18n } from '../i18n'
 import type { TranslationKey } from '../i18n'
+import { useCopy } from '../i18n/workspace'
+import { Icon } from '../components/shared/Icon'
 import '../components/settings/settings.css'
 
 function readSettings(): ModelSettings {
@@ -35,6 +38,7 @@ function hostFromUrl(url: string, fallback: string): string {
 export function SettingsPage() {
   const settings = useSettingsStore()
   const { t } = useI18n()
+  const c = useCopy()
   const [form, setForm] = useState<ModelSettings>(readSettings)
   const [saved, setSaved] = useState(false)
   const [cleared, setCleared] = useState(false)
@@ -124,11 +128,12 @@ export function SettingsPage() {
   return (
     <div className="settings-page">
       <SettingsNav />
-      <main className="settings-content">
+      <main className="settings-content" id="main-content">
         <header className="settings-intro">
-          <h1>{t('settings.page.title')}</h1>
+          <h1>{c('AI 服务设置', 'AI service settings')}</h1>
           <p>{t('settings.page.description')}</p>
         </header>
+        <aside className="settings-workspace-note"><Icon name="pen" size={18} /><p>{c('手动创作、来源检索和引用关联无需模型。', 'Manual creation, source search and citations work without a model.')}<Link to="/">{c('返回创作', 'Back to creating')}<Icon name="arrow-right" /></Link></p></aside>
         <QuickStartHint hasLlmKey={!!form.llmApiKey.trim()} hasImgKey={!!form.imgGenApiKey.trim()} />
 
         <Section title={t('settings.section.llm')} subtitle={providerName(llmProvider, form.llmBaseUrl)} status={form.llmApiKey.trim() ? 'ok' : 'missing'}>

@@ -48,7 +48,7 @@ describe('empty-root routing and recovery', () => {
   })
   it('keeps settings navigation available without exposing a preview for an unfinished root', () => {
     renderEmpty('running')
-    expect(screen.getByRole('link', { name: '模型设置' })).toHaveAttribute('href', '/settings')
+    expect(screen.getByRole('link', { name: 'AI 服务设置' })).toHaveAttribute('href', '/settings')
     expect(screen.queryByRole('button', { name: '预览作品' })).not.toBeInTheDocument()
   })
   it('uses the editor again as soon as a valid active root has been adopted', () => {

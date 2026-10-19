@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import type { FlipNode, Hotspot, Project } from '../../types'
 import { SceneRenderer } from './SceneRenderer'
 import { SceneEditor } from './SceneEditor'
@@ -93,5 +94,34 @@ describe('shared scene geometry', () => {
     expect(screen.queryByRole('button', { name: '返回编辑' })).not.toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: '上一层' }))
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('水循环')
+  })
+})
+
+
+describe('shared citation navigation', () => {
+  it('uses current reference numbering and unique anchors across simultaneous saved/history views, with keyboard focus both ways', async () => {
+    const user = userEvent.setup()
+    const cited: FlipNode = { ...node, image_url: null, hotspots: [], scene_document: { version: 1, layout: 'atlas', sections: [{ id: '区块/%:water', title: '蒸发', body: '可阅读的解释。', reference_ids: ['来源/%:water'] }] }, content_metadata: { version: 1, review_status: 'unreviewed', references: [{ id: 'unlinked', title: 'A page-only reference' }, { id: '来源/%:water', title: 'Water source', excerpt: 'A saved source copy.' }] } }
+    const before = JSON.stringify(cited)
+    const view = render(<><SceneRenderer node={cited} /><SceneRenderer node={cited} /></>)
+    const ids = [...view.container.querySelectorAll('[id]')].map((element) => element.id)
+    expect(new Set(ids).size).toBe(ids.length)
+    const renderers = view.container.querySelectorAll<HTMLElement>('.scene-renderer')
+    const citation = within(renderers[1]).getByRole('link', { name: '查看参考资料 2: Water source' })
+    expect(citation).toHaveTextContent('[2]')
+    citation.focus()
+    await user.keyboard('{Enter}')
+    const reference = document.getElementById(citation.getAttribute('href')!.slice(1))!
+    expect(reference).toHaveFocus()
+    expect(renderers[1].contains(reference)).toBe(true)
+    expect(renderers[0].contains(reference)).toBe(false)
+    const back = within(reference).getByRole('link', { name: '返回「蒸发」' })
+    back.focus()
+    await user.keyboard('{Enter}')
+    const section = document.getElementById(back.getAttribute('href')!.slice(1))!
+    expect(section).toHaveFocus()
+    expect(section).toHaveTextContent('可阅读的解释。')
+    expect(renderers[1].contains(section)).toBe(true)
+    expect(JSON.stringify(cited)).toBe(before)
   })
 })

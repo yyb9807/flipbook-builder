@@ -29,7 +29,7 @@ uvicorn main:app --host 127.0.0.1 --port 8000 --workers 1 --timeout-graceful-shu
 ruff check .
 
 # 不需要数据库、真实密钥或网络服务
-python -m pytest tests/test_security.py tests/test_node_integrity.py tests/test_hotspot_localization.py tests/test_image_generation.py tests/test_composition.py tests/test_sse.py -q
+python -m pytest tests/test_security.py tests/test_node_integrity.py tests/test_hotspot_localization.py tests/test_image_generation.py tests/test_composition.py tests/test_sse.py tests/test_source_retrieval.py -q
 
 # 包含真实 Postgres 集成测试：必须先配置独立测试数据库
 DATABASE_URL=postgresql://flipbook:flipbook@localhost:5434/flipbook_test python -m pytest -q
@@ -46,7 +46,8 @@ DATABASE_URL=postgresql://flipbook:flipbook@localhost:5434/flipbook_test python 
 - `PATCH /api/projects/{project_id}/nodes/{node_id}` 修改标题、说明、可选的 `scene_document` 与节点级 `content_metadata`，支持可选 `expected_revision`。SceneDocument v1支持`atlas`/`sequence`和最多12个分区；新增区块原子创建真实section连接，回填hotspot_id，改名同步连接；有子页的区块不能直接删除或改指目标。设scene为null只有不破坏已链接区块时才允许。API返回规范scene、hotspots、metadata及确认后的`project_revision`，客户端应采用真实连接ID。
 - `POST /api/projects/{project_id}/nodes/{node_id}/hotspots` 在图片模式中手动添加矩形热点；最多12个，返回选中但未链接的热点，不伪造模型置信度。结构化知识页返回409，应通过正文区块建立连接。`kind=section`的位置、尺寸与评分为空；旧记录默认`kind=image`，保留原几何。
 - 新主题页、子页和可再生旧页使用同一次内容模型调用输出标题、导读和1–6个解释区块，后端严格校验，ID与目标由服务端建立。新任务冻结`knowledge-v1`/`image-v1`；无marker的历史任务沿用旧路径和checkpoint步序。知识页可不出图，有图也不额外定位；上传图片继续使用分析中的真实图像坐标。旧无marker流程仍保留真实图像定位，非法或失败结果为空，不补假评分。
-- `content_metadata` v1包含服务端provenance（AI输入类型及模型）、最多12条作者references（标题≤200字、可选URL≤2000字、说明≤1000字）与review_status。URL仅允许无凭据的绝对HTTP(S)，不自动抓取。编辑不允许新增/修改/删除服务端provenance；正文、资料或热点文字变化清除旧核对，作者可以同批明确重新声明。模型回复的来源、核实声明和链接身份均被忽略，不能把格式通过当作事实核实。
+- `content_metadata` v1 包含服务端 provenance、最多 12 条作者 references 与 review_status。资料支持标题≤200字、URL≤2000字、说明≤1000字、摘录≤3000字符、定位≤200字、来源版本、带时区保存时间、提供方/语言和许可信息。有摘录时服务端重算公开副本的 `snapshot_sha256`，忽略客户端旧摘要；它不证明抓取认证或事实核实。手填 URL 只校验无凭据的绝对 HTTP(S)，不会被抓取。编辑不得伪造、修改或删除服务端 provenance。正文、摘录、资料、区块引用或热点文字变化清除旧核对；作者可以同批明确重新声明，模型伪造的引用和核实声明不被采纳。
+- `scene_document.sections[].reference_ids` 最多 6 个唯一的同页资料 ID，省略兼容旧页。正文、资料、引用和热点同步在同一事务提交；被引用资料不能直接删除，先解除关联或同批解除再删除。缺失/跨页引用返回 400，整次修改回滚；陈旧项目修订返回 409。
 - 子页生成逐页提交，单个子页失败时保留已完成的其他子页并返回 `warnings`、`failed_hotspot_ids`。重新尝试会跳过已有目标页面的热点。有任何热点或结构化正文的页面禁止整页重新生成，防止破坏坐标、导航与作者内容。页面版本恢复已实现，但没有逐字段差异比较或关联重定位。
 - 三种生成均接入 DBOS 3.3.0 与真实 Postgres，创建接口见下表。`GET /api/projects/{pid}/jobs?active=true`、`GET /api/jobs/{jid}` 和 `/events?after={event_id}` 读取恢复状态，不发送 Key。`active=false&operation_id=...` 精确找回初次响应丢失的操作。SSE 断开只断订阅；显式 `/cancel` 才取消业务任务。
 - 单个任务按选中连接顺序逐页规划、可选出图和提交，各远端阶段checkpoint；仅旧图片流程执行定位。业务任务创建和DBOS入队在同一个Postgres事务；正文、连接、来源及进度也在短事务内幂等提交。已完成页面不会因另一页失败而丢失；重复提交先查既有操作，再检查父页状态。正文格式错误是已知失败，不自动重新付费生成。
@@ -61,6 +62,23 @@ DATABASE_URL=postgresql://flipbook:flipbook@localhost:5434/flipbook_test python 
 两项实验均默认关闭，不预置或按名称判断具体模型。`focused-v3` 图片协议为 `bbox_2d=[left,top,right,bottom]`、0–1000 相对坐标；转换后才进入现有 xywh 流程，拒绝混合字段、非法、倒置、越界和非有限框，不猜格式、不后验修框或补请求。旧修订保持原协议和请求字节。任务格式标记、DBOS 名称、旧步骤顺序与 markerless 兼容保持不变。
 
 评估 CLI 独立于服务环境，使用同一生产 Agent；修订、热点上限、源码/评估器摘要和恢复身份等参数见[质量评估手册](../docs/MODEL_QUALITY.md)。本轮受控结果不构成真实质量通过，当前数字与流程证据见[验证说明](../docs/VERIFICATION.md)。
+
+## 只读来源检索接口
+
+下列接口使用完整 `/api` 路径，不需要模型 Key，不读取供应商配置，也不写数据库；本地作品可通过同一后端检索。离线或无后端时仍可手动填写资料。
+
+| 接口 | 合约 |
+|---|---|
+| `GET /api/sources/search?q=...&language=zh` | `language` 仅 `zh`/`en`，`q` 为 1–200 字；返回 `{provider: "wikipedia", language, query, retrieved_at, candidates}`，最多 5 项 `{key, page_id, title, snippet, url}`，snippet 为纯文本 |
+| `GET /api/sources/page?key=...&language=zh` | 返回 `{reference, truncated}`；reference 含固定 `oldid` 链接、来源版本、保存时间、许可、最多 3000 字符纯文本摘录和 canonical `snapshot_sha256`。不自动加入作品或声明核对 |
+
+`source_retrieval.py` 仅访问固定的 `https://zh.wikipedia.org` / `https://en.wikipedia.org` 原生 REST 路径；key 完整编码，不接受任意上游 URL，也没有来源地址环境覆盖。禁环境代理与重定向，不访问 HTML 内链接、脚本、样式或图片；以标识项目的 User-Agent 发出匿名请求。HTML 转纯文本时去导航/表格等界面内容，保留段落、普通上下标标记与已有公式替代文本，不尝试重建复杂数学排版。正文摘录并非完整网页或来源真实性认证。
+
+每进程并发最多 2，20 秒总截止包含排队等待，响应流上限 2 MiB；请求使用 identity 编码并拒绝压缩响应。成功结果在内存缓存 5 分钟、最多 64 项，返回深拷贝；错误不缓存。API 返回 `Cache-Control: no-store`。429/503 的 `Retry-After` 形成上游冷却，不自动重试；没有有效时间时等待 5 秒。错误 JSON 为 `{detail: {code, message}}`：限流 429 / `source_rate_limited`，失效 404 / `source_not_found`，超时 504 / `source_timeout`，连接、过大、无正文或不可读内容返回 502 及对应 code。参数无效为 422；无搜索命中为 200 与空 candidates。
+
+保存的副本可由作者继续编辑；摘要根据公开非 null 字段重算（排除 id 与旧摘要），不等于不可伪造的网络抓取回执。固定发布与 JSON/ZIP 只复制已保存摘录及关联，不在阅读时重新访问维基百科。上游接口和访问政策见 [MediaWiki REST](https://www.mediawiki.org/wiki/API:REST_API/Reference/en)、[访问政策](https://www.mediawiki.org/wiki/Wikimedia_APIs/Access_policy)和[限流规则](https://www.mediawiki.org/wiki/Wikimedia_APIs/Rate_limits)。
+
+来源进程回归 `scripts/verify_source_citations.py` 使用原创受控摘录和本地假供应商，公网检索与真实模型调用均为 0；覆盖原子引用保存、历史依赖与冲突、JSON/ZIP/固定发布和停止编辑服务后的独立 reader。播放器构建、专用测试管理 DSN、命令与限制统一见[验证说明](../docs/VERIFICATION.md#真实进程验收)。
 
 ## 页面历史接口与并发
 
@@ -80,7 +98,7 @@ DATABASE_URL=postgresql://flipbook:flipbook@localhost:5434/flipbook_test python 
 
 `version_history.py` 在普通编辑、资料核对、热点内容/几何修改及生成的同一事务中留存白名单快照；生成子页同时记录父页连接和新子页。旧项目首次读取历史或变更前惰性补当前 `initial` 基线，相同内容不会重复留版。快照排除父子树、工作流、原始输入与凭据；图片只记录项目内不可变资产引用。Postgres 不主动裁剪版本，删除项目通过外键一并删除版本和恢复幂等记录。
 
-恢复合并以当前有效连接目标为准，不复活旧目标、不删除已有子页，也不修改父节点、层级或运行状态。历史中没有的已连接区块/热点继续保留；有内容变化的恢复追加版本，并清除旧人工核对声明。历史中的旧 provenance 来自服务端记录的历史，可以恢复，但混合页面没有区块级出处。版本不替代数据库与 `data/` 备份；整树时间回滚和多人协作不在当前范围。
+恢复合并以当前有效连接目标为准，不复活旧目标、不删除已有子页，也不修改父节点、层级或运行状态。历史中没有的已连接区块/热点及其依赖资料继续保留。需要合并的同一资料 ID 对应不同公开副本、依赖资料缺失或超过 12 条时返回 409；预览和恢复均不修改内容、版本或项目修订。有内容变化的恢复追加版本，并清除旧人工核对声明。历史中的旧 provenance 可以恢复，但仍是页面级生成说明；区块引用不代表模型生成溯源或已核验事实。版本不替代数据库与 `data/` 备份；整树时间回滚和多人协作不在当前范围。
 
 ## 固定版本发布与独立 reader
 

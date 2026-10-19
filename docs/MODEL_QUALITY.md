@@ -2,7 +2,7 @@
 
 评估入口是 `scripts/evaluate_quality.py`，使用已安装 `backend/requirements-dev.txt` 的 Python 3.13。从仓库根目录运行，不启动数据库、编辑器或独立阅读服务。工具面向用户自选兼容供应商，不预置或按名称推断具体模型能力。
 
-第十轮引入独立保留集与显式生成修订，六组受控回放执行/自动检查通过，但 **Agent 和人工质量均为 `not_reviewed`，真实模型调用 0**。当前结果统一见[验证说明](VERIFICATION.md)，设计与冻结经过见[实施报告](ROUND_10_IMPLEMENTATION.md)；[第九轮报告](archive/ROUND_9_IMPLEMENTATION.md)保留历史真实失败。
+第十轮引入独立保留集与显式生成修订，六组受控回放执行/自动检查通过，但 **Agent 和人工质量均为 `not_reviewed`，真实模型调用 0**。当前结果统一见[验证说明](VERIFICATION.md)，设计与冻结经过见[实施报告](archive/ROUND_10_IMPLEMENTATION.md)；[第九轮报告](archive/ROUND_9_IMPLEMENTATION.md)保留历史真实失败。
 
 ## 生成修订与默认行为
 
@@ -11,7 +11,7 @@
 | `--generation-revision legacy-v1` | CLI 新运行默认值，对齐默认生产生成行为 |
 | `--generation-revision grounded-v2` | 显式实验，有界原始素材与分支上下文 |
 | `--generation-revision focused-v3` | 显式实验，强调语言、素材中的数值/起算点/例外/未知项与跨页推进；图片采用明确 bbox 协议 |
-| `--max-image-hotspots N` | 显式保留 1–12 个图片热点，默认 3；本轮六组回放均明确传 5 |
+| `--max-image-hotspots N` | 显式保留 1–12 个图片热点，默认 3；第十轮六组回放均明确传 5 |
 
 生产服务器未设置或留空 `KNOWLEDGE_GENERATION_REVISION` 时，继续原行为；仅显式设为 `grounded-v2` 或 `focused-v3` 才启用对应实验。服务环境不接受用 `legacy-v1` 作为启用值，恢复默认应移除或留空该变量。Compose 默认不传实验变量。已保存任务使用入队时冻结的修订、来源和上下文；恢复不重新读取后来的页面或环境。旧无修订标记任务保持原路径与步骤顺序。
 

@@ -11,7 +11,7 @@ from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel
 
 from agents.base import _log
-from content_metadata import public_content_metadata
+from content_metadata import public_content_metadata, validate_section_references
 from database import get_pool
 from hotspots import public_hotspot
 from jobs.locking import lock_project_write
@@ -203,6 +203,10 @@ async def _load_full_project(project_id: str, pool: asyncpg.Pool) -> dict:
         if isinstance(node.get("scene_document"), str):
             node["scene_document"] = json.loads(node["scene_document"])
         node["content_metadata"] = public_content_metadata(node.get("content_metadata"))
+        try:
+            validate_section_references(node.get("scene_document"), node["content_metadata"])
+        except ValueError as exc:
+            raise HTTPException(409, "正文引用的来源资料缺失或无效，请先整理引用后导出") from exc
     return {
         "project_id": project["id"],
         "name": project["name"],

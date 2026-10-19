@@ -60,3 +60,38 @@ describe('page restoration preserves graph identity', () => {
     expect(pageContentChanged(node, { ...node, hotspots: [{ ...node.hotspots[0], label: 'Changed' }] })).toBe(true)
   })
 })
+
+
+describe('page restoration keeps citation evidence with retained branches', () => {
+  it('preserves a newer branch and its source excerpt when restoring a version that predates both', () => {
+    const project = createManualProject('Before sources', 'en')
+    const id = project.root_node_id!
+    const node = project.nodes[id]
+    const snapshot = pageSnapshot(node)
+    const reference = { id: 'new-source', title: 'Water source', excerpt: 'A saved source excerpt.', source_revision: '123', license_title: 'CC BY-SA 4.0', license_url: 'https://creativecommons.org/licenses/by-sa/4.0/' }
+    node.scene_document!.sections.push({ id: 'new-branch', title: 'New explanation', body: 'Keep this content.', reference_ids: [reference.id] })
+    node.content_metadata = { version: 1, references: [reference], review_status: 'reviewed' }
+    const connected = connectLocalBranch(project, id, 'new-branch', 'child', 'child-section', 'Explain further')!
+    const before = JSON.stringify([connected.project, snapshot])
+    const restored = restorePageSnapshot(connected.project, id, snapshot)
+    expect(restored.preserved_branch_count).toBe(1)
+    expect(restored.node.scene_document!.sections.find((section) => section.id === 'new-branch')).toMatchObject({ target_node_id: 'child', reference_ids: ['new-source'], body: 'Keep this content.' })
+    expect(restored.node.content_metadata).toEqual({ version: 1, references: [reference], review_status: 'unreviewed' })
+    expect(connected.project.nodes.child.content_metadata).toBeUndefined()
+    expect(JSON.stringify([connected.project, snapshot])).toBe(before)
+  })
+
+  it('rejects a same-id source conflict required by a retained branch without changing either version', () => {
+    const project = createManualProject('History', 'en')
+    const id = project.root_node_id!
+    const node = project.nodes[id]
+    node.content_metadata = { version: 1, references: [{ id: 'source', title: 'Water source', excerpt: 'Historical excerpt.', source_revision: '123' }], review_status: 'reviewed' }
+    const snapshot = pageSnapshot(node)
+    node.scene_document!.sections.push({ id: 'new-branch', title: 'New', body: 'A newer explanation.', reference_ids: ['source'] })
+    node.content_metadata.references[0].excerpt = 'Different current excerpt.'
+    const connected = connectLocalBranch(project, id, 'new-branch', 'child', 'child-section', 'Explain further')!
+    const before = JSON.stringify([connected.project, snapshot])
+    expect(() => restorePageSnapshot(connected.project, id, snapshot)).toThrow('来源版本冲突')
+    expect(JSON.stringify([connected.project, snapshot])).toBe(before)
+  })
+})

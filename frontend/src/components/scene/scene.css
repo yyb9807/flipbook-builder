@@ -10,3 +10,34 @@
 @keyframes scene-skeleton{50%{opacity:.55}}
 @media(max-width:680px){.scene-sections{grid-template-columns:1fr}.scene-section:nth-child(odd){border-right:0}.scene-section h3{font-size:18px}.scene-hotspot-label{max-width:130px}.viewer-header{padding:14px 20px;gap:12px;flex-wrap:wrap}.viewer-project-name{max-width:calc(100% - 120px);flex:1}.viewer-page-count{order:3;flex-basis:100%;margin:0}.viewer-main{padding:20px 20px 40px}.viewer-breadcrumb{margin-bottom:20px}.viewer-breadcrumb button{max-width:150px}.viewer-heading{flex-direction:column;gap:14px}.viewer-heading h1{font-size:28px}.viewer-back{padding:6px 10px;min-height:36px}.viewer-description{font-size:14px}.viewer-scene{margin-top:24px}.viewer-explore>div{flex-direction:column}.viewer-explore button{width:100%}.viewer-footer{padding:20px;gap:10px;flex-wrap:wrap}.scene-image-stage{padding:8px}}
 @media(prefers-reduced-motion:reduce){.scene-renderer *,.project-viewer *{animation:none!important;transition:none!important}}
+
+/* References travel with the work; reading them never needs a live source service. */
+.section-citations{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:12px}
+.section-citations a{display:inline-flex;align-items:center;justify-content:center;min-width:40px;min-height:40px;padding:4px 8px;font-size:13px;font-weight:600;color:var(--scene-accent);text-decoration:none;border:1px solid var(--scene-line);border-radius:6px;background:var(--scene-paper)}
+.section-citations a:hover{background:var(--scene-soft);text-decoration:underline}
+.section-citations a:focus-visible,.content-reference-list li:focus,.scene-section:focus,.content-attribution summary:focus-visible{outline:2px solid var(--scene-focus);outline-offset:4px}
+.scene-section,.content-reference-list li{scroll-margin-top:24px}
+.content-attribution{max-width:75ch;padding-top:24px}
+.content-attribution-heading{display:flex;align-items:baseline;gap:16px;justify-content:space-between;flex-wrap:wrap}
+.content-attribution-heading h3{font-size:16px;margin:0;display:flex;gap:10px;align-items:center}
+.content-attribution-heading h3 span{font-size:13px;color:var(--scene-muted);font-weight:400}
+.content-attribution-heading .content-review-status{margin:0;font-size:13px}
+.content-attribution .content-reference-notice{font-size:13px;line-height:1.7;margin:12px 0 0}
+.content-reference-list{list-style:none;padding:0;gap:0;margin:20px 0 0}
+.content-reference-list li{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid var(--scene-line)}
+.content-reference-list li:first-child{padding-top:0}
+.reference-number{flex:none;color:var(--scene-muted);font-size:13px;min-width:24px}
+.reference-copy{min-width:0;flex:1}
+.reference-copy .reference-title{font-size:14px;font-weight:600;line-height:1.65}
+.reference-version{display:flex;gap:4px 16px;flex-wrap:wrap}
+.content-attribution summary{cursor:pointer;color:var(--scene-ink);font-size:13px;line-height:1.65;min-height:44px;padding:10px 0}
+.reference-excerpt blockquote{white-space:pre-wrap;margin:0 0 8px;padding:16px;background:var(--scene-soft);font-size:14px;line-height:1.8;max-height:360px;overflow:auto;border:1px solid var(--scene-line);border-radius:6px;overflow-wrap:anywhere}
+.content-attribution .reference-license{font-size:13px}
+.reference-backlinks{display:flex;flex-wrap:wrap;gap:0 16px;margin-top:8px}
+.reference-backlinks a{font-size:13px;line-height:1.5;min-height:44px;display:inline-flex;align-items:center}
+.content-creation-details{margin-top:8px}
+.content-attribution--empty{padding-top:8px;margin-top:24px}
+.content-attribution--empty>summary{display:list-item;list-style:disclosure-closed inside;font-size:13px;font-weight:600}
+.content-attribution--empty[open]>summary{list-style-type:disclosure-open}
+.content-attribution--empty>summary>span{font-weight:400;color:var(--scene-muted);margin-left:16px}
+@media(max-width:680px){.section-citations a{min-width:44px;min-height:44px}.content-reference-list li{gap:10px}.scene-section p{font-size:15px;line-height:1.85}.reference-excerpt blockquote{padding:12px;max-height:300px}.content-attribution-heading{gap:6px}}

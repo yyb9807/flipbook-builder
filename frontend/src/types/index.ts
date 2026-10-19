@@ -45,6 +45,7 @@ export interface SceneSection {
   body: string
   hotspot_id?: string
   target_node_id?: string | null
+  reference_ids?: string[]
 }
 
 export interface SceneDocument {
@@ -58,6 +59,15 @@ export interface ContentReference {
   title: string
   url?: string
   note?: string
+  excerpt?: string
+  locator?: string
+  source_revision?: string
+  retrieved_at?: string
+  source_provider?: 'wikipedia'
+  source_language?: 'zh' | 'en'
+  license_title?: string
+  license_url?: string
+  snapshot_sha256?: string
 }
 
 export interface ContentMetadata {

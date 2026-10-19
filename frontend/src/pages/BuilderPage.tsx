@@ -21,10 +21,12 @@ import { sectionHotspot } from '../components/scene/sectionHotspot'
 import { usePageHistory } from '../hooks/usePageHistory'
 import { PageHistoryPanel } from '../components/builder/PageHistoryPanel'
 
-type Tool = 'canvas' | 'pages' | 'hotspots' | 'content' | 'history'
+type Workspace = 'canvas' | 'pages' | 'edit'
+type Inspector = 'content' | 'sources' | 'hotspots' | 'history'
 export function BuilderPage() {
   const c = useCopy()
-  const [tool, setTool] = useState<Tool>('canvas')
+  const [workspace, setWorkspace] = useState<Workspace>('canvas')
+  const [inspector, setInspector] = useState<Inspector>('content')
   const [selected, setSelected] = useState<string | null>(null)
   const [branchImages, setBranchImages] = useState(false)
   const project = useProjectStore((s) => s.project)
@@ -39,6 +41,7 @@ export function BuilderPage() {
   const storageError = useLibraryStore((s) => s.storageError)
   const storageConflict = useLibraryStore((s) => s.storageConflict)
   const hasDrafts = useNodeDraftStore((s) => Object.keys(s.drafts[project?.project_id ?? ''] ?? {}).length > 0)
+  const hasCurrentDraft = useNodeDraftStore((s) => Boolean(s.drafts[project?.project_id ?? '']?.[activeNodeId ?? '']))
   const { show, ToastEl } = useToast()
   const actions = useBuilderActions(show)
   const history = usePageHistory(show)
@@ -49,8 +52,9 @@ export function BuilderPage() {
   const contentHotspots = node.scene_document ? node.scene_document.sections.map((section, index) => sectionHotspot(node, section, index)) : node.hotspots
   const selectedHotspot = contentHotspots.find((hotspot) => hotspot.id === selected)
   const activeSelection = selectedHotspot?.id ?? null
-  function select(h: Hotspot) { setSelected(h.id); if (node.scene_document) setTool('content') }
-  function open(h: Hotspot) { if (h.target_node_id) { navigate(h.target_node_id); setSelected(null); setTool('canvas') } }
+  function openInspector(next: Inspector) { setInspector(next); setWorkspace('edit') }
+  function select(h: Hotspot) { setSelected(h.id); openInspector(node.scene_document ? 'content' : 'hotspots') }
+  function open(h: Hotspot) { if (h.target_node_id) { navigate(h.target_node_id); setSelected(null); setWorkspace('canvas') } }
   function createBranch(h: Hotspot) {
     const current = useProjectStore.getState()
     const currentProject = current.project
@@ -63,13 +67,14 @@ export function BuilderPage() {
     if (!childId) return
     navigate(childId)
     setSelected(null)
-    setTool('content')
+    openInspector('content')
   }
   const saveLabel = actions.saveStatus === 'saving' ? c('保存中…', 'Saving…') : actions.saveStatus === 'error' ? c('有修改未同步', 'Changes not synced') : hasDrafts ? c('有页面草稿待保存', 'Page drafts need saving') : origin === 'local' ? c('已保存在此浏览器', 'Saved in this browser') : c('已保存', 'Saved')
   const saveClass = 'save-status ' + actions.saveStatus + (hasDrafts ? ' draft' : '')
   const needsAttention = origin === 'server' && (currentJob?.status === 'partial' || currentJob?.status === 'failed' || Boolean(currentJob?.result?.warnings?.length))
   const branchLabel = node.scene_document ? c('分支', 'Branches') : c('热点', 'Hotspots')
-  const tools: [Tool, string][] = [['canvas', c('画布', 'Canvas')], ['pages', c('页面', 'Pages')], ['hotspots', branchLabel], ['content', c('内容', 'Content')]]
+  const tools: [Workspace, string][] = [['canvas', c('画布', 'Canvas')], ['pages', c('页面', 'Pages')], ['edit', c('编辑', 'Edit')]]
+  const panels: [Inspector, string][] = [['content', c('内容', 'Content')], ['sources', c('来源', 'Sources')], ['hotspots', branchLabel], ['history', c('历史版本', 'History')]]
   const historyBlocked = history.busy ? c('正在恢复页面，请稍候。', 'Restoring the page. Please wait.')
     : generating || jobLocked ? c('生成任务正在核对或处理，完成后才能恢复版本。你仍可查看历史。', 'Wait for generation and page sync before restoring a version. You can still browse history.')
     : actions.saveStatus === 'saving' ? c('页面修改正在保存，保存完成后才能恢复版本。', 'Wait for page changes to finish saving before restoring a version.')
@@ -83,26 +88,27 @@ export function BuilderPage() {
     : actions.saveStatus === 'error' ? c('部分页面修改尚未保存。可重试保存，或重新载入已保存页面；未保存的作品会先保留为本地恢复副本。', 'Some page changes have not been saved. Retry saving or reload the saved pages. Unsaved work will first be kept as a local recovery copy.') : null
   return <div className="editor-shell">
     <Topbar projectActions={<ProjectActions />} />
-    <main className={'editor-grid tool-' + tool} id="main-content">
+    <main className={'editor-grid tool-' + workspace} id="main-content">
       <aside className="editor-outline"><TreeNav /></aside>
       <section className="editor-main">
         <div className="editor-page-heading"><div><nav className="editor-breadcrumb" aria-label={c('页面路径', 'Page path')}>{node.parent_id && <button className="text-button" onClick={() => navigate(node.parent_id!)}><Icon name="arrow-left" />{c('上级页面', 'Parent page')}</button>}<span>{c('第 ', 'Level ') + (node.depth + 1) + c(' 层', '')}</span></nav><h1>{node.title}</h1></div>
-          <div className="editor-page-actions"><button type="button" className="text-button" onClick={() => setTool('history')}>{c('历史版本', 'Page history')}</button><span className={saveClass} role="status">{saveLabel}</span></div>
+          <div className="editor-page-actions"><button type="button" className="text-button" onClick={() => openInspector('history')}>{c('历史版本', 'Page history')}</button><span className={saveClass} role="status">{saveLabel}</span></div>
         </div>
         {storageError && <div className="notice notice-error" role="alert">{c('浏览器存储空间不足，修改仅保留在当前页面。请立即导出作品。', 'Browser storage is full. Changes are only in this tab. Export your project now.')}</div>}
-        {storageConflict && <div className="notice notice-error" role="alert"><span>{synchronizationError}</span><button type="button" className="text-button" onClick={() => setTool('history')}>{c('查看恢复选项', 'View recovery options')}</button></div>}
+        {storageConflict && <div className="notice notice-error" role="alert"><span>{synchronizationError}</span><button type="button" className="text-button" onClick={() => openInspector('history')}>{c('查看恢复选项', 'View recovery options')}</button></div>}
         {actions.saveStatus === 'error' && <div className="notice notice-error"><span>{editingLocked ? c('有修改尚未同步。请等待生成任务与页面同步完成后再重试保存。', 'Some changes are not synced. Wait for generation and page sync before retrying.') : c('部分修改未保存。请重试保存，或导出当前作品；若浏览器空间不足，请先备份内容。', 'Some changes are not saved. Retry saving or export this project. If browser storage is full, back up your content first.')}</span><button className="btn btn-sm" disabled={editingLocked} onClick={() => void actions.retryPending()}>{c('重试保存', 'Retry saving')}</button></div>}
-        {(jobLocked || needsAttention) && <div className="generation-mobile-status" role="status"><span>{jobLocked ? c('生成任务正在核对或处理，页面编辑暂不可用。', 'A generation job is being checked or processed. Editing is paused.') : currentJob?.status === 'failed' ? c('上次生成未完成，原有内容已保留。', 'The last generation did not finish. Existing content is kept.') : c('页面已保存，仍有生成提示待查看。', 'The page is saved with generation warnings.')}</span><button className="text-button" onClick={() => setTool('hotspots')}>{jobLocked ? c('查看生成任务', 'View generation job') : c('查看生成提示', 'View warnings')}</button></div>}
+        {(jobLocked || needsAttention) && <div className="generation-mobile-status" role="status"><span>{jobLocked ? c('生成任务正在核对或处理，页面编辑暂不可用。', 'A generation job is being checked or processed. Editing is paused.') : currentJob?.status === 'failed' ? c('上次生成未完成，原有内容已保留。', 'The last generation did not finish. Existing content is kept.') : c('页面已保存，仍有生成提示待查看。', 'The page is saved with generation warnings.')}</span><button className="text-button" onClick={() => openInspector('hotspots')}>{jobLocked ? c('查看生成任务', 'View generation job') : c('查看生成提示', 'View warnings')}</button></div>}
+        <div className={'canvas-save-context' + (hasCurrentDraft ? ' has-draft' : '')} role="status"><span>{c('已保存预览', 'Saved preview')}</span>{hasCurrentDraft ? <button type="button" className="text-button" onClick={() => openInspector('content')}>{c('本页有草稿，保存后更新预览', 'This page has a draft. Save to update the preview.')}</button> : <span>{c('编辑文字或来源后，保存以更新作品。', 'Save text or source changes to update the project.')}</span>}</div>
         <PageCanvas disabled={editingLocked} node={node} selectedHotspotId={activeSelection} onHotspotSelect={select} onHotspotUpdate={(h) => { void actions.handleHotspotUpdate(h) }} onHotspotNavigate={open} onRegenerate={origin === 'server' && !editingLocked && !hasDrafts && !node.hotspots.length && !node.scene_document ? () => { void actions.handleRegenerate() } : undefined} />
         {node.description && <p className="editor-page-description">{node.description}</p>}
-        {node.children.length > 0 && <section className="branch-strip"><h2>{c('继续探索', 'Continue exploring')}</h2><div>{node.children.map((id) => project.nodes[id] && <button className="branch-link" key={id} onClick={() => { navigate(id); setTool('canvas') }}><span>{project.nodes[id].title}</span><Icon name="arrow-right" /></button>)}</div></section>}
+        {node.children.length > 0 && <section className="branch-strip"><h2>{c('继续探索', 'Continue exploring')}</h2><div>{node.children.map((id) => project.nodes[id] && <button className="branch-link" key={id} onClick={() => { navigate(id); setWorkspace('canvas') }}><span>{project.nodes[id].title}</span><Icon name="arrow-right" /></button>)}</div></section>}
       </section>
       <aside className="editor-inspector">
         <div className="inspector-page-context" aria-label={c('当前编辑页面', 'Current page')}><strong>{node.title}</strong><span className={saveClass} role="status">{saveLabel}</span></div>
-        <div className="inspector-tabs"><button aria-pressed={tool !== 'content' && tool !== 'history'} onClick={() => setTool('hotspots')}>{branchLabel}</button><button aria-pressed={tool === 'content'} onClick={() => setTool('content')}>{c('内容', 'Content')}</button><button aria-pressed={tool === 'history'} onClick={() => setTool('history')}>{c('历史版本', 'History')}</button></div>
-        <div className="inspector-body">{tool === 'history' ? <PageHistoryPanel key={project.project_id + node.id} history={history} disabledReason={historyBlocked} reloadDisabledReason={reloadBlocked} synchronizationError={synchronizationError} local={origin === 'local'} onEditContent={() => setTool('content')} /> : <fieldset disabled={editingLocked || history.busy} className="inspector-edit-fields">{tool === 'content' ? <NodeContentEditor key={project.project_id + node.id} projectId={project.project_id} node={node} selectedHotspotId={activeSelection} local={origin === 'local'} onSave={(patch) => actions.handleNodeUpdate(node.id, patch)} onShowHistory={() => setTool('history')} selectionAction={selectedHotspot && (selectedHotspot.target_node_id ? <button type="button" className="text-button" onClick={() => open(selectedHotspot)}>{c('打开分支', 'Open branch')}<Icon name="arrow-right" /></button> : origin === 'local' ? <button type="button" className="text-button" disabled={editingLocked || hasDrafts} onClick={() => createBranch(selectedHotspot)}><Icon name="plus" />{c('添加子页', 'Add page')}</button> : undefined)} /> :
-          <HotspotPanel node={node} local={origin === 'local'} canCreateBranch={!hasDrafts} selectedId={activeSelection} onSelect={select} onOpen={open} onEditContent={() => setTool('content')} onCreateBranch={origin === 'local' ? createBranch : undefined} onAdd={!node.scene_document ? () => { void actions.handleAddHotspot() } : undefined} onHotspotChange={(h) => { void actions.handleHotspotUpdate(h) }} />}</fieldset>}</div>
-        {tool !== 'history' && <div className="generation-section">
+        <nav className="inspector-tabs" aria-label={c('页面编辑面板', 'Page editing panels')}>{panels.map(([id, label]) => <button type="button" key={id} aria-pressed={inspector === id} onClick={() => openInspector(id)}>{label}</button>)}</nav>
+        <div className="inspector-body">{inspector === 'history' ? <PageHistoryPanel key={project.project_id + node.id} history={history} disabledReason={historyBlocked} reloadDisabledReason={reloadBlocked} synchronizationError={synchronizationError} local={origin === 'local'} onEditContent={() => openInspector('content')} /> : <fieldset disabled={editingLocked || history.busy} className="inspector-edit-fields">{inspector === 'content' || inspector === 'sources' ? <NodeContentEditor key={project.project_id + node.id} projectId={project.project_id} node={node} mode={inspector === 'sources' ? 'sources' : 'content'} onShowSources={() => openInspector('sources')} selectedHotspotId={activeSelection} local={origin === 'local'} onSave={(patch) => actions.handleNodeUpdate(node.id, patch)} onShowHistory={() => openInspector('history')} selectionAction={selectedHotspot && (selectedHotspot.target_node_id ? <button type="button" className="text-button" onClick={() => open(selectedHotspot)}>{c('打开分支', 'Open branch')}<Icon name="arrow-right" /></button> : origin === 'local' ? <button type="button" className="text-button" disabled={editingLocked || hasDrafts} onClick={() => createBranch(selectedHotspot)}><Icon name="plus" />{c('添加子页', 'Add page')}</button> : undefined)} /> :
+          <HotspotPanel node={node} local={origin === 'local'} canCreateBranch={!hasDrafts} selectedId={activeSelection} onSelect={select} onOpen={open} onEditContent={() => openInspector('content')} onCreateBranch={origin === 'local' ? createBranch : undefined} onAdd={!node.scene_document ? () => { void actions.handleAddHotspot() } : undefined} onHotspotChange={(h) => { void actions.handleHotspotUpdate(h) }} />}</fieldset>}</div>
+        {inspector === 'hotspots' && <div className="generation-section">
           {origin === 'server' && <GenerationJobPanel key={project.project_id} projectId={project.project_id} />}
           {jobLocked ? null : origin === 'local' ? <p>{hasDrafts ? c('先保存页面草稿，再添加子页或预览作品。', 'Save page drafts before adding pages or previewing.') : c('修改保存在此浏览器，完成后请导出备份。', 'Changes are kept in this browser. Export a backup when ready.')}</p> :
               !node.hotspots.length ? <p>{node.image_url ? c('添加热点后，即可为图片连接新的分支。', 'Add a hotspot to connect a new branch from this image.') : c('添加一个分支起点，再选择要生成的页面。', 'Add a starting point, then select the pages to generate.')}</p> :
@@ -112,7 +118,7 @@ export function BuilderPage() {
         </div>}
       </aside>
     </main>
-    <nav className="mobile-editor-tools" aria-label={c('编辑工具', 'Editor tools')}>{tools.map(([id, label]) => <button key={id} aria-pressed={tool === id || id === 'content' && tool === 'history'} onClick={() => setTool(id)}>{label}</button>)}</nav>
+    <nav className="mobile-editor-tools" aria-label={c('编辑工具', 'Editor tools')}>{tools.map(([id, label]) => <button key={id} type="button" aria-pressed={workspace === id} onClick={() => setWorkspace(id)}>{label}</button>)}</nav>
     {ToastEl}
   </div>
 }

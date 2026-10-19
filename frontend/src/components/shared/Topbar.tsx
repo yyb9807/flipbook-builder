@@ -26,7 +26,7 @@ export function Topbar({ projectActions, onLogoClick }: { projectActions?: React
     <nav className="topbar-right" aria-label={c('主导航', 'Main navigation')}>
       {project && <Link to="/" onClick={home} className="topbar-pill" aria-disabled={busy}><Icon name="arrow-left" />{c('工作台', 'Workspace')}</Link>}
       {projectActions}
-      <Link to="/settings" className="topbar-pill" aria-label={c('模型设置', 'AI settings')} aria-disabled={busy} onClick={(e) => { if (busy) e.preventDefault() }}><Icon name="gear" /><span className="settings-link-label">{c('模型设置', 'AI settings')}</span></Link>
+      <Link to="/settings" className="topbar-pill" aria-label={c('AI 服务设置', 'AI service settings')} aria-disabled={busy} onClick={(e) => { if (busy) e.preventDefault() }}><Icon name="gear" /><span className="settings-link-label">{c('AI 服务', 'AI services')}</span></Link>
       <LanguageSwitcher />
       <ModeToggle />
     </nav>

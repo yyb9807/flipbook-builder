@@ -75,7 +75,13 @@ describe('offline publication boundary', () => {
 
   it('makes a complete zip with a classic player, content and local image resources', async () => {
     const work = project()
-    work.nodes.root.content_metadata = { version: 1, references: [{ id: 'ref', title: 'Water book', url: 'https://example.org/water' }], review_status: 'unreviewed' }
+    work.nodes.root.content_metadata = { version: 1, references: [{
+      id: 'ref', title: 'Water book', url: 'https://en.wikipedia.org/w/index.php?oldid=123', note: 'Author-selected source.',
+      excerpt: '水吸收热量后可以蒸发。\n</script><img src=x onerror=bad()>', locator: 'Evaporation',
+      source_revision: '123', retrieved_at: '2026-10-19T04:00:00+00:00', source_provider: 'wikipedia', source_language: 'en',
+      license_title: 'CC BY-SA 4.0', license_url: 'https://creativecommons.org/licenses/by-sa/4.0/', snapshot_sha256: 'a'.repeat(64),
+    }], review_status: 'unreviewed' }
+    work.nodes.root.scene_document!.sections[0].reference_ids = ['ref']
     work.nodes.root.image_url = '/illustration.png'
     const fetch = vi.fn().mockResolvedValue({ ok: true, headers: new Headers({ 'content-type': 'image/png' }), arrayBuffer: async () => new Uint8Array([137, 80, 78, 71]).buffer })
     vi.stubGlobal('fetch', fetch)
@@ -84,11 +90,41 @@ describe('offline publication boundary', () => {
     expect(strFromU8(files['player.js'])).toBe('window.offlinePlayer = true;')
     expect(strFromU8(files['project.json'])).toContain('images/image-1.png')
     expect(strFromU8(files['project.json'])).not.toContain('secret')
-    expect(JSON.parse(strFromU8(files['project.json'])).nodes.root.content_metadata).toEqual(work.nodes.root.content_metadata)
+    const exported = JSON.parse(strFromU8(files['project.json']))
+    expect(exported.nodes.root.content_metadata).toEqual(work.nodes.root.content_metadata)
+    expect(exported.nodes.root.scene_document.sections[0].reference_ids).toEqual(['ref'])
+    const html = new DOMParser().parseFromString(strFromU8(files['index.html']), 'text/html')
+    const embedded = JSON.parse(html.getElementById('flipbook-data')!.textContent!)
+    expect(embedded).toEqual(exported)
+    expect(html.querySelector('img')).toBeNull()
+    expect(html.querySelectorAll('script')).toHaveLength(2)
     expect(strFromU8(files['index.html'])).toContain('Water book')
     expect(strFromU8(files['index.html'])).toContain('<script src="player.js">')
     expect(fetch).toHaveBeenCalledTimes(1)
+    expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/illustration.png'), { credentials: 'omit' })
     expect(work.nodes.root.image_url).toBe('/illustration.png')
+    work.nodes.root.content_metadata.references[0].excerpt = 'Changed after exporting.'
+    work.nodes.root.scene_document!.sections[0].reference_ids.length = 0
+    expect(exported.nodes.root.content_metadata.references[0].excerpt).toContain('水吸收热量')
+    expect(exported.nodes.root.scene_document.sections[0].reference_ids).toEqual(['ref'])
+  })
+
+  it.each([
+    { reason: 'dangling', ids: ['missing'] },
+    { reason: 'duplicated', ids: ['ref', 'ref'] },
+    { reason: 'over-limit', ids: Array.from({ length: 7 }, (_, index) => `ref-${index}`) },
+  ])('rejects $reason citations before fetching publication assets', async ({ ids }) => {
+    const work = project()
+    work.nodes.root.image_url = '/illustration.png'
+    work.nodes.root.content_metadata = { version: 1, references: [{ id: 'ref', title: 'Saved reference' }], review_status: 'unreviewed' }
+    work.nodes.root.scene_document!.sections[0].reference_ids = ids
+    const before = JSON.stringify(work)
+    const fetch = vi.fn()
+    vi.stubGlobal('fetch', fetch)
+    expect(() => publicationSnapshot(work)).toThrow('引用关联')
+    await expect(createOfflineZip(work)).rejects.toThrow('引用关联')
+    expect(fetch).not.toHaveBeenCalled()
+    expect(JSON.stringify(work)).toBe(before)
   })
 
   it('inlines image data in standalone HTML and reports unavailable images', async () => {

@@ -29,12 +29,25 @@ describe('model credential request scope', () => {
     await api.deleteProject('p1')
     await api.exportProjectJson('p1')
     await api.exportProjectZip('p1')
+    await api.searchSources('water cycle', 'en')
+    await api.getSourcePage('Water_cycle', 'en')
     for (const [, options] of fetchMock.mock.calls) {
       const headers = new Headers(options?.headers)
       expect(headers.has('x-llm-api-key')).toBe(false)
       expect(headers.has('x-imggen-api-key')).toBe(false)
       expect(headers.has('x-llm-base-url')).toBe(false)
     }
+  })
+
+  it('encodes source lookups and keeps structured failure recovery information', async () => {
+    const controller = new AbortController()
+    await api.searchSources('水循环 & energy', 'zh', controller.signal)
+    await api.getSourcePage('Water/cycle?title', 'en', controller.signal)
+    expect(fetchMock.mock.calls[0][0]).toBe('/api/sources/search?q=%E6%B0%B4%E5%BE%AA%E7%8E%AF%20%26%20energy&language=zh')
+    expect(fetchMock.mock.calls[1][0]).toBe('/api/sources/page?key=Water%2Fcycle%3Ftitle&language=en')
+    expect(fetchMock.mock.calls[0][1]?.signal).toBe(controller.signal)
+    fetchMock.mockResolvedValueOnce(new Response(JSON.stringify({ detail: { code: 'source_rate_limited', message: 'Retry later' } }), { status: 429, headers: { 'Retry-After': '45' } }))
+    await expect(api.searchSources('water', 'en')).rejects.toMatchObject({ message: 'Retry later', code: 'source_rate_limited', status: 429, retryAfter: 45 })
   })
 
   it('sends concurrency revisions and an idempotent restoration identity without model credentials', async () => {

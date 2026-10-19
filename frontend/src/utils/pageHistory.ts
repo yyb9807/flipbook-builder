@@ -3,6 +3,7 @@ import { isImageHotspot } from '../types'
 import type { LocalPageVersion, PageSnapshot } from '../types/history'
 import { newId } from '../data/exampleProject'
 import { sectionHotspot } from '../components/scene/sectionHotspot'
+import { restoreReferenceMetadata } from './citations'
 
 export const LOCAL_PAGE_VERSION_LIMIT = 50
 export function pageSnapshot(node: FlipNode): PageSnapshot {
@@ -33,6 +34,8 @@ export function restorePageSnapshot(project: Project, nodeId: string, snapshot: 
   for (const hotspot of linked) if (!hotspots.some((item) => item.id === hotspot.id)) hotspots.push(structuredClone(hotspot))
   let scene = snapshot.scene_document ? structuredClone(snapshot.scene_document) : null
   const currentSections = current.scene_document?.sections ?? []
+  const retainedSectionIds = new Set<string>()
+  const retainedIndexes = new Set<number>()
   const linkedSections = currentSections.filter((section, index) => activeLinks.has(sectionHotspot(current, section, index).id))
   if (!scene && linkedSections.length) scene = { version: 1, layout: current.scene_document!.layout, sections: [] }
   if (scene) {
@@ -42,13 +45,17 @@ export function restorePageSnapshot(project: Project, nodeId: string, snapshot: 
     })
     for (const section of linkedSections) {
       const hotspotId = section.hotspot_id ?? section.id
-      if (!scene.sections.some((item) => (item.hotspot_id ?? item.id) === hotspotId)) scene.sections.push(structuredClone(section))
+      if (!scene.sections.some((item) => (item.hotspot_id ?? item.id) === hotspotId)) {
+        retainedIndexes.add(scene.sections.length)
+        scene.sections.push(structuredClone(section))
+      }
     }
     if (scene.sections.length > 12) throw new Error('恢复后区块将超过 12 个。已有分支需要保留，请先整理未连接区块。')
     const sectionIds = new Set<string>()
-    scene.sections = scene.sections.map((section) => {
+    scene.sections = scene.sections.map((section, index) => {
       const id = sectionIds.has(section.id) ? newId() : section.id
       sectionIds.add(id)
+      if (retainedIndexes.has(index)) retainedSectionIds.add(id)
       return { ...section, id }
     })
     const restored = { ...current, scene_document: scene, hotspots }
@@ -57,6 +64,6 @@ export function restorePageSnapshot(project: Project, nodeId: string, snapshot: 
     for (const hotspot of linked) if (isImageHotspot(hotspot) && !hotspots.some((item) => item.id === hotspot.id)) hotspots.push(structuredClone(hotspot))
   }
   if (hotspots.length > 12) throw new Error('恢复后连接将超过 12 个。已有分支需要保留，请先整理未连接内容。')
-  const metadata = snapshot.content_metadata ? { ...structuredClone(snapshot.content_metadata), review_status: 'unreviewed' as const } : null
+  const metadata = restoreReferenceMetadata(scene, snapshot.content_metadata, current.content_metadata, retainedSectionIds)
   return { node: { ...current, title: snapshot.title, description: snapshot.description, scene_document: scene, content_metadata: metadata, hotspots }, preserved_branch_count }
 }

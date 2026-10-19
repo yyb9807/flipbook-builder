@@ -32,11 +32,16 @@ if (!caseEnvironment) {
         selected: false, target_node_id: childId, position: null, size: null }] : [],
       scene_document: { version: 1, layout: 'sequence', sections: [{ id: `section-${index}`,
         title: `Topic ${index + 1}`, body: `Readable structured knowledge at level ${index + 1}.`,
+        reference_ids: [`reference-${index}`],
         ...(childId ? { hotspot_id: `connection-${index}`, target_node_id: childId } : {}),
       }] },
       content_metadata: {
         version: 1, provenance: { kind: 'ai', input_kind: index ? 'parent_page' : 'text', model: 'local-test-model' },
-        references: [{ id: `reference-${index}`, title: `Author reference ${index + 1}`, url: `https://example.org/level-${index + 1}`, note: `Reference note ${index + 1}` }],
+        references: [{ id: `reference-${index}`, title: `Author reference ${index + 1}`, url: `https://example.org/level-${index + 1}`, note: `Reference note ${index + 1}`,
+          excerpt: `Saved original excerpt at level ${index + 1}. <script>plain text</script>`,
+          source_revision: `revision-${index + 1}`, retrieved_at: '2026-10-19T06:00:00Z',
+          license_title: 'CC BY-SA 4.0', license_url: 'https://creativecommons.org/licenses/by-sa/4.0/',
+        }],
         review_status: index === 2 ? 'reviewed' : 'unreviewed',
       },
     }
@@ -65,7 +70,20 @@ if (!caseEnvironment) {
     assert.equal(reference?.textContent, `Author reference ${index + 1}`)
     assert.equal(reference?.href, `https://example.org/level-${index + 1}`)
     assert.equal(reference?.rel, 'noopener noreferrer')
-    assert.ok(document.body.textContent.includes('The system has not fetched or verified them'))
+    assert.ok(document.body.textContent.includes('do not establish factual accuracy'))
+    assert.ok(document.body.textContent.includes(`Source revision revision-${index + 1}`))
+    const excerpt = document.querySelector('.reference-excerpt')
+    excerpt.querySelector('summary').click()
+    assert.equal(excerpt.open, true)
+    assert.equal(excerpt.querySelector('blockquote').textContent, `Saved original excerpt at level ${index + 1}. <script>plain text</script>`)
+    assert.equal(excerpt.querySelector('script'), null, 'Source content must remain plain text')
+    assert.equal(document.querySelector('.reference-license a')?.href, 'https://creativecommons.org/licenses/by-sa/4.0/')
+    const citation = document.querySelector('.section-citations a')
+    assert.ok(citation, 'Each section must expose its citation')
+    citation.click()
+    assert.equal(document.activeElement, reference.closest('li'), 'A citation must focus the matching reference')
+    document.querySelector('.reference-backlinks a').click()
+    assert.equal(document.activeElement, document.querySelector('.scene-section'), 'A backlink must return focus to its section')
   }
   function clickButton(name) {
     const button = [...document.querySelectorAll('button')].find((element) => element.textContent === name)
@@ -87,6 +105,6 @@ if (!caseEnvironment) {
     assert.deepEqual(errors, [], 'Built player must start and navigate without runtime errors')
     assert.equal(document.querySelector('script[type="module"]'), null)
     assert.equal(document.querySelector('script[src]'), null)
-    console.log(JSON.stringify({ environment: caseEnvironment, script_bytes: Buffer.byteLength(runtime.playerJs), startup: true, three_level_navigation: true, references_and_provenance: true, author_review_state: true, host_environment_preserved: true }))
+    console.log(JSON.stringify({ environment: caseEnvironment, script_bytes: Buffer.byteLength(runtime.playerJs), startup: true, three_level_navigation: true, references_and_provenance: true, source_excerpts_and_license: true, citation_and_return_focus: true, author_review_state: true, host_environment_preserved: true }))
   } finally { dom.window.close() }
 }

@@ -26,8 +26,9 @@ export function HomePage() {
     <Topbar />
     <main className="workspace-home" id="main-content">
       <header className="workspace-intro">
-        <h1>{c('让知识，变得可以探索。', 'Make knowledge explorable.')}</h1>
-        <p>{c('从一个主题或一幅图开始，把解释与分支连接起来。', 'Start with a topic or an image. Connect ideas, explanations and new paths.')}</p>
+        <div><h1>{c('你的创作工作台', 'Your creative workspace')}</h1>
+          <p>{c('整理内容、补充来源，把知识连接成可以探索的作品。', 'Organize content, add sources and connect ideas into an explorable project.')}</p></div>
+        <a className="text-button" href="#projects-title">{c('继续编辑作品', 'Continue a project')}<Icon name="arrow-right" /></a>
       </header>
       <div className="workspace-start">
         <section className="creation-surface" aria-label={c('开始创作', 'Start creating')}>
@@ -38,13 +39,12 @@ export function HomePage() {
           </div>}
         </section>
         <section className="example-surface" aria-labelledby="example-title">
-          <div className="example-heading"><span className="status-tag">{c('可交互示例', 'Interactive example')}</span><span>{c('无需 API Key', 'No API key needed')}</span></div>
+          <div className="example-caption"><div><h2 id="example-title">{c('一滴水的旅程', 'A water drop’s journey')}</h2><p>{c('4 页示例作品 · 无需配置', 'Four-page example · No setup needed')}</p></div></div>
           <div className="example-preview" aria-hidden="true">
             <SceneRenderer node={example.nodes[example.root_node_id!]} showHotspots={false} locale={locale} />
           </div>
-          <div className="example-caption"><div><h2 id="example-title">{c('一滴水的旅程', 'A water drop’s journey')}</h2><p>{c('4 页知识作品，试着点开一条分支。', 'A four-page project. Follow a branch and see how it works.')}</p></div>
-            <button className="btn btn-primary" disabled={analyzing} onClick={openExample}>{c('体验示例', 'Explore example')}<Icon name="arrow-right" /></button>
-          </div>
+          <p className="example-description">{c('看看正文、图片与分支如何协同。打开后可以复制到工作台，再按你的想法修改。', 'See text, images and branches work together. Open the example, then make a copy to edit.')}</p>
+          <button className="text-button example-open" disabled={analyzing} onClick={openExample}>{c('体验示例', 'Explore example')}<Icon name="arrow-right" /></button>
         </section>
       </div>
       <ProjectList />

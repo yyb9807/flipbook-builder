@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
 import { useState } from 'react'
+import userEvent from '@testing-library/user-event'
 import { ImageUploadField } from './ImageUploadField'
 
 /** 测试用 wrapper：把组件挂到本地 state 模拟父组件的受控用法。 */
@@ -55,7 +56,7 @@ describe('ImageUploadField', () => {
       const { container } = render(<Harness />)
       const input = container.querySelector('input[type="file"]') as HTMLInputElement
       fireEvent.change(input, { target: { files: [makeFile('x.txt', 'text/plain', 1)] } })
-      expect(screen.getByText(/⚠.*请上传图片|不支持/)).toBeInTheDocument()
+      expect(screen.getByRole('alert')).toHaveTextContent(/请上传图片|不支持/)
       expect(screen.queryByText('x.txt')).not.toBeInTheDocument()
     })
 
@@ -138,27 +139,43 @@ describe('ImageUploadField', () => {
     })
   })
 
-  describe('Drag and drop', () => {
-    it('拖入图片接受', () => {
+  describe('accessible upload lifecycle', () => {
+    it('exposes a focusable native image chooser and a named keyword field', async () => {
+      const user = userEvent.setup()
+      render(<Harness />)
+      await user.tab()
+      const chooser = screen.getByLabelText('选择图片')
+      expect(chooser).toHaveFocus()
+      expect(chooser).toHaveAttribute('type', 'file')
+      expect(chooser).toHaveAttribute('accept', 'image/jpeg,image/png,image/webp')
+      expect(screen.getByRole('textbox', { name: '关键词（可选）' })).toBeInTheDocument()
+    })
+
+    it('accepts a dropped image and refuses it while creation is disabled', () => {
       const onFile = vi.fn()
-      const { container } = render(
-        <ImageUploadField file={null} onFile={onFile} keywords="" onKeywords={() => {}} />,
-      )
-      const dropZone = container.querySelector('[onDragOver], div')!.parentElement! // 上传区
       const file = makeFile('drop.png', 'image/png', 1)
-      // 模拟 drop 事件
-      const dropEvent = new Event('drop', { bubbles: true }) as unknown as DragEvent
-      Object.defineProperty(dropEvent, 'dataTransfer', {
-        value: { files: [file] },
-      })
-      // 找到真正接收 drop 的容器（拖拽区是有 onDrop 的 div）
-      const div = container.querySelector('div[style*="cursor"]')
-      if (div) {
-        fireEvent.drop(div, { dataTransfer: { files: [file] } })
-        expect(onFile).toHaveBeenCalledWith(file)
-      }
-      // 兜底：组件至少能渲染，drag-drop 集成测试更适合 E2E
-      expect(dropZone).toBeTruthy()
+      const { rerender } = render(<ImageUploadField file={null} onFile={onFile} keywords="" onKeywords={() => {}} />)
+      fireEvent.drop(screen.getByRole('group', { name: '图片上传' }), { dataTransfer: { files: [file] } })
+      expect(onFile).toHaveBeenCalledWith(file)
+      onFile.mockClear()
+      rerender(<ImageUploadField file={null} onFile={onFile} keywords="" onKeywords={() => {}} disabled />)
+      fireEvent.drop(screen.getByRole('group', { name: '图片上传' }), { dataTransfer: { files: [file] } })
+      expect(onFile).not.toHaveBeenCalled()
+      expect(screen.getByLabelText('选择图片')).toBeDisabled()
+    })
+
+    it('reuses a preview while keywords change and releases its object URL when removed', () => {
+      const create = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:preview')
+      const revoke = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
+      const file = makeFile('preview.png', 'image/png', 1)
+      const { rerender, unmount } = render(<ImageUploadField file={file} onFile={() => {}} keywords="" onKeywords={() => {}} />)
+      expect(create).toHaveBeenCalledTimes(1)
+      rerender(<ImageUploadField file={file} onFile={() => {}} keywords="water" onKeywords={() => {}} />)
+      expect(create).toHaveBeenCalledTimes(1)
+      unmount()
+      expect(revoke).toHaveBeenCalledWith('blob:preview')
+      create.mockRestore()
+      revoke.mockRestore()
     })
   })
 })

@@ -1,0 +1,892 @@
+{
+  "schema_version": 1,
+  "round": 11,
+  "recorded_at": "2026-10-19T07:08:23.099484+00:00",
+  "baseline_commit": "d828868679305ed308315554d1f056aff4188bed",
+  "branch": "codex/source-citations-workspace",
+  "scope": {
+    "real_model_calls": 0,
+    "paid_model_calls": 0,
+    "model_downloads": 0,
+    "new_model_integrations": false,
+    "public_retrieval": "Wikipedia zh/en REST only",
+    "automatic_factual_verification": false,
+    "existing_model_presets_preserved": true,
+    "github_actions_added": false
+  },
+  "backend": {
+    "recorded_at": "2026-10-19T07:05:44.610915+00:00",
+    "database": "flipbook_acceptance_196bcb55c631",
+    "targets": [
+      "tests"
+    ],
+    "generation_revision": "default; test-specific settings use monkeypatch",
+    "provider": "controlled only",
+    "exit_code": 0,
+    "elapsed_seconds": 69.97,
+    "log": "final-backend.log",
+    "passed": 576,
+    "isolated_database_removed": true
+  },
+  "source_adapter": {
+    "tests_passed": 77,
+    "domain_allowlist": [
+      "zh.wikipedia.org",
+      "en.wikipedia.org"
+    ],
+    "max_response_bytes": 2097152,
+    "max_excerpt_characters": 3000,
+    "max_concurrent_requests": 2,
+    "total_deadline_seconds_including_queue": 20,
+    "cache_ttl_seconds": 300,
+    "max_cache_entries": 64,
+    "proxy_environment_used": false,
+    "redirects_followed": false,
+    "automatic_retries": false,
+    "concurrent_cooldowns_only_extend": true,
+    "last_regression": {
+      "checked_at": "2026-10-19T07:06:54.344382+00:00",
+      "finding": "Concurrent in-flight 429/503 Retry-After could shorten an active cooldown",
+      "reproduction": "At clock100 two requests are in flight; 429 Retry-After120 arrives, then clock101 receives503 Retry-After5; at107 next request must reject with113 remaining seconds without transport call",
+      "expected_failure_before_fix": true,
+      "regression_before_log": "cooldown-regression-before.log",
+      "fix": "max(existing_until, monotonic_now + retry_after)",
+      "source_tests_passed": 77,
+      "source_test_log": "final-source-tests.log",
+      "ruff_log": "final-source-ruff.log",
+      "only_source_and_regression_test_changed": true,
+      "real_model_calls": 0
+    }
+  },
+  "frontend": {
+    "recorded_at": "2026-10-19T06:58:19.705775+00:00",
+    "node": "v24.19.0",
+    "npm": "11.17.0",
+    "checks": {
+      "tests": {
+        "exit_code": 0,
+        "elapsed_seconds": 3.93,
+        "log": "final-frontend-tests.log",
+        "passed": 341,
+        "test_files": 41
+      },
+      "lint": {
+        "exit_code": 0,
+        "elapsed_seconds": 2.85,
+        "log": "final-frontend-lint.log"
+      },
+      "player": {
+        "exit_code": 0,
+        "elapsed_seconds": 1.18,
+        "log": "final-frontend-player.log"
+      },
+      "build": {
+        "exit_code": 0,
+        "elapsed_seconds": 1.66,
+        "log": "final-frontend-build.log"
+      },
+      "publication": {
+        "exit_code": 0,
+        "elapsed_seconds": 0.19,
+        "log": "final-frontend-publication.log"
+      }
+    }
+  },
+  "compiled_offline_player": [
+    {
+      "environment": "development",
+      "script_bytes": 202136,
+      "startup": true,
+      "three_level_navigation": true,
+      "references_and_provenance": true,
+      "source_excerpts_and_license": true,
+      "citation_and_return_focus": true,
+      "author_review_state": true,
+      "host_environment_preserved": true
+    },
+    {
+      "environment": "production",
+      "script_bytes": 202136,
+      "startup": true,
+      "three_level_navigation": true,
+      "references_and_provenance": true,
+      "source_excerpts_and_license": true,
+      "citation_and_return_focus": true,
+      "author_review_state": true,
+      "host_environment_preserved": true
+    }
+  ],
+  "evaluation": {
+    "recorded_at": "2026-10-19T06:48:49.984828+00:00",
+    "tests_passed": 163,
+    "subtests_passed": 27,
+    "log": "eval-tests.log",
+    "holdout_validation": {
+      "valid": true,
+      "cases": 6,
+      "stages": 18,
+      "independent_visual_scenes": 1,
+      "suite_sha256": "a8ba1f95f5b8dc494d71c174c9475b49cbed36eb74c85687a47b82a8a493576e",
+      "frozen_at_utc": "2026-10-19T05:15:12+00:00",
+      "checks": [
+        "repository dataset schema and provenance",
+        "18-stage controlled replay parsing and branch reachability",
+        "exact original pixel reconstruction and visible-support boxes",
+        "multiscale and occlusion records",
+        "frozen full-file manifest"
+      ]
+    },
+    "round10_frozen_digests_unchanged": true,
+    "real_model_calls": 0,
+    "producer_sha256": "4ac1b7089ee046a0074c7ebecc60bb1b1e9fe8960d35671e38a4db341b777c6f",
+    "evaluator_sha256": "56587b7e688c4e8b7388564e2930101bdeea8364e1c478be0c633eebd6a1c7f4",
+    "source_hashes": {
+      "backend/agents/base.py": "718bdeb0271dd29b9bbc13e0ea9a27181e3245cd4a2c2470b9fec3ec57ab31ea",
+      "backend/agents/input_analysis.py": "e60578de04c39ca79cc27c09a86b3783ee71145960ef167fbc64f59e3d4ca934",
+      "backend/agents/page_generation.py": "9a444e621e07a0d4c50e2e25f4eb1e8fe92297b8c822b2d9241e4d3a12cffb70",
+      "backend/agents/knowledge.py": "2471e97aa3c9c7fdf73d015b27f03de4c1d74d3e5db444e77c119a64b0ebbb6b",
+      "backend/agents/composition.py": "2c40fdea662015beb43a9e2cb72e0bfdd89ba973b49b73b0437205fbf3f7a632",
+      "backend/agents/hotspot_localization.py": "82d3fe4c03670da7500637d8246df11d17010b74f41a92de28ad494d64174065",
+      "backend/agents/page_context.py": "2dd65c129c792151d679895163444136a4c44e3e73bc90f6185ce19e0b224179",
+      "backend/agents/image_boxes.py": "fc3da72a7beafbf805b3189af619e4eec3940cf4478df303808479ce4d9908e9",
+      "backend/jobs/providers.py": "9a404ecc982010afb56818a865e58974dd3f3248fd6cf2e7732c59237a708071",
+      "backend/jobs/page_workflows.py": "d054f5e5913c5eaca08b6d60bad0c36c39cae020a17b878f792b1eeabd4b6e06",
+      "backend/jobs/store.py": "2bfd9024d609da38f144c9aa14b80a72452128783e99cfe49c856e7add6f428c",
+      "backend/utils.py": "4ad7878ec0a4fa518a24bede6879caf4eb59c5efad2b9adb54738417133516ab"
+    },
+    "development_suite_sha256": "c58fc124ea4212795bcec5c6f5a9f954387654db121469400e7249321292e5dd",
+    "holdout_suite_sha256": "a8ba1f95f5b8dc494d71c174c9475b49cbed36eb74c85687a47b82a8a493576e"
+  },
+  "processes": {
+    "recorded_at": "2026-10-19T06:42:13.959777+00:00",
+    "provider": "controlled local HTTP only",
+    "checks": [
+      {
+        "name": "knowledge-default",
+        "generation_revision": "legacy default",
+        "exit_code": 0,
+        "elapsed_seconds": 15.59,
+        "evidence": "knowledge-default.json",
+        "log": "knowledge-default.log",
+        "scenarios_passed": 7,
+        "paid_calls": 0
+      },
+      {
+        "name": "knowledge-focused",
+        "generation_revision": "focused-v3",
+        "exit_code": 0,
+        "elapsed_seconds": 15.53,
+        "evidence": "knowledge-focused.json",
+        "log": "knowledge-focused.log",
+        "scenarios_passed": 7,
+        "paid_calls": 0
+      },
+      {
+        "name": "history",
+        "generation_revision": "legacy default",
+        "exit_code": 0,
+        "elapsed_seconds": 9.97,
+        "evidence": "history.json",
+        "log": "history.log",
+        "scenarios_passed": 10,
+        "paid_calls": 0
+      },
+      {
+        "name": "publications",
+        "generation_revision": "legacy default",
+        "exit_code": 0,
+        "elapsed_seconds": 11.68,
+        "evidence": "publications.json",
+        "log": "publications.log",
+        "scenarios_passed": 10,
+        "paid_calls": 0
+      }
+    ]
+  },
+  "source_citation_process": {
+    "checked_at": "2026-10-19T06:44:35.041852+00:00",
+    "provider": "local HTTP fake",
+    "real_model_calls": 0,
+    "paid_calls": 0,
+    "public_source_requests": 0,
+    "source_material": "original controlled author-saved excerpts; no factual verification",
+    "dotenv_loading_disabled": true,
+    "scenarios": [
+      {
+        "scenario": "invalid_source_language_and_key_are_rejected_without_public_requests",
+        "passed": true
+      },
+      {
+        "scenario": "local_fake_generates_a_real_three_level_knowledge_graph",
+        "passed": true,
+        "pages": 3,
+        "real_model_calls": 0
+      },
+      {
+        "scenario": "source_copy_hash_and_section_association_save_atomically_with_explicit_author_review",
+        "passed": true
+      },
+      {
+        "scenario": "referenced_source_delete_and_foreign_source_reject_without_content_revision_or_history_changes",
+        "passed": true
+      },
+      {
+        "scenario": "unlink_and_source_removal_commit_together",
+        "passed": true
+      },
+      {
+        "scenario": "body_and_source_changes_reset_old_review_but_same_batch_author_declaration_is_respected",
+        "passed": true
+      },
+      {
+        "scenario": "history_preview_and_restore_preserve_newer_connected_section_its_source_and_three_level_graph",
+        "passed": true
+      },
+      {
+        "scenario": "same_id_different_source_copy_conflicts_in_preview_and_restore_without_any_write",
+        "passed": true
+      },
+      {
+        "scenario": "json_and_backend_zip_keep_source_excerpts_hashes_and_section_citations",
+        "passed": true,
+        "pages": 5
+      },
+      {
+        "scenario": "fixed_publication_keeps_cited_content_and_trusted_reader_bytes",
+        "passed": true,
+        "pages": 5,
+        "project_sha256": "7c247fdcf88a4a071bd4372e29d1a387f9128ca9a78ced4dbb6646558ad7c787"
+      },
+      {
+        "scenario": "later_original_edits_do_not_change_any_published_byte",
+        "passed": true
+      },
+      {
+        "scenario": "independent_reader_serves_saved_citations_with_editor_and_provider_stopped",
+        "passed": true
+      },
+      {
+        "scenario": "isolated_database_checkpoints_and_logs_contain_no_provider_key",
+        "passed": true
+      }
+    ],
+    "provider_calls": {
+      "analysis": 1,
+      "plan": 4
+    },
+    "credential_audit": {
+      "tables_scanned": 22,
+      "cells_scanned": 1202,
+      "checkpoint_cells_inspected": 30,
+      "base64_decoded_candidates_inspected": 164,
+      "raw_postgres_relation_files_scanned": 443,
+      "raw_postgres_relation_bytes_scanned": 9789440,
+      "worker_log_and_asset_files_clean": true,
+      "raw_postgres_relation_files_disappeared_before_read": 0,
+      "logical_sql_rows_clean": true,
+      "pg_dump_sql_clean": false,
+      "serialized_negative_control_detected": true
+    },
+    "isolated_database_cleaned": true
+  },
+  "credential_audit_scope": {
+    "source_process_pg_dump": "not_run; pg_dump_sql_clean=false is not a failed leak check",
+    "logical_rows_and_serialized_checkpoints": true,
+    "owned_postgres_relation_files_and_runtime_logs": true,
+    "not_a_comprehensive_security_audit": true
+  },
+  "compose": {
+    "initial_full_stack": {
+      "recorded_at": "2026-10-19T06:48:12.916996+00:00",
+      "project": "flipbook-verify-20261018",
+      "checks": [
+        {
+          "name": "compose-build",
+          "exit_code": 0,
+          "elapsed_seconds": 8.87,
+          "log": "compose-build.log"
+        },
+        {
+          "name": "compose-up",
+          "exit_code": 0,
+          "elapsed_seconds": 11.67,
+          "log": "compose-up.log"
+        },
+        {
+          "name": "stack-http",
+          "exit_code": 0,
+          "elapsed_seconds": 6.03,
+          "log": "stack-http.log"
+        }
+      ],
+      "http_passed": 19
+    },
+    "final_frontend_update": {
+      "recorded_at": "2026-10-19T06:58:19.961265+00:00",
+      "project": "flipbook-verify-20261018",
+      "services_updated": [
+        "frontend"
+      ],
+      "checks": {
+        "build": {
+          "exit_code": 0,
+          "elapsed_seconds": 6.24,
+          "log": "final-frontend-compose-build.log"
+        },
+        "up": {
+          "exit_code": 0,
+          "elapsed_seconds": 0.92,
+          "log": "final-frontend-compose-up.log"
+        }
+      },
+      "previous_assets": {
+        "/assets/index-CK-Rdf3-.js": {
+          "sha256": "9442ba72945bf146d64c4b151939809ad21546849679005abaac613acce83a30",
+          "bytes": 452346,
+          "content_type": "application/javascript"
+        },
+        "/assets/index-BEyHAHIV.css": {
+          "sha256": "5cef23815080c0564dc38deab491a07b5794c9ee2548b324ec0df34436d7098c",
+          "bytes": 60842,
+          "content_type": "text/css"
+        }
+      },
+      "assets": {
+        "/assets/index-B6hU-rUF.js": {
+          "sha256": "ec9a77d5f88f4ede590d7ea383dbf28792f5e59eaf368f49841ed6b2fd9de862",
+          "bytes": 453558,
+          "content_type": "application/javascript"
+        },
+        "/assets/index-C0oLvRNd.css": {
+          "sha256": "f0dc37a31cd7c72a15c586d4d436452a3e5759faea6430e3fdc40a3060d87979",
+          "bytes": 61289,
+          "content_type": "text/css"
+        }
+      },
+      "source_updated": true,
+      "other_container_ids_preserved": {
+        "db": {
+          "before": "40b5c7546441",
+          "after": "40b5c7546441"
+        },
+        "backend": {
+          "before": "4b3516d6167c",
+          "after": "4b3516d6167c"
+        },
+        "reader": {
+          "before": "a11f73807f60",
+          "after": "a11f73807f60"
+        }
+      },
+      "services": [
+        {
+          "service": "backend",
+          "state": "running",
+          "health": "",
+          "id": "4b3516d6167c"
+        },
+        {
+          "service": "db",
+          "state": "running",
+          "health": "healthy",
+          "id": "40b5c7546441"
+        },
+        {
+          "service": "frontend",
+          "state": "running",
+          "health": "",
+          "id": "f6e6e97fbb75"
+        },
+        {
+          "service": "reader",
+          "state": "running",
+          "health": "healthy",
+          "id": "a11f73807f60"
+        }
+      ],
+      "volumes_and_existing_projects_preserved": true
+    },
+    "final_backend_update": {
+      "recorded_at": "2026-10-19T07:06:12.872678+00:00",
+      "project": "flipbook-verify-20261018",
+      "services_updated": [
+        "backend"
+      ],
+      "checks": {
+        "build": {
+          "exit_code": 0,
+          "elapsed_seconds": 2.54,
+          "log": "final-backend-compose-build.log"
+        },
+        "up": {
+          "exit_code": 0,
+          "elapsed_seconds": 1.12,
+          "log": "final-backend-compose-up.log"
+        }
+      },
+      "source_fix": "Concurrent Retry-After responses can only extend an existing cooldown",
+      "source_digest_and_empty_credentials": {
+        "source_sha256": "920b3a964b27caf694344fb277190a5440924c989c7ad923856da32d85264a70",
+        "llm_key_present": false,
+        "imggen_key_present": false
+      },
+      "other_container_ids_preserved": {
+        "db": {
+          "before": "40b5c7546441",
+          "after": "40b5c7546441"
+        },
+        "frontend": {
+          "before": "f6e6e97fbb75",
+          "after": "f6e6e97fbb75"
+        },
+        "reader": {
+          "before": "a11f73807f60",
+          "after": "a11f73807f60"
+        }
+      },
+      "services": [
+        {
+          "service": "backend",
+          "id": "42c534cd783f",
+          "state": "running",
+          "health": ""
+        },
+        {
+          "service": "db",
+          "id": "40b5c7546441",
+          "state": "running",
+          "health": "healthy"
+        },
+        {
+          "service": "frontend",
+          "id": "f6e6e97fbb75",
+          "state": "running",
+          "health": ""
+        },
+        {
+          "service": "reader",
+          "id": "a11f73807f60",
+          "state": "running",
+          "health": "healthy"
+        }
+      ],
+      "invalid_source_checks": [
+        {
+          "endpoint": "search",
+          "status": 422,
+          "expected_code": null,
+          "passed": true
+        },
+        {
+          "endpoint": "page",
+          "status": 422,
+          "expected_code": "source_invalid_key",
+          "passed": true
+        }
+      ],
+      "frontend_html_unchanged": true,
+      "volumes_and_projects_preserved": true
+    }
+  },
+  "live_public_sources": {
+    "checked_at": "2026-10-19T06:35:31.565520+00:00",
+    "provider": "wikipedia",
+    "model_calls": 0,
+    "uses_proxy_environment": false,
+    "checks": [
+      {
+        "language": "zh",
+        "query": "水循环",
+        "search_ok": true,
+        "candidates": 5,
+        "page_ok": true,
+        "key": "水循环",
+        "page_id": 506891,
+        "source_revision": "93586144",
+        "title": "水循环",
+        "permalink": "https://zh.wikipedia.org/w/index.php?title=%E6%B0%B4%E5%BE%AA%E7%8E%AF&oldid=93586144",
+        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/deed.zh",
+        "excerpt_characters": 3000,
+        "truncated": true,
+        "excerpt_sha256": "681abcca9ccff77ab23969790b1dc4e236bc5266332957dc882aeedf9f5eecd8",
+        "cached_copy_equal": true
+      },
+      {
+        "language": "en",
+        "query": "water cycle",
+        "search_ok": true,
+        "candidates": 5,
+        "page_ok": true,
+        "key": "Water_cycle",
+        "page_id": 200167,
+        "source_revision": "1368240581",
+        "title": "Water cycle",
+        "permalink": "https://en.wikipedia.org/w/index.php?title=Water_cycle&oldid=1368240581",
+        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/deed.en",
+        "excerpt_characters": 3000,
+        "truncated": true,
+        "excerpt_sha256": "dd8f8ec6130c6d76f44d1aa34d9041626bcde962d38979eb5a1bda346c8d1815",
+        "cached_copy_equal": true
+      }
+    ]
+  },
+  "nginx_source_checks": {
+    "checked_at": "2026-10-19T06:49:24.934441+00:00",
+    "base_url": "http://127.0.0.1:18080",
+    "validation_checks": [
+      {
+        "endpoint": "search",
+        "validation": [
+          "q",
+          "language"
+        ],
+        "status": 422,
+        "passed": true
+      },
+      {
+        "endpoint": "search",
+        "validation": [
+          "q"
+        ],
+        "status": 422,
+        "passed": true
+      },
+      {
+        "endpoint": "search",
+        "validation": [
+          "q"
+        ],
+        "status": 422,
+        "passed": true
+      },
+      {
+        "endpoint": "page",
+        "validation": [
+          "key",
+          "language"
+        ],
+        "status": 422,
+        "passed": true
+      },
+      {
+        "endpoint": "page",
+        "validation": [
+          "key"
+        ],
+        "status": 422,
+        "passed": true
+      }
+    ],
+    "real_public_source_probe": {
+      "search_status": 200,
+      "public_requests": 2,
+      "model_calls": 0,
+      "search_candidates": 5,
+      "search_retrieved_at": "2026-10-19T06:49:23.742415+00:00",
+      "page_status": 200,
+      "page_id": "ref_en_200167_1368240581",
+      "page_title": "Water cycle",
+      "source_revision": "1368240581",
+      "url": "https://en.wikipedia.org/w/index.php?title=Water_cycle&oldid=1368240581",
+      "excerpt_characters": 3000,
+      "snapshot_sha256": "cb297fb1e5cf2c352d6a7c0925ffa469854e473cc003c8955b41adf0152f0aac",
+      "truncated": true,
+      "license_title": "Creative Commons Attribution-Share Alike 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/deed.en",
+      "retrieved_at": "2026-10-19T06:49:24.630630+00:00"
+    },
+    "temporary_projects_removed": 4,
+    "temporary_asset_directories_removed": true,
+    "owned_fake_listener_closed": true,
+    "credentials": {
+      "llm_key_present": false,
+      "imggen_key_present": false
+    },
+    "services": [
+      {
+        "service": "backend",
+        "state": "running",
+        "health": "",
+        "container_id": "4b3516d6167c"
+      },
+      {
+        "service": "db",
+        "state": "running",
+        "health": "healthy",
+        "container_id": "40b5c7546441"
+      },
+      {
+        "service": "frontend",
+        "state": "running",
+        "health": "",
+        "container_id": "19bc4ab45b32"
+      },
+      {
+        "service": "reader",
+        "state": "running",
+        "health": "healthy",
+        "container_id": "a11f73807f60"
+      }
+    ],
+    "volumes_preserved": true,
+    "public_source_claim": "Public retrieval only; no factual review or model inference"
+  },
+  "browser": {
+    "surface": "CUA / in-app browser",
+    "real_public_sources_local_project": {
+      "model_or_key_required": false,
+      "manual_creation": true,
+      "body_sections": 2,
+      "source_languages": [
+        "zh",
+        "en"
+      ],
+      "page_references": 2,
+      "same_source_cites_two_sections": true,
+      "draft_shared_between_content_and_sources": true,
+      "atomic_save": true,
+      "citation_and_backlink_focus": true,
+      "linked_source_removal_disabled": true,
+      "actual_zip_download": {
+        "sha256": "4e120b5d1840b27b409cb56449ed35ccfecd019575d34883fe9e61860128e429",
+        "references": 2,
+        "cited_sections": 2,
+        "languages": [
+          "zh",
+          "en"
+        ],
+        "source_excerpts": true,
+        "source_revisions_and_licenses": true,
+        "real_models": 0
+      },
+      "local_project_retained_for_review": true
+    },
+    "controlled_server_project": {
+      "source_material": "original controlled author-saved excerpts, not public retrieval",
+      "real_model_calls": 0,
+      "controlled_provider_calls": 4,
+      "pages": 4,
+      "levels": 3,
+      "history_restore_preserved_one_newer_branch_and_its_required_reference": true,
+      "fixed_publication": {
+        "url": "http://127.0.0.1:18082/p/pub_f10446300e924f83a4011b523e0b2852/",
+        "hashes": {
+          "index.html": "edefaced93fc9aaff078ca1c5d5bd41d38776019fe8f14a6bf8b370849047e2a",
+          "project.json": "1390ddf0edb90a7fbc12b1172251cc9dc53ea58a9e9b21fe94aae18abb069cca",
+          "player.js": "6322c001913757dd9fe51d9310ab5d7d6f4a50477e60b6a79e498da6e7d83861",
+          "player.css": "55c4bbf01f808e72bdee8dadc6956ecfc1fdfa4416e5e685fbb189808cd6c924"
+        },
+        "history_restore_preserved_citations_and_new_branch": true,
+        "pages": 4,
+        "unchanged_after_original_title_and_excerpt_edit": true,
+        "unchanged_with_editor_database_provider_stopped": true,
+        "three_level_browser_navigation_with_citation_and_backlinks": true,
+        "stopped_services": [
+          "backend",
+          "db"
+        ],
+        "provider_stopped_before_browser": true,
+        "cleanup": {
+          "owned_server_project_removed": true,
+          "test_publication_withdrawn": true,
+          "public_snapshot_assets_removed": true,
+          "private_withdrawal_receipt_retained_by_product": true,
+          "local_manual_demo_retained_for_review": true
+        }
+      }
+    },
+    "source_failure": {
+      "kind": "editor backend deliberately stopped, nginx returns HTTP 502",
+      "not_a_wikipedia_outage": true,
+      "query_preserved": true,
+      "existing_references_preserved": true,
+      "manual_fallback_available": true
+    },
+    "keyboard_finish_confirmation": {
+      "preview_to_return_via_tab": true,
+      "enter_returns_focus_to_original_candidate": true,
+      "add_focuses_reference_group": true,
+      "added_candidate_results_collapsed": true
+    },
+    "published_reader_console_errors": 0,
+    "file_url_browser": {
+      "status": "not_executed",
+      "reason": "IAB rejects file:// protocol; no workaround attempted",
+      "download_and_archive_inspection_passed": true,
+      "jsdom_file_url_does_not_replace_real_browser_test": true
+    },
+    "viewport_checks": [
+      {
+        "width": 1440,
+        "height": 1000,
+        "horizontal_overflow": false
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "document_and_editor_scroll_width": 390,
+        "source_input_font_px": 16,
+        "locales": [
+          "zh",
+          "en"
+        ]
+      }
+    ]
+  },
+  "design": {
+    "modes": [
+      "Operate",
+      "Read"
+    ],
+    "identity": "existing paper white, sea green, ink, system fonts",
+    "mechanical_detector": {
+      "runs": 1,
+      "stage": "completed UI before finish fixes",
+      "findings": []
+    },
+    "batched_visual_passes": 2,
+    "independent_finish_review": {
+      "verdict": "release-ready",
+      "remaining_material_p1_p2_findings": 0,
+      "fixed_findings": [
+        "preview unmount lost keyboard focus",
+        "sticky save area needed an opaque backplate",
+        "existing model option hints needed English localization"
+      ]
+    },
+    "screenshots": [
+      {
+        "path": "docs/images/round11-workspace-desktop.jpg",
+        "width": 1440,
+        "height": 1000,
+        "sha256": "9d62b9936b3c1cf0609649afee72b019452c535469443288ecf74a8fb554e578"
+      },
+      {
+        "path": "docs/images/round11-workspace-mobile.jpg",
+        "width": 390,
+        "height": 844,
+        "sha256": "569af5de94f66c3b616243a88912b4ceb28d1d493aa005191cb52fe7fa9c13fc"
+      },
+      {
+        "path": "docs/images/round11-sources-desktop.jpg",
+        "width": 1440,
+        "height": 1000,
+        "sha256": "13dbb65319c1e7982dcb8250b3eaacdf1cbc21f2b4d18f4f05ec08b46d0dc813"
+      },
+      {
+        "path": "docs/images/round11-sources-mobile.jpg",
+        "width": 390,
+        "height": 844,
+        "sha256": "c1679c19ba767cc195525e0d5ee6e04403d91dfb6c65152aad9a83d314fae9dd"
+      },
+      {
+        "path": "docs/images/round11-settings-mobile.jpg",
+        "width": 390,
+        "height": 844,
+        "sha256": "4ce92122504b9fa174b1506f71c56d709a9f913df3ef92baf6871c2ab919a7f5"
+      },
+      {
+        "path": "docs/images/round11-settings-desktop.jpg",
+        "width": 1440,
+        "height": 1000,
+        "sha256": "ceb0afda7767d27bca659a668b89d6b10f25809add39bb4403c9a07c56eb822f"
+      },
+      {
+        "path": "docs/images/round11-history-desktop.jpg",
+        "width": 1440,
+        "height": 900,
+        "sha256": "4d831354dab102f91a68d7b8af704690ce37411d1896bfad0abe7e6c91f1328a"
+      },
+      {
+        "path": "docs/images/round11-reader-isolated.jpg",
+        "width": 1440,
+        "height": 900,
+        "sha256": "59aa6d9cc81f0c083013ad460c4e52c1c912484badbe380a916445f0d12ef897"
+      }
+    ]
+  },
+  "limitations": [
+    "Source copies and citation links do not establish factual accuracy or per-claim support.",
+    "Retrieval is limited to Wikipedia zh/en and the first 3000 plaintext characters.",
+    "Author edits can change the saved copy; its hash is not a tamper-proof retrieval receipt.",
+    "No automatic source retrieval/injection was added to model generation.",
+    "Local authoring/ZIP and server history/publication were verified as separate flows; no local-project upload was added.",
+    "Real-browser file://, screen-reader testing, complex formulas without alternative text and long-running large-workload testing remain outside this acceptance."
+  ],
+  "cleanup": {
+    "isolated_postgres_databases_removed": true,
+    "owned_provider_listeners_closed": true,
+    "browser_controlled_server_project_removed": true,
+    "browser_test_publication_withdrawn_and_public_files_removed": true,
+    "private_withdrawal_receipt_retained_by_product": true,
+    "compose_services_restored": true,
+    "volumes_preserved": true,
+    "local_demo_retained_for_review": true
+  },
+  "final_checks": {
+    "local_document_links_checked": 116,
+    "broken_local_links": 0,
+    "git_diff_check": "passed",
+    "ruff_changed_backend_files": "passed",
+    "frozen_generation_evaluation_dataset_paths_unchanged": true,
+    "editor_health_http": 200,
+    "reader_health_http": 200
+  },
+  "evidence_policy": {
+    "public_artifacts": "This JSON contains non-sensitive summaries and screenshot hashes; raw machine logs and temporary diagnostic JSON are not committed.",
+    "log_and_evidence_names": "Nested log/evidence values are labels from their recorded local runs, not links to repository attachments.",
+    "localhost_urls": "Local addresses and publication IDs describe the recorded acceptance environment. The browser test publication was withdrawn after verification; these are not live demo links.",
+    "measurement_preservation": "Measured timestamps, results and image bytes/hashes remain unchanged. JPEG screenshot filenames were corrected from .png to .jpg during submission cleanup."
+  },
+  "submission_cleanup": {
+    "recorded_at": "2026-10-19T07:15:09.649286+00:00",
+    "scope": "submission cleanup; no functional or visual changes",
+    "checks": {
+      "tests": {
+        "exit_code": 0,
+        "elapsed_seconds": 3.56,
+        "log": "tests.log",
+        "passed": 341,
+        "test_files": 41
+      },
+      "lint": {
+        "exit_code": 0,
+        "elapsed_seconds": 2.5,
+        "log": "lint.log"
+      },
+      "player": {
+        "exit_code": 0,
+        "elapsed_seconds": 1.17,
+        "log": "player.log"
+      },
+      "build": {
+        "exit_code": 0,
+        "elapsed_seconds": 1.69,
+        "log": "build.log"
+      },
+      "publication": {
+        "exit_code": 0,
+        "elapsed_seconds": 0.19,
+        "log": "publication.log"
+      },
+      "ruff": {
+        "exit_code": 0,
+        "elapsed_seconds": 0.04,
+        "log": "ruff.log"
+      }
+    },
+    "documents": {
+      "markdown_files": 53,
+      "local_links_checked": 382,
+      "broken_links": 0,
+      "screenshots_byte_preserved": 8,
+      "round10_plan_bytes_preserved": true,
+      "round10_report_only_link_targets_changed": true,
+      "generation_evaluation_freeze_preserved": true,
+      "github_actions_added": false
+    },
+    "backend_changes_during_cleanup": "Module docstring only; prior full 576-test Postgres result is preserved and not represented as a new run.",
+    "frontend_changes_during_cleanup": "Removed an empty callback wrapper and duplicate validation call; expanded formatting without visual or contract changes.",
+    "screenshots": "Renamed JPEG bytes from .png to .jpg; original hashes unchanged."
+  }
+}

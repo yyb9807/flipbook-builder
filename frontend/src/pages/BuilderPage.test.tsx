@@ -9,8 +9,9 @@ import { providerConfig, useGenerationJobStore } from '../store/generationJobSto
 import { DEFAULT_MODEL_SETTINGS } from '../store/settingsStore'
 import { useLibraryStore } from '../store/libraryStore'
 import { api } from '../api/client'
+import { useI18nStore } from '../i18n'
 
-beforeEach(() => { useProjectStore.getState().resetProject(); useNodeDraftStore.setState({ drafts: {} }) })
+beforeEach(() => { useI18nStore.setState({ locale: 'zh' }); useProjectStore.getState().resetProject(); useNodeDraftStore.setState({ drafts: {} }) })
 afterEach(() => { cleanup(); vi.restoreAllMocks() })
 
 describe('direct local branch workflow', () => {
@@ -21,6 +22,7 @@ describe('direct local branch workflow', () => {
     useProjectStore.getState().openProject(project, 'local')
     useProjectStore.getState().navigateTo(parentId)
     render(<MemoryRouter><BuilderPage /></MemoryRouter>)
+    fireEvent.click(within(screen.getByRole('navigation', { name: '页面编辑面板' })).getByRole('button', { name: '分支' }))
     const panel = screen.getByRole('region', { name: '分支连接' })
     expect(within(panel).queryByRole('checkbox')).not.toBeInTheDocument()
     fireEvent.click(within(panel).getByRole('button', { name: '添加子页：不只有海洋' }))
@@ -80,6 +82,7 @@ describe('direct local branch workflow', () => {
     vi.spyOn(api, 'listPageVersions').mockResolvedValue({ project_revision: 3, current_version_id: null, versions: [] })
     vi.spyOn(api, 'getProject').mockResolvedValue(canonical)
     render(<MemoryRouter><BuilderPage /></MemoryRouter>)
+    fireEvent.click(within(screen.getByRole('navigation', { name: '页面编辑面板' })).getByRole('button', { name: '热点' }))
     fireEvent.click(screen.getByRole('button', { name: '编辑热点：已保存热点' }))
     const label = screen.getByRole('textbox', { name: '热点名称' })
     fireEvent.change(label, { target: { value: '保存失败的热点' } })
@@ -94,5 +97,48 @@ describe('direct local branch workflow', () => {
     expect(useLibraryStore.getState().projects[`local-recovery-${project.project_id}`].project.nodes[node.id].hotspots[0].label).toBe('保存失败的热点')
     expect(await screen.findByText('已载入最新保存的作品。请选择版本并重新查看恢复预览。')).toBeVisible()
     expect(screen.queryByText('页面修改尚未成功保存。请先重试保存，再恢复版本。')).not.toBeInTheDocument()
+  })
+})
+
+
+describe('workbench editing panels', () => {
+  it('keeps all four panel selections separate from the three mobile workspaces', () => {
+    useProjectStore.getState().openProject(createExampleProject(), 'local')
+    render(<MemoryRouter><BuilderPage /></MemoryRouter>)
+    const panels = screen.getByRole('navigation', { name: '页面编辑面板' })
+    const workspaces = screen.getByRole('navigation', { name: '编辑工具' })
+    expect(within(panels).getAllByRole('button').map((button) => button.textContent)).toEqual(['内容', '来源', '分支', '历史版本'])
+    expect(within(workspaces).getAllByRole('button').map((button) => button.textContent)).toEqual(['画布', '页面', '编辑'])
+    fireEvent.click(within(panels).getByRole('button', { name: '来源' }))
+    expect(within(panels).getByRole('button', { name: '来源' })).toHaveAttribute('aria-pressed', 'true')
+    expect(within(workspaces).getByRole('button', { name: '编辑' })).toHaveAttribute('aria-pressed', 'true')
+    fireEvent.click(within(workspaces).getByRole('button', { name: '画布' }))
+    fireEvent.click(within(workspaces).getByRole('button', { name: '编辑' }))
+    expect(within(panels).getByRole('button', { name: '来源' })).toHaveAttribute('aria-pressed', 'true')
+    fireEvent.click(within(panels).getByRole('button', { name: '历史版本' }))
+    expect(within(panels).getByRole('button', { name: '历史版本' })).toHaveAttribute('aria-pressed', 'true')
+    expect(within(panels).getByRole('button', { name: '内容' })).toHaveAttribute('aria-pressed', 'false')
+    expect(within(workspaces).getByRole('button', { name: '编辑' })).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('keeps unsaved content across source and page switches and labels the saved preview', () => {
+    const project = createExampleProject()
+    const root = project.nodes[project.root_node_id!]
+    useProjectStore.getState().openProject(project, 'local')
+    render(<MemoryRouter><BuilderPage /></MemoryRouter>)
+    fireEvent.change(screen.getByRole('textbox', { name: '标题' }), { target: { value: '尚未保存的标题' } })
+    expect(screen.getByText('已保存预览')).toBeVisible()
+    expect(screen.getByRole('button', { name: '本页有草稿，保存后更新预览' })).toBeVisible()
+    const panels = screen.getByRole('navigation', { name: '页面编辑面板' })
+    fireEvent.click(within(panels).getByRole('button', { name: '来源' }))
+    expect(useProjectStore.getState().project!.nodes[root.id].title).toBe(root.title)
+    const pages = screen.getByRole('navigation', { name: '作品页面' })
+    fireEvent.click(within(pages).getByRole('button', { name: /蒸发/ }))
+    expect(screen.queryByRole('button', { name: '本页有草稿，保存后更新预览' })).not.toBeInTheDocument()
+    fireEvent.click(within(pages).getByRole('button', { name: /一滴水的旅程/ }))
+    fireEvent.click(within(panels).getByRole('button', { name: '内容' }))
+    expect(screen.getByRole('textbox', { name: '标题' })).toHaveValue('尚未保存的标题')
+    expect(useProjectStore.getState().project!.nodes[root.id].title).toBe(root.title)
+    expect(useNodeDraftStore.getState().drafts[project.project_id]![root.id].title).toBe('尚未保存的标题')
   })
 })
