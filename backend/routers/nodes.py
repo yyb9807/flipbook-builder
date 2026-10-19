@@ -14,6 +14,7 @@ from hotspots import insert_hotspots, public_hotspot, synchronize_scene_sections
 from jobs.locking import lock_project_write
 from sse import _sse
 from utils import gen_id
+from version_history import capture_before, record_changes
 
 router = APIRouter()
 
@@ -49,10 +50,11 @@ class NodeUpdate(BaseModel):
     description: str | None = Field(default=None, max_length=20_000)
     scene_document: SceneDocument | None = None
     content_metadata: ContentMetadata | None = None
+    expected_revision: int | None = Field(default=None, ge=0)
 
     @model_validator(mode="after")
     def valid_patch(self):
-        if not self.model_fields_set:
+        if not (self.model_fields_set - {"expected_revision"}):
             raise ValueError("请提供需要修改的页面内容")
         for field in ("title", "description", "content_metadata"):
             if field in self.model_fields_set and getattr(self, field) is None:
@@ -68,7 +70,7 @@ async def update_node(
     pool: asyncpg.Pool = Depends(get_pool),
 ):
     async with pool.acquire() as conn, conn.transaction():
-        await lock_project_write(conn, project_id)
+        await lock_project_write(conn, project_id, expected_revision=body.expected_revision)
         node = await conn.fetchrow(
             "SELECT * FROM nodes WHERE id = $1 AND project_id = $2 FOR UPDATE", node_id, project_id
         )
@@ -76,6 +78,7 @@ async def update_node(
             raise HTTPException(404, "节点不存在")
         if node["status"] == "generating":
             raise HTTPException(409, "页面正在生成，请稍后编辑")
+        before = await capture_before(conn, project_id, node_id)
         scene = None
         saved_hotspots = None
         if "scene_document" in body.model_fields_set:
@@ -125,11 +128,13 @@ async def update_node(
         if saved_hotspots is None:
             saved_hotspots = [public_hotspot(hotspot) for hotspot in await conn.fetch(
                 "SELECT * FROM hotspots WHERE node_id = $1 ORDER BY sort_order", node_id)]
+        revision = await record_changes(conn, project_id, [(node_id, before)], "edit")
     result = dict(updated)
     if isinstance(result.get("scene_document"), str):
         result["scene_document"] = json.loads(result["scene_document"])
     result["content_metadata"] = public_content_metadata(result.get("content_metadata"))
     result["hotspots"] = saved_hotspots
+    result["project_revision"] = revision
     return result
 
 
@@ -145,7 +150,9 @@ class HotspotUpdate(BaseModel):
 
 
 class UpdateHotspotsBody(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
     hotspots: list[HotspotUpdate] = Field(max_length=100)
+    expected_revision: int | None = Field(default=None, ge=0)
 
 
 class HotspotCreate(BaseModel):
@@ -155,6 +162,7 @@ class HotspotCreate(BaseModel):
     pos_y: float = Field(ge=0, le=1)
     width: float = Field(gt=0, le=1)
     height: float = Field(gt=0, le=1)
+    expected_revision: int | None = Field(default=None, ge=0)
 
     @model_validator(mode="after")
     def inside_image(self):
@@ -170,7 +178,7 @@ async def create_hotspot(
     project_id: str, node_id: str, body: HotspotCreate, pool: asyncpg.Pool = Depends(get_pool),
 ):
     async with pool.acquire() as conn, conn.transaction():
-        await lock_project_write(conn, project_id)
+        await lock_project_write(conn, project_id, expected_revision=body.expected_revision)
         node = await conn.fetchrow(
             "SELECT id, status, scene_document FROM nodes WHERE id = $1 AND project_id = $2 FOR UPDATE", node_id, project_id
         )
@@ -183,11 +191,14 @@ async def create_hotspot(
         count = await conn.fetchval("SELECT COUNT(*) FROM hotspots WHERE node_id = $1", node_id)
         if count >= 12:
             raise HTTPException(400, "每个页面最多添加 12 个热点")
+        before = await capture_before(conn, project_id, node_id)
         result = await insert_hotspots(conn, node_id, [{
             "label": body.label.strip(), "x": body.pos_x, "y": body.pos_y,
             "width": body.width, "height": body.height, "score": None,
         }], selected=True, sort_offset=count)
         await conn.execute("UPDATE projects SET updated_at = NOW() WHERE id = $1", project_id)
+        revision = await record_changes(conn, project_id, [(node_id, before)], "hotspot_added")
+    result[0]["project_revision"] = revision
     return result[0]
 
 
@@ -199,7 +210,7 @@ async def update_hotspots(
     pool: asyncpg.Pool = Depends(get_pool),
 ):
     async with pool.acquire() as conn, conn.transaction():
-        await lock_project_write(conn, project_id)
+        await lock_project_write(conn, project_id, expected_revision=body.expected_revision)
         node = await conn.fetchrow(
             "SELECT id, status, scene_document, content_metadata FROM nodes WHERE id = $1 AND project_id = $2 FOR UPDATE", node_id, project_id
         )
@@ -231,6 +242,7 @@ async def update_hotspots(
                     raise HTTPException(400, "请填写区块名称")
             if changes_geometry and (x + width > 1.000001 or y + height > 1.000001):
                 raise HTTPException(400, "热点区域必须完整位于图片内")
+        before = await capture_before(conn, project_id, node_id)
         for upd in body.hotspots:
             # 构建动态 UPDATE
             sets = []
@@ -283,8 +295,9 @@ async def update_hotspots(
             if metadata is not None:
                 metadata = {**metadata, "review_status": "unreviewed"}
         await conn.execute("UPDATE projects SET updated_at = NOW() WHERE id = $1", project_id)
+        revision = await record_changes(conn, project_id, [(node_id, before)], "hotspot_edit")
 
-    return {"status": "ok", "content_metadata": metadata}
+    return {"status": "ok", "content_metadata": metadata, "project_revision": revision}
 
 
 class GenerateChildrenBody(BaseModel):

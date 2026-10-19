@@ -6,6 +6,7 @@ import { useNodeDraftStore } from '../../store/nodeDraftStore'
 import { useProjectStore } from '../../store/projectStore'
 import { createManualProject } from '../../data/exampleProject'
 import type { FlipNode } from '../../types'
+import { ConfirmHost } from '../shared/ConfirmDialog'
 
 beforeEach(() => { useNodeDraftStore.setState({ drafts: {} }); useProjectStore.getState().resetProject() })
 afterEach(cleanup)
@@ -89,6 +90,33 @@ describe('selected section editing', () => {
 })
 
 describe('persistent content drafts', () => {
+  it('discards only the current page draft after confirmation and keeps linked sections protected', async () => {
+    const { project, node } = twoSectionProject()
+    node.scene_document!.sections[0].target_node_id = 'existing-child'
+    const otherDraft = { title: '另一页草稿', description: '', scene_document: null }
+    useNodeDraftStore.getState().setDraft(project.project_id, 'other-page', otherDraft)
+    render(<><NodeContentEditor projectId={project.project_id} node={node} local onSave={vi.fn()} /><ConfirmHost /></>)
+    expect(screen.getByRole('button', { name: '移除区块 1' })).toBeDisabled()
+    expect(screen.getByText('此区块已连接子页，保留区块可保护分支关系。')).toBeVisible()
+    fireEvent.change(screen.getByRole('textbox', { name: '标题' }), { target: { value: '未保存的新标题' } })
+    const discard = screen.getByRole('button', { name: '撤回本次修改' })
+    discard.focus()
+    fireEvent.click(discard)
+    let dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByRole('button', { name: '取消' })).toHaveFocus()
+    fireEvent.click(within(dialog).getByRole('button', { name: '取消' }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+    expect(discard).toHaveFocus()
+    expect(screen.getByRole('textbox', { name: '标题' })).toHaveValue('未保存的新标题')
+    fireEvent.click(discard)
+    dialog = await screen.findByRole('dialog')
+    fireEvent.click(within(dialog).getByRole('button', { name: '撤回本次修改' }))
+    await waitFor(() => expect(screen.getByRole('textbox', { name: '标题' })).toHaveValue(node.title))
+    expect(useNodeDraftStore.getState().drafts[project.project_id][node.id]).toBeUndefined()
+    expect(useNodeDraftStore.getState().drafts[project.project_id]['other-page']).toBe(otherDraft)
+    expect(node.scene_document!.sections[0].target_node_id).toBe('existing-child')
+  })
+
   it('keeps typed text when the inspector is unmounted and blocks an outdated preview', () => {
     const project = createManualProject('original', 'zh')
     const node = project.nodes[project.root_node_id!]

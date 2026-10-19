@@ -1,5 +1,7 @@
 # 第五轮浏览器完整流程验收
 
+> 历史记录（2026-10-18）。本文保留当次操作和结果；当前验收见[验证说明](../VERIFICATION.md)。
+
 2026-10-18。使用Codex CUA操作真实React界面、本轮独立FastAPI/DBOS/Postgres与本地HTTP假供应商。通过可见按钮、表单、文件选择器和下载完成操作；没有用隐藏store、页面脚本写入或HTTP代替UI。Key为合成临时凭据，没有勾选记住密钥。截图、导出和报告不包含Key值。
 
 ## 第一批桌面与手机操作
@@ -30,7 +32,7 @@
 
 正式nginx/FastAPI/Postgres实例已重建并保留运行，浏览器实际确认新版“同时生成插图（可选）”入口。4个前端产物与12个后端源文件逐字节匹配当前工作区。临时Vite、离线HTTP预览、假供应商/验收API已停止；本轮各隔离数据库均已删除，正式实例测试作品为0。
 
-保留的最终截图：[实际 ZIP 来源展示](images/round5-final-offline-source.jpg)、[正式整栈新版](images/round5-final-official-stack.jpg)。其余第一批与修复过程截图属于当时的本机缓存，不随仓库提交；上述步骤与原始机器证据保留其验收上下文。
+保留的最终截图：[实际 ZIP 来源展示](../images/round5-final-offline-source.jpg)、[正式整栈新版](../images/round5-final-official-stack.jpg)。其余第一批与修复过程截图属于当时的本机缓存，不随仓库提交；上述步骤与原始机器证据保留其验收上下文。
 
 ## 边界
 

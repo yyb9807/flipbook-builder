@@ -8,8 +8,11 @@
 | 第二轮：持久子页 | [计划](ROUND_2_PLAN.md)、[任务契约](DURABLE_INTEGRATION_PLAN.md) | [实施](ROUND_2_IMPLEMENTATION.md)、[独立审查](ROUND_2_CODE_REVIEW.md)、[17 场景记录](DURABLE_GENERATION_VERIFICATION.md)、[Postgres 基线](POSTGRES_STACK_VERIFICATION.md) |
 | 第三轮：根页与再生 | [计划](ROUND_3_PLAN.md)、[持久设计](ROUND_3_DURABLE_DESIGN.md) | [实施](ROUND_3_IMPLEMENTATION.md)、[审查](ROUND_3_CODE_REVIEW.md)、[浏览器](ROUND_3_BROWSER_ACCEPTANCE.md)、[32＋1＋3 场景记录](DURABLE_PAGE_VERIFICATION.md) |
 | 第四轮：编辑交互 | [计划](ROUND_4_PLAN.md) | [实施](ROUND_4_IMPLEMENTATION.md)、[审查](ROUND_4_CODE_REVIEW.md) |
-| 第五轮：结构化 AI 正文与作者资料 | [计划](ROUND_5_PLAN.md) | [实施](../ROUND_5_IMPLEMENTATION.md)、[审查](../ROUND_5_CODE_REVIEW.md)、[浏览器验收](../ROUND_5_BROWSER_ACCEPTANCE.md) |
+| 第五轮：结构化 AI 正文与作者资料 | [计划](ROUND_5_PLAN.md) | [实施](ROUND_5_IMPLEMENTATION.md)、[审查](ROUND_5_CODE_REVIEW.md)、[浏览器验收](ROUND_5_BROWSER_ACCEPTANCE.md) |
+| 第五轮后清理基线 | 退役旧 CLI、SQLite PoC 和无用 helper | [验证汇总](evidence/cleanup-verification.json)、[生成进程](evidence/cleanup-knowledge-process.json)、[整栈 HTTP](evidence/cleanup-postgres-stack.json) |
 
-[历史机器证据](evidence/)保留旧结果；第五轮证据位于[当前证据目录](../evidence/)。JSON 中的旧入口、临时文件名、地址和截图路径是当时的测量上下文，不是当前仓库文件清单。为避免将本机缓存作为项目资源，提交只保留两张有代表性的最终截图，见[最新浏览器记录](../ROUND_5_BROWSER_ACCEPTANCE.md)。
+[历史机器证据](evidence/)保留第一至第五轮及清理基线的原始结果，不改写历史测量值。第五轮原始后端测试为 257/257；随后删除废弃 helper 及其 8 个测试，清理基线为后端 249/249、前端 232/232、生成进程 7/7、整栈 HTTP 19/19 与双环境播放器通过。当前结果统一见[验证说明](../VERIFICATION.md)。
 
-SQLite PoC 和不适配新知识页默认合约的旧 36 场景 CLI 已退役，记录与关键证据保留，公共测试支持已归并到 `scripts/durable_acceptance/`。当前正式恢复检查请使用 `scripts/verify_knowledge_generation.py`；不要复制历史命令执行。
+JSON 中的旧入口、相对路径、临时文件名、地址和截图路径是当时的测量上下文，不是当前仓库文件清单；归档时不改写它们。第五轮两张有代表性的最终截图见[浏览器记录](ROUND_5_BROWSER_ACCEPTANCE.md)，第六轮截图与证据见[当前实施记录](../ROUND_6_IMPLEMENTATION.md)。
+
+SQLite PoC 和不适配新知识页默认合约的旧 36 场景 CLI 已退役，记录与关键证据保留，公共测试支持已归并到 `scripts/durable_acceptance/`。当前生成恢复检查使用 `scripts/verify_knowledge_generation.py`，页面历史检查使用 `scripts/verify_version_history.py`；不要复制历史命令执行。

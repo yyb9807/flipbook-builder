@@ -16,7 +16,7 @@ npm run dev
 
 Open the URL printed by Vite, usually http://localhost:5173. Explore the four-page water-cycle example and edit a local copy. Write knowledge pages, add child pages directly from sections, annotate PNG/JPEG/WebP images, preview and export.
 
-Local projects live in this browser; export before clearing site data. Manual local images are limited to 2 MB. Creation inputs and page-content drafts survive navigation and reloads. Save page drafts before previewing or exporting; uncreated file selections stay only for the current session.
+Local projects and history live in this browser; export a backup before clearing site data. Manual local images are limited to 2 MB. Creation inputs and page-content drafts survive navigation and reloads. “Discard these changes” clears only the current page's unsaved draft, keeping drafts on other pages. Save page drafts before previewing or exporting; uncreated file selections stay only for the current session.
 
 ## Self-host the AI workflow
 
@@ -40,16 +40,19 @@ Keys stay in page memory by default. Explicitly remembering a key stores it as p
 - **Two content modes:** knowledge-page sections connect to child pages; image hotspots use actual image coordinates. The editor, online viewer and offline player share one rendering core.
 - **Durable jobs:** root analysis, child generation and eligible single-page regeneration use Postgres/DBOS. Reloads, disconnections and settings navigation do not cancel work. Completed stages are reused; lost temporary keys require explicit resumption. Unknown provider outcomes pause for review before a potentially billable retry.
 - **Draft protection:** save status remains visible, successful branches are kept, and active jobs lock the project. Pages with hotspots or structured content cannot be regenerated wholesale, preserving authored text and relationships.
+- **Page history:** browse saved content, references, hotspots and generated results. Preview the actual merged restoration before confirming it. Current connection targets, child pages and their descendants are kept, including connected sections absent from the old version. A restoration that changes content adds a version, so the previous content remains recoverable; restored pages require a new author review.
 - **Author review:** generated pages record input type and model. Authors may add references and declare a review; changing content, references or hotspot labels clears that declaration. References are author-supplied, with no fetching, statement-level attribution or automatic fact verification. Model-generated citations are ignored.
 
-![Offline knowledge page with author references](docs/images/round5-final-offline-source.jpg)
+![Page history and restoration preview](docs/images/round6-final-desktop-history.png)
+
+Local history keeps the latest 50 versions per page in the same storage entry as the project. A rejected storage write preserves the saved project and history. Server history lives in Postgres without automatic pruning. Finish generation, saving and all page drafts before restoring. A conflict across tabs keeps current changes and requires an explicit reload of the latest saved whole project; this is not a collaboration protocol. History is not a database or image backup, and deleting a project also deletes its history.
 
 ## Preview and export
 
 | Format | Contents and requirements |
 |---|---|
-| Offline ZIP | Shared player, images and project data. Extract the whole folder and open `index.html`; no backend, account or key is required. |
-| JSON | Project content, structure and attribution, without image binaries or provider settings. |
+| Offline ZIP | Shared player, images and project data. Extract the whole folder and open `index.html`; no backend, account or key is required. Page history is excluded. |
+| JSON | Project content, structure and attribution, without image binaries, provider settings or page history. |
 | Instance link | Read-only interface requiring a running instance. It reads current project data, not an immutable publication snapshot. |
 
 Keep the ZIP files together. Publish the entire extracted folder as static files. Actual browser acceptance covers HTTP playback; the independent player verifier covers JSDOM file URLs. Cross-browser acceptance of double-clicked `file://` files remains pending.
@@ -66,7 +69,7 @@ npm run verify:player
 npm run build
 ```
 
-See [backend development](backend/README.md), [current architecture](docs/ARCHITECTURE.md) and [verification commands and limits](docs/VERIFICATION.md). CI runs frontend checks, real Postgres backend tests and process recovery verification using controlled providers, with no paid model calls.
+See [backend development](backend/README.md), [current architecture](docs/ARCHITECTURE.md) and [verification commands and limits](docs/VERIFICATION.md). GitHub Actions is configured for frontend checks, real Postgres backend tests and process recovery verification using controlled providers, with no paid model calls. The verification guide records local results; remote CI status comes from the actual run for each commit.
 
 Back up the database and `data/`; `docker compose down -v` removes database volumes. [Historical reports](docs/archive/README.md) are retained for traceability, not as current setup instructions.
 

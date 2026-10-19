@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useProjectStore, getWorkspaceRevision } from '../store/projectStore'
 import { useSettingsStore } from '../store/settingsStore'
 import { api } from '../api/client'
@@ -9,12 +9,13 @@ import { useNodeDraftStore } from '../store/nodeDraftStore'
 import { newId } from '../data/exampleProject'
 import type { Hotspot, Project, FlipNode } from '../types'
 import { isImageHotspot } from '../types'
-import { enqueueMutation, hasProjectMutations } from './workspaceMutationQueue'
+import { authoringRevision, enqueueMutation, hasProjectMutations, isHistoryRestoreActive, onPendingMutationsReset, setMutationFailed } from './workspaceMutationQueue'
 import { forgetUploadFile, prepareAnalysis, startGeneration, startRegeneration, submitGeneration } from './generationJobs'
 import { projectGenerationLocked, useGenerationJobStore } from '../store/generationJobStore'
 import type { CreateProjectResponse } from '../types/api'
 import { useI18n } from '../i18n'
 import { useCopy } from '../i18n/workspace'
+import { connectLocalBranch } from '../utils/localBranches'
 
 type ToastFn = (msg: string, type?: 'success' | 'error' | 'info') => void
 
@@ -43,6 +44,9 @@ export function useBuilderActions(showToast: ToastFn) {
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'error'>('saved')
   const pending = useRef(new Map<string, () => Promise<void>>())
   const contentMutationEpochs = useRef(new Map<string, number>())
+  useEffect(() => onPendingMutationsReset((pid) => {
+    if (useProjectStore.getState().project?.project_id === pid) { pending.current.clear(); setSaveStatus('saved') }
+  }), [])
   const analyzing = useProjectStore((s) => s.analyzing)
   const generating = useProjectStore((s) => s.generating)
 
@@ -55,6 +59,11 @@ export function useBuilderActions(showToast: ToastFn) {
   }
   function advanceContentEpoch(projectId: string, nodeId: string) {
     contentMutationEpochs.current.set(`${projectId}/${nodeId}`, contentEpoch(projectId, nodeId) + 1)
+  }
+  function localSaveFailure() {
+    return useLibraryStore.getState().storageConflict
+      ? c('另一标签已更新此作品。原页面和草稿仍保留，请先导出未保存内容，再从版本历史重新载入。', 'Another tab updated this project. Your page and drafts are kept. Export unsaved work, then reload from version history.')
+      : c('浏览器未能保存修改，原页面和历史已保留。请释放空间或导出备份。', 'The browser could not save this change. The original page and history are kept. Free storage or export a backup.')
   }
 
   function checkApiKey(): boolean {
@@ -111,7 +120,7 @@ export function useBuilderActions(showToast: ToastFn) {
 
   function durableLocked() {
     const state = useProjectStore.getState()
-    return projectGenerationLocked(useGenerationJobStore.getState(), state.project?.project_id, state.origin)
+    return Boolean(state.project && isHistoryRestoreActive(state.project.project_id)) || projectGenerationLocked(useGenerationJobStore.getState(), state.project?.project_id, state.origin)
   }
 
   async function handleGenerateChildren(generateImages?: boolean) {
@@ -164,7 +173,7 @@ export function useBuilderActions(showToast: ToastFn) {
 
   function keepRecovery(snapshot: Project) {
     const id = `local-recovery-${snapshot.project_id}`
-    useLibraryStore.getState().save({ ...snapshot, project_id: id, name: snapshot.name + ' · 未保存副本' })
+    return useLibraryStore.getState().save({ ...snapshot, project_id: id, name: snapshot.name + ' · 未保存副本' })
   }
 
   function handleHotspotUpdate(hotspot: Hotspot): Promise<void> {
@@ -179,7 +188,7 @@ export function useBuilderActions(showToast: ToastFn) {
     const labelChanged = !!previous && previous.label !== hotspot.label
     if (labelChanged) advanceContentEpoch(pid, nodeId)
     const optimisticPatch = hotspotContentPatch(original.nodes[nodeId], hotspot, labelChanged)
-    updateNode(nodeId, optimisticPatch)
+    if (!updateNode(nodeId, optimisticPatch, 'hotspot_edit')) { showToast(localSaveFailure(), 'error'); return Promise.resolve() }
     const draft = useNodeDraftStore.getState().drafts[pid]?.[nodeId]
     if (labelChanged && draft?.content_metadata?.review_status === 'reviewed') {
       useNodeDraftStore.getState().setDraft(pid, nodeId, { ...draft,
@@ -191,13 +200,18 @@ export function useBuilderActions(showToast: ToastFn) {
     const mutationEpoch = contentEpoch(pid, nodeId)
     if (origin === 'local') { setSaveStatus('saved'); return Promise.resolve() }
     const key = `${nodeId}/${hotspot.id}`
+    const revisionToken = authoringRevision(pid, revision, original.revision)
     const operation = async () => {
       const saved = await api.updateHotspots(pid, nodeId, [{ id: hotspot.id, label: hotspot.label, selected: hotspot.selected,
-        ...(isImageHotspot(hotspot) ? { pos_x: hotspot.position.x, pos_y: hotspot.position.y, width: hotspot.size.width, height: hotspot.size.height } : {}) }]) as Partial<Pick<FlipNode, 'content_metadata'>> | undefined
+        ...(isImageHotspot(hotspot) ? { pos_x: hotspot.position.x, pos_y: hotspot.position.y, width: hotspot.size.width, height: hotspot.size.height } : {}) }], revisionToken.revision) as (Partial<Pick<FlipNode, 'content_metadata'>> & { project_revision?: number }) | undefined
+      if (saved?.project_revision !== undefined) revisionToken.revision = saved.project_revision
+      setMutationFailed(pid, key, false)
       const current = useProjectStore.getState()
       // A terminal job read may have replaced an earlier failed optimistic edit.
       // Reapply only this field's latest accepted operation in its original workspace.
       if (pending.current.get(key) === operation && getWorkspaceRevision() === revision && current.project?.project_id === pid) {
+        if (saved?.project_revision !== undefined && (current.project.revision ?? 0) > saved.project_revision) return
+        if (saved?.project_revision !== undefined) useProjectStore.setState({ project: { ...current.project, revision: saved.project_revision } })
         const latestNode = current.project.nodes[nodeId]
         const latest = latestNode?.hotspots.find((item) => item.id === hotspot.id)
         if (latest) {
@@ -215,15 +229,16 @@ export function useBuilderActions(showToast: ToastFn) {
     }
     pending.current.set(key, operation)
     setSaveStatus('saving')
-    const request = enqueueMutation(`${pid}/${key}`, operation)
+    const request = enqueueMutation(`${pid}/authoring`, operation)
     return request.then(() => {
       if (pending.current.get(key) === operation) pending.current.delete(key)
       if (!pending.current.size) setSaveStatus('saved')
     }).catch((e) => {
+      setMutationFailed(pid, key, true)
       setSaveStatus('error')
       const current = useProjectStore.getState().project
-      keepRecovery(current?.project_id === pid ? current : { ...project, nodes: { ...project.nodes, [nodeId]: { ...project.nodes[nodeId], ...optimisticPatch } } })
-      showToast(`保存失败，已保留本地副本：${(e as Error).message}`, 'error')
+      const kept = keepRecovery(current?.project_id === pid ? current : { ...project, nodes: { ...project.nodes, [nodeId]: { ...project.nodes[nodeId], ...optimisticPatch } } })
+      showToast(`保存失败，${kept ? '已保留本地副本' : '浏览器未能保存副本，修改仍在当前页面或草稿中，请释放空间或手动备份内容'}：${(e as Error).message}`, 'error')
     })
   }
 
@@ -235,7 +250,7 @@ export function useBuilderActions(showToast: ToastFn) {
     }
     setSaveStatus('saving')
     for (const [key, operation] of [...pending.current]) {
-      try { await enqueueMutation(`${project?.project_id}/${key}`, operation); if (pending.current.get(key) === operation) pending.current.delete(key) }
+      try { await enqueueMutation(`${project.project_id}/authoring`, operation); if (pending.current.get(key) === operation) pending.current.delete(key) }
       catch (e) { setSaveStatus('error'); showToast(`重试失败：${(e as Error).message}`, 'error'); return }
     }
     setSaveStatus(pending.current.size ? 'saving' : 'saved')
@@ -245,17 +260,31 @@ export function useBuilderActions(showToast: ToastFn) {
     if (!project) return false
     if (useProjectStore.getState().generating || durableLocked()) return false
     const pid = project.project_id
+    const original = useProjectStore.getState().project
+    if (original?.project_id !== pid || !original.nodes[nodeId]) return false
+    const revision = getWorkspaceRevision()
+    const revisionToken = authoringRevision(pid, revision, original.revision)
+    if (origin === 'local' && patch.scene_document !== undefined) {
+      const kept = new Set(patch.scene_document?.sections.map((section) => section.hotspot_id ?? section.id) ?? [])
+      if (original.nodes[nodeId].hotspots.some((hotspot) => hotspot.target_node_id && !kept.has(hotspot.id) && hotspot.kind === 'section')) {
+        showToast(c('已有子页的区块需要保留。请编辑其内容，或从版本历史安全恢复。', 'Keep sections connected to existing pages. Edit their content or restore safely from history.'), 'info')
+        return false
+      }
+    }
     if (patch.title !== undefined || patch.description !== undefined || patch.scene_document !== undefined || patch.content_metadata !== undefined) advanceContentEpoch(pid, nodeId)
     const mutationEpoch = contentEpoch(pid, nodeId)
-    updateNode(nodeId, patch)
+    if (!updateNode(nodeId, patch)) { showToast(localSaveFailure(), 'error'); return false }
     if (origin === 'local') return true
     setSaveStatus('saving')
     const key = `node/${nodeId}`
-    const revision = getWorkspaceRevision()
     const operation = async () => {
-      const saved = await api.updateNode(pid, nodeId, { title: patch.title, description: patch.description, scene_document: patch.scene_document, content_metadata: patch.content_metadata }) as Partial<FlipNode> | undefined
+      const saved = await api.updateNode(pid, nodeId, { title: patch.title, description: patch.description, scene_document: patch.scene_document, content_metadata: patch.content_metadata, ...(revisionToken.revision !== undefined ? { expected_revision: revisionToken.revision } : {}) }) as (Partial<FlipNode> & { project_revision?: number }) | undefined
+      if (saved?.project_revision !== undefined) revisionToken.revision = saved.project_revision
+      setMutationFailed(pid, key, false)
       const current = useProjectStore.getState()
       if (pending.current.get(key) === operation && getWorkspaceRevision() === revision && current.project?.project_id === pid) {
+        if (saved?.project_revision !== undefined && (current.project.revision ?? 0) > saved.project_revision) return
+        if (saved?.project_revision !== undefined) useProjectStore.setState({ project: { ...current.project, revision: saved.project_revision } })
         current.updateNode(nodeId, {
           ...(patch.title !== undefined ? { title: patch.title } : {}),
           ...(patch.description !== undefined ? { description: patch.description } : {}),
@@ -271,28 +300,52 @@ export function useBuilderActions(showToast: ToastFn) {
     }
     pending.current.set(key, operation)
     try {
-      await enqueueMutation(`${project.project_id}/${key}`, operation)
+      await enqueueMutation(`${pid}/authoring`, operation)
       if (pending.current.get(key) === operation) pending.current.delete(key)
       setSaveStatus(pending.current.size ? 'saving' : 'saved')
       return true
     } catch (e) {
+      setMutationFailed(pid, key, true)
       const current = useProjectStore.getState().project
-      keepRecovery(current?.project_id === project.project_id ? current : { ...project, nodes: { ...project.nodes, [nodeId]: { ...project.nodes[nodeId], ...patch } } })
+      const kept = keepRecovery(current?.project_id === project.project_id ? current : { ...project, nodes: { ...project.nodes, [nodeId]: { ...project.nodes[nodeId], ...patch } } })
       setSaveStatus('error')
-      showToast(`保存失败，已保留本地副本：${(e as Error).message}`, 'error')
+      showToast(`保存失败，${kept ? '已保留本地副本' : '浏览器未能保存副本，修改仍在当前页面或草稿中，请释放空间或手动备份内容'}：${(e as Error).message}`, 'error')
       return false
     }
   }
 
+  function handleCreateLocalBranch(nodeId: string, hotspotId: string): string | null {
+    const state = useProjectStore.getState()
+    const current = state.project
+    if (!current || state.origin !== 'local' || state.generating || isHistoryRestoreActive(current.project_id)) return null
+    if (Object.keys(useNodeDraftStore.getState().drafts[current.project_id] ?? {}).length) { showToast(c('请先保存或撤回页面草稿，再添加子页。', 'Save or discard page drafts before adding a page.'), 'info'); return null }
+    const connected = connectLocalBranch(current, nodeId, hotspotId, newId(), newId(), c('进一步解释', 'Explain further'))
+    if (!connected) return null
+    if (!state.setProject(connected.project, 'local', 'branch_create')) { showToast(localSaveFailure(), 'error'); return null }
+    return connected.nodeId
+  }
+
   async function handleAddHotspot() {
-    if (!project || !activeNodeId || generating || durableLocked()) return
-    const node = project.nodes[activeNodeId]
-    if (!node || node.hotspots.length >= 12) return
+    const current = useProjectStore.getState()
+    if (!current.project || !current.activeNodeId || current.generating || durableLocked()) return
+    const pid = current.project.project_id
+    const node = current.project.nodes[current.activeNodeId]
+    if (!node || node.hotspots.length >= 12 || node.scene_document) return
     const hotspot: Hotspot = { id: newId(), label: '新热点', position: { x: .4, y: .4 }, size: { width: .2, height: .2 }, selected: true, target_node_id: null, score: null }
+    const revision = getWorkspaceRevision()
+    const revisionToken = authoringRevision(pid, revision, current.project.revision)
     setSaveStatus('saving')
     try {
-      const saved = origin === 'local' ? hotspot : await api.createHotspot(project.project_id, node.id, { label: hotspot.label, pos_x: .4, pos_y: .4, width: .2, height: .2 }) as Hotspot
-      updateNode(node.id, { hotspots: [...useProjectStore.getState().project!.nodes[node.id].hotspots, saved] })
+      if (current.origin === 'local') {
+        if (!updateNode(node.id, { hotspots: [...node.hotspots, hotspot] }, 'hotspot_added')) throw new Error(localSaveFailure())
+      } else await enqueueMutation(`${pid}/authoring`, async () => {
+        const saved = await api.createHotspot(pid, node.id, { label: hotspot.label, pos_x: .4, pos_y: .4, width: .2, height: .2, ...(revisionToken.revision !== undefined ? { expected_revision: revisionToken.revision } : {}) }) as Hotspot & { project_revision?: number }
+        if (saved.project_revision !== undefined) revisionToken.revision = saved.project_revision
+        const latest = useProjectStore.getState()
+        if (revision !== getWorkspaceRevision() || latest.project?.project_id !== pid) return
+        if (saved.project_revision !== undefined && (latest.project.revision ?? 0) > saved.project_revision) return
+        useProjectStore.setState({ project: { ...latest.project, ...(saved.project_revision !== undefined ? { revision: saved.project_revision } : {}), nodes: { ...latest.project.nodes, [node.id]: { ...latest.project.nodes[node.id], hotspots: [...latest.project.nodes[node.id].hotspots, saved] } } } })
+      })
       setSaveStatus('saved')
       showToast('已添加热点，请在画布中拖动校正位置', 'success')
     } catch (e) { setSaveStatus('saved'); showToast(`添加热点失败：${(e as Error).message}`, 'error') }
@@ -305,6 +358,7 @@ export function useBuilderActions(showToast: ToastFn) {
     handleHotspotUpdate,
     handleNodeUpdate,
     handleAddHotspot,
+    handleCreateLocalBranch,
     saveStatus,
     retryPending,
   }

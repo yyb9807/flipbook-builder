@@ -19,6 +19,9 @@ describe('model credential request scope', () => {
     await api.listProjects()
     await api.updateNode('p1', 'n1', { title: 'Edited' })
     await api.updateHotspots('p1', 'n1', [])
+    await api.listPageVersions('p1', 'n1')
+    await api.getPageVersion('p1', 'n1', 'v1')
+    await api.restorePageVersion('p1', 'n1', 'v1', 'operation', 4)
     await api.deleteProject('p1')
     await api.exportProjectJson('p1')
     await api.exportProjectZip('p1')
@@ -28,6 +31,15 @@ describe('model credential request scope', () => {
       expect(headers.has('x-imggen-api-key')).toBe(false)
       expect(headers.has('x-llm-base-url')).toBe(false)
     }
+  })
+
+  it('sends concurrency revisions and an idempotent restoration identity without model credentials', async () => {
+    await api.updateNode('p1', 'n1', { title: 'New', expected_revision: 4 })
+    await api.updateHotspots('p1', 'n1', [{ id: 'h', label: 'Idea' }], 5)
+    await api.createHotspot('p1', 'n1', { label: 'New', pos_x: .2, pos_y: .3, width: .1, height: .1, expected_revision: 6 })
+    await api.restorePageVersion('p1', 'n1', 'v1', 'same-operation', 7)
+    expect(fetchMock.mock.calls.map(([, options]) => JSON.parse(options!.body as string).expected_revision)).toEqual([4, 5, 6, 7])
+    expect(JSON.parse(fetchMock.mock.calls[3][1]!.body as string)).toEqual({ operation_id: 'same-operation', expected_revision: 7 })
   })
 
   it('attaches current model settings to analyze and generation operations', async () => {

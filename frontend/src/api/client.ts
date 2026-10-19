@@ -1,6 +1,7 @@
 import { useSettingsStore, type ModelSettings } from '../store/settingsStore'
 import type { TestConfigResult } from '../types/api'
 import type { GenerationJob, PendingAnalysis, PendingChildren, PendingRegeneration } from '../types/jobs'
+import type { PageRestoreResult, PageVersionDetail, PageVersionList } from '../types/history'
 
 function getModelHeaders(s: ModelSettings = useSettingsStore.getState()): Record<string, string> {
   return {
@@ -117,7 +118,7 @@ export const api = {
   acceptGenerationJob: (jobId: string, confirmationId: string) =>
     apiFetch<GenerationJob>(`/jobs/${jobId}/accept`, { method: 'POST', body: JSON.stringify({ confirmation_id: confirmationId }) }),
   cancelGenerationJob: (jobId: string) => apiFetch<GenerationJob>(`/jobs/${jobId}/cancel`, { method: 'POST' }),
-  createHotspot: (projectId: string, nodeId: string, hotspot: { label: string; pos_x: number; pos_y: number; width: number; height: number }) =>
+  createHotspot: (projectId: string, nodeId: string, hotspot: { label: string; pos_x: number; pos_y: number; width: number; height: number; expected_revision?: number }) =>
     apiFetch(`/projects/${projectId}/nodes/${nodeId}/hotspots`, { method: 'POST', body: JSON.stringify(hotspot) }),
   createProject: (name: string, settings?: object) =>
     apiFetch('/projects', {
@@ -144,16 +145,23 @@ export const api = {
   deleteProject: (projectId: string) =>
     apiFetch(`/projects/${projectId}`, { method: 'DELETE' }),
 
-  updateNode: (projectId: string, nodeId: string, updates: { title?: string; description?: string; scene_document?: unknown; content_metadata?: unknown }) =>
+  listPageVersions: (projectId: string, nodeId: string) => apiFetch<PageVersionList>(`/projects/${projectId}/nodes/${nodeId}/versions`),
+  getPageVersion: (projectId: string, nodeId: string, versionId: string) => apiFetch<PageVersionDetail>(`/projects/${projectId}/nodes/${nodeId}/versions/${versionId}`),
+  restorePageVersion: (projectId: string, nodeId: string, versionId: string, operationId: string, expectedRevision: number) =>
+    apiFetch<PageRestoreResult>(`/projects/${projectId}/nodes/${nodeId}/versions/${versionId}/restore`, {
+      method: 'POST', body: JSON.stringify({ operation_id: operationId, expected_revision: expectedRevision }),
+    }),
+
+  updateNode: (projectId: string, nodeId: string, updates: { title?: string; description?: string; scene_document?: unknown; content_metadata?: unknown; expected_revision?: number }) =>
     apiFetch(`/projects/${projectId}/nodes/${nodeId}`, {
       method: 'PATCH',
       body: JSON.stringify(updates),
     }),
 
-  updateHotspots: (projectId: string, nodeId: string, hotspots: object[]) =>
+  updateHotspots: (projectId: string, nodeId: string, hotspots: object[], expectedRevision?: number) =>
     apiFetch(`/projects/${projectId}/nodes/${nodeId}/hotspots`, {
       method: 'PATCH',
-      body: JSON.stringify({ hotspots }),
+      body: JSON.stringify({ hotspots, ...(expectedRevision !== undefined ? { expected_revision: expectedRevision } : {}) }),
     }),
 
   testConfig: (draft: ModelSettings = useSettingsStore.getState()) =>

@@ -1,0 +1,72 @@
+{
+  "provider": "local HTTP fake",
+  "paid_calls": 0,
+  "database": "flipbook_acceptance_647c5c262524",
+  "scenarios": [],
+  "provider_calls": {
+    "analysis": 1,
+    "plan": 2
+  },
+  "credential_audit": {
+    "tables_scanned": 22,
+    "cells_scanned": 701,
+    "checkpoint_cells_inspected": 18,
+    "base64_decoded_candidates_inspected": 79,
+    "raw_postgres_relation_files_scanned": 429,
+    "raw_postgres_relation_bytes_scanned": 9576448,
+    "worker_log_and_asset_files_clean": true,
+    "logical_sql_rows_clean": true,
+    "pg_dump_sql_clean": false,
+    "serialized_negative_control_detected": true
+  },
+  "cleanup_complete": true,
+  "browser_acceptance": {
+    "date": "2026-10-19",
+    "verification_mode": "Human-like browser interactions through CUA; no state injection",
+    "project_id": "proj_md6rtfkr0b",
+    "revision_after_restore_restart": 9,
+    "node_count": 3,
+    "depths": [
+      0,
+      1,
+      2
+    ],
+    "root_versions": 5,
+    "root_title": "服务器改稿：应可安全撤销",
+    "branch_graph_consistent": true,
+    "flows": {
+      "local_current_draft_revert_kept_other_page_draft": true,
+      "local_earliest_version_restore_kept_new_child": true,
+      "local_refresh_and_reader_navigation": true,
+      "local_actual_zip_download": true,
+      "server_root_and_two_child_levels_generated": true,
+      "server_stale_tab_restore_409_no_overwrite": true,
+      "server_explicit_reload_then_restore": true,
+      "server_recover_pre_undo_content": true,
+      "server_three_level_reader_navigation": true,
+      "server_restart_kept_history": true,
+      "image_hotspot_keyboard_geometry_restore": true,
+      "image_restored_hotspot_center_style": "left: 50%; top: 50%;",
+      "english_mobile_width": 390,
+      "english_mobile_document_width": 390,
+      "previous_version_shortcut_shows_preview_without_dialog": true,
+      "actual_server_zip_three_level_navigation": true,
+      "actual_offline_zip_console_errors_or_warnings": []
+    },
+    "paid_model_calls": 0,
+    "fake_provider_calls": {
+      "analysis": 1,
+      "plan": 2
+    },
+    "screenshots": [
+      "../images/round6-final-desktop-history.png",
+      "../images/round6-final-mobile-history.png"
+    ],
+    "limits": [
+      "Desktop Chromium-based IAB and 390px viewport; not independent cross-browser or assistive-technology certification.",
+      "HTTP-served actual ZIP verified; real browser file protocol not tested."
+    ]
+  },
+  "test_provider_settings_restored": true,
+  "temporary_browser_tabs_closed": true
+}

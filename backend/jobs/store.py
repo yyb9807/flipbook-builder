@@ -15,6 +15,7 @@ from hotspots import insert_hotspots
 from jobs.models import ACTIVE_SQL, TERMINAL
 from storage import url_to_disk_path
 from utils import gen_id
+from version_history import capture_before, record_changes
 
 JSON_FIELDS = {"input", "provider_config", "result", "error", "required_credentials", "confirmation", "input_summary"}
 PUBLIC_FIELDS = (
@@ -310,6 +311,7 @@ class JobStore:
             node_id = row["target_node_id"]
             is_root = row["kind"] == "analyze"
             knowledge = frozen.get("content_format") == "knowledge-v1"
+            before = None if is_root else await capture_before(conn, row["project_id"], node_id)
             title = str((page.get("title") if knowledge or not is_root else page.get("summary")) or frozen["subject"]["label"])[:200]
             description = str((page.get("summary") if is_root else page.get("description")) or "")[:20000]
             if is_root:
@@ -337,6 +339,7 @@ class JobStore:
                     "hotspots": hotspots, "children": []}
             if metadata is not None:
                 node["content_metadata"] = metadata
+            await record_changes(conn, row["project_id"], [(node_id, before)], "generation")
             result = {"nodes": [node], "warnings": warnings, "failed_hotspot_ids": [], **node}
             if is_root:
                 result.update({"node_id": node_id, "summary": description, "main_objects": page.get("main_objects") or [],
@@ -478,6 +481,7 @@ class JobStore:
             )
             if not hotspot or hotspot["target_node_id"]:
                 raise RuntimeError("generation_parent_changed")
+            parent_before = await capture_before(conn, row["project_id"], row["node_id"])
             title = str(page.get("title") or child["label"])[:200]
             description = str(page.get("description") or "")[:20000]
             source_type = "text" if frozen.get("content_format") == "knowledge-v1" else "image"
@@ -501,6 +505,7 @@ class JobStore:
                     "hotspot_id": child["hotspot_id"]}
             if metadata is not None:
                 node["content_metadata"] = metadata
+            await record_changes(conn, row["project_id"], [(row["node_id"], parent_before), (child["node_id"], None)], "generation")
             result["nodes"].append(node)
             result["warnings"].extend(warnings)
             await conn.execute("UPDATE projects SET updated_at=NOW() WHERE id=$1", row["project_id"])

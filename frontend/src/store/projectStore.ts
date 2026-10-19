@@ -17,11 +17,11 @@ interface ProjectState {
   genProgress: GenProgress | null
   keywords: Keyword[]
   selectedKeywords: string[]
-  setProject: (p: Project, origin?: ProjectOrigin) => void
+  setProject: (p: Project, origin?: ProjectOrigin, historyReason?: string) => boolean
   adoptCommittedProject: (p: Project) => void
   openProject: (p: Project, origin?: ProjectOrigin, mode?: 'builder' | 'viewer') => void
   resetProject: () => void
-  updateNode: (id: string, update: Partial<FlipNode>) => void
+  updateNode: (id: string, update: Partial<FlipNode>, historyReason?: string) => boolean
   addNode: (node: FlipNode) => void
   updateHotspot: (id: string, hotspot: Hotspot) => void
   setActiveNode: (id: string) => void
@@ -62,17 +62,21 @@ function pathTo(project: Project, id: string): string[] {
   return path
 }
 
-function saveLocal(project: Project, origin: ProjectOrigin) {
-  if (origin === 'local') useLibraryStore.getState().save(project)
+function saveLocal(project: Project, origin: ProjectOrigin, reason?: string) {
+  if (origin !== 'local') return project
+  if (!useLibraryStore.getState().save(project, reason)) return null
+  return useLibraryStore.getState().projects[project.project_id].project
 }
 
 export const useProjectStore = create<ProjectState>()(persist((set, get) => ({
   project: null, origin: 'server', activeNodeId: null, mode: 'builder', navigationStack: [],
   generating: false, analyzing: false, genProgress: null, keywords: [], selectedKeywords: [],
-  setProject: (project, requestedOrigin) => {
+  setProject: (project, requestedOrigin, historyReason) => {
     const origin = requestedOrigin ?? (get().project?.project_id === project.project_id ? get().origin : 'server')
-    saveLocal(project, origin)
-    set({ project, origin })
+    const saved = saveLocal(project, origin, historyReason)
+    if (!saved) return false
+    set({ project: saved, origin })
+    return true
   },
   adoptCommittedProject: (project) => {
     const current = get()
@@ -83,16 +87,18 @@ export const useProjectStore = create<ProjectState>()(persist((set, get) => ({
   openProject: (project, origin = 'server', mode = 'builder') => {
     workspaceRevision += 1
     const id = project.root_node_id && project.nodes[project.root_node_id] ? project.root_node_id : Object.keys(project.nodes)[0] ?? null
-    saveLocal(project, origin)
-    set({ project, origin, activeNodeId: id, mode, navigationStack: id ? pathTo(project, id) : [], keywords: [], selectedKeywords: [], genProgress: null })
+    const saved = saveLocal(project, origin)
+    set({ project: saved ?? project, origin, activeNodeId: id, mode, navigationStack: id ? pathTo(project, id) : [], keywords: [], selectedKeywords: [], genProgress: null })
   },
   resetProject: () => { workspaceRevision += 1; set({ project: null, origin: 'server', activeNodeId: null, mode: 'builder', navigationStack: [], generating: false, analyzing: false, genProgress: null, keywords: [], selectedKeywords: [] }) },
-  updateNode: (id, update) => {
+  updateNode: (id, update, historyReason) => {
     const { project, origin } = get()
-    if (!project?.nodes[id]) return
+    if (!project?.nodes[id]) return false
     const next = { ...project, nodes: { ...project.nodes, [id]: { ...project.nodes[id], ...update } } }
-    saveLocal(next, origin)
-    set({ project: next })
+    const saved = saveLocal(next, origin, historyReason)
+    if (!saved) return false
+    set({ project: saved })
+    return true
   },
   addNode: (node) => {
     const { project, origin } = get()
@@ -103,8 +109,8 @@ export const useProjectStore = create<ProjectState>()(persist((set, get) => ({
       nodes[node.parent_id] = { ...parent, children: Array.from(new Set([...parent.children, node.id])) }
     }
     const next = { ...project, nodes }
-    saveLocal(next, origin)
-    set({ project: next })
+    const saved = saveLocal(next, origin)
+    if (saved) set({ project: saved })
   },
   updateHotspot: (id, hotspot) => {
     const node = get().project?.nodes[id]

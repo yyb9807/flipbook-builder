@@ -312,7 +312,7 @@ async def test_image_hotspot_actual_rename_resets_review_and_retains_provenance_
     })
     expected = {**original, "review_status": "unreviewed"}
     assert result.status_code == 200
-    assert result.json() == {"status": "ok", "content_metadata": expected}
+    assert result.json() == {"status": "ok", "content_metadata": expected, "project_revision": 1}
     restored = (await client.get(f"/api/projects/{project}")).json()["nodes"][node]
     assert restored["content_metadata"] == expected and restored["hotspots"][0]["label"] == "A different leaf"
     assert restored["scene_document"] is None
@@ -328,7 +328,8 @@ async def test_image_hotspot_same_label_selection_and_geometry_preserve_review(c
         "hotspots": [{"id": hotspot, **patch}],
     })
     assert result.status_code == 200
-    assert result.json() == {"status": "ok", "content_metadata": original}
+    assert result.json() == {"status": "ok", "content_metadata": original,
+                             "project_revision": 0 if patch == {"label": "Leaf"} else 1}
     restored = (await client.get(f"/api/projects/{project}")).json()["nodes"][node]
     assert restored["content_metadata"] == original
 

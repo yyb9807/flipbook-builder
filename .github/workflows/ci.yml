@@ -65,3 +65,5 @@ jobs:
       - run: python -m pytest -q
       - name: Verify knowledge generation across process crashes
         run: python ../scripts/verify_knowledge_generation.py --database-url "$DATABASE_URL" --evidence "$RUNNER_TEMP/flipbook-knowledge-acceptance.json"
+      - name: Verify version restoration preserves branch relationships
+        run: python ../scripts/verify_version_history.py --database-url "$DATABASE_URL" --evidence "$RUNNER_TEMP/flipbook-history-acceptance.json"

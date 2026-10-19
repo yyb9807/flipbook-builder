@@ -11,7 +11,7 @@ from fastapi.staticfiles import StaticFiles
 from agents.base import BaseLLMAgent, get_imggen_config, get_llm_config
 from database import create_pool
 from request_limits import RequestBodyLimitMiddleware
-from routers import jobs, nodes, projects
+from routers import jobs, nodes, projects, versions
 
 load_dotenv()
 
@@ -67,6 +67,7 @@ async def security_headers(request: Request, call_next):
 app.include_router(projects.router, prefix="/api")
 app.include_router(nodes.router, prefix="/api")
 app.include_router(jobs.router, prefix="/api")
+app.include_router(versions.router, prefix="/api")
 
 
 @app.get("/api/health")

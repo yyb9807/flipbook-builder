@@ -1,0 +1,61 @@
+{
+  "provider": "local HTTP fake",
+  "paid_calls": 0,
+  "scenarios": [
+    {
+      "scenario": "generated_root_has_baseline",
+      "passed": true,
+      "root_version": true
+    },
+    {
+      "scenario": "content_and_sources_versioned_without_noop_duplicates",
+      "passed": true
+    },
+    {
+      "scenario": "branch_commits_record_parent_and_child_versions",
+      "passed": true,
+      "pages": 4
+    },
+    {
+      "scenario": "historical_preview_is_read_only_and_keeps_newer_connected_sections",
+      "passed": true
+    },
+    {
+      "scenario": "restoration_adds_version_and_preserves_two_level_branch_graph",
+      "passed": true
+    },
+    {
+      "scenario": "restore_operation_replay_and_stale_edit_conflict_are_safe",
+      "passed": true
+    },
+    {
+      "scenario": "restore_can_recover_pre_undo_content_but_requires_new_author_review",
+      "passed": true
+    },
+    {
+      "scenario": "versions_and_restoration_survive_process_restart",
+      "passed": true
+    },
+    {
+      "scenario": "cross_project_version_reads_and_restore_cannot_leak_or_pollute_history",
+      "passed": true
+    },
+    {
+      "scenario": "versions_are_page_scoped_private_and_excluded_from_publication",
+      "passed": true
+    }
+  ],
+  "credential_audit": {
+    "tables_scanned": 22,
+    "cells_scanned": 944,
+    "checkpoint_cells_inspected": 24,
+    "base64_decoded_candidates_inspected": 105,
+    "raw_postgres_relation_files_scanned": 442,
+    "raw_postgres_relation_bytes_scanned": 9641984,
+    "worker_log_and_asset_files_clean": true,
+    "logical_sql_rows_clean": true,
+    "pg_dump_sql_clean": false,
+    "serialized_negative_control_detected": true
+  },
+  "isolated_database_cleaned": true
+}

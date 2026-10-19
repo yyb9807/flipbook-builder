@@ -161,6 +161,7 @@ async def get_project(project_id: str, pool: asyncpg.Pool = Depends(get_pool)):
         "project_id": project["id"],
         "name": project["name"],
         "root_node_id": project["root_node_id"],
+        "revision": project.get("revision", 0),
         "settings": json.loads(project["settings"]) if isinstance(project["settings"], str) else project["settings"],
         "nodes": nodes,
     }

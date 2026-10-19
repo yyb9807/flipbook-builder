@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-19",
+  "actual_ui_downloads": [
+    {
+      "file": "第六轮：页面恢复验收.zip",
+      "sha256": "ead8efd9d335990b9c850726fd9adc8a2030e8dc4a34bcf59bde32513f5570db",
+      "nodes": 2,
+      "tree_edges_valid": true,
+      "history_and_execution_metadata_excluded": true,
+      "credentials_excluded": true,
+      "files": [
+        "index.html",
+        "player.js",
+        "player.css",
+        "project.json",
+        "README.txt"
+      ]
+    },
+    {
+      "file": "第六轮服务器：水循环版本恢复.zip",
+      "sha256": "4d90bef986108cb7aacf24e5ef35a98ba6f9daa34edc157f22656d91609f8290",
+      "nodes": 3,
+      "tree_edges_valid": true,
+      "history_and_execution_metadata_excluded": true,
+      "credentials_excluded": true,
+      "files": [
+        "index.html",
+        "player.js",
+        "player.css",
+        "project.json",
+        "README.txt"
+      ]
+    }
+  ],
+  "real_browser_file_protocol_tested": false,
+  "actual_server_zip_http_startup": true,
+  "actual_server_zip_three_level_navigation": true,
+  "actual_server_zip_console_errors_or_warnings": []
+}

@@ -41,18 +41,24 @@ async def project(client: AsyncClient):
 
 
 @pytest_asyncio.fixture
-async def isolated_api():
+async def isolated_api(monkeypatch):
     """API boundary tests with a fake pool: no database or paid provider required."""
     from fastapi import FastAPI
 
     from database import get_pool
-    from routers import nodes, projects
+    from routers import nodes, projects, versions
     from tests.helpers import FakePool
 
     pool = FakePool()
+    # These boundary tests assert validation and scoped writes using a tiny SQL
+    # double. Journal atomicity and concurrency use real Postgres in test_versions.
+    from unittest.mock import AsyncMock
+    monkeypatch.setattr(nodes, "capture_before", AsyncMock(return_value=None))
+    monkeypatch.setattr(nodes, "record_changes", AsyncMock(return_value=0))
     app = FastAPI()
     app.include_router(projects.router, prefix="/api")
     app.include_router(nodes.router, prefix="/api")
+    app.include_router(versions.router, prefix="/api")
     app.dependency_overrides[get_pool] = lambda: pool
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
         yield ac, pool

@@ -9,8 +9,9 @@ import { sectionHotspot } from '../scene/SceneRenderer'
 import { ContentProvenance } from '../scene/ContentAttribution'
 import { safeReferenceUrl } from '../../utils/sourceUrl'
 import { useI18n } from '../../i18n'
+import { confirm } from '../shared/ConfirmDialog'
 
-export function NodeContentEditor({ node, projectId, local, selectedHotspotId, selectionAction, onSave }: { node: FlipNode; projectId: string; local: boolean; selectedHotspotId?: string | null; selectionAction?: ReactNode; onSave: (patch: Partial<FlipNode>) => Promise<boolean> }) {
+export function NodeContentEditor({ node, projectId, local, selectedHotspotId, selectionAction, onSave, onShowHistory }: { node: FlipNode; projectId: string; local: boolean; selectedHotspotId?: string | null; selectionAction?: ReactNode; onSave: (patch: Partial<FlipNode>) => Promise<boolean>; onShowHistory?: () => void }) {
   const c = useCopy()
   const { locale } = useI18n()
   const draft = useNodeDraftStore((s) => s.drafts[projectId]?.[node.id])
@@ -50,6 +51,16 @@ export function NodeContentEditor({ node, projectId, local, selectedHotspotId, s
     setReferences(references.map((reference) => reference.id === id ? { ...reference, ...patch } : reference))
   }
   function change(fn: () => void) { fn() }
+  async function discardDraft() {
+    const discardedDraft = useNodeDraftStore.getState().drafts[projectId]?.[node.id]
+    if (!discardedDraft || busy) return
+    const accepted = await confirm({
+      title: c('撤回当前页的未保存修改？', 'Discard unsaved changes on this page?'),
+      message: c('当前页将回到保存后的内容。已有分支、历史版本和其他页面的草稿都会保留。', 'This page will return to its saved content. Existing branches, saved versions and drafts on other pages will be kept.'),
+      confirmText: c('撤回本次修改', 'Discard these changes'),
+    })
+    if (accepted && useNodeDraftStore.getState().drafts[projectId]?.[node.id] === discardedDraft) clearDraft(projectId, node.id)
+  }
   async function submit(event: React.FormEvent) {
     event.preventDefault()
     if (!title.trim() || busy || invalidReferences) return
@@ -71,6 +82,10 @@ export function NodeContentEditor({ node, projectId, local, selectedHotspotId, s
   return <form className="content-editor" onSubmit={(e) => void submit(e)}>
     <div className="panel-heading"><h2>{c('页面内容', 'Page content')}</h2>{dirty && <span>{c('未保存', 'Unsaved')}</span>}</div>
     <button className="btn btn-primary content-save" disabled={!dirty || busy || invalidReferences}>{busy ? c('正在保存…', 'Saving…') : c('保存页面内容', 'Save page content')}</button>
+    <div className="content-recovery-actions">
+      {dirty && <button type="button" className="text-button" disabled={busy} onClick={() => void discardDraft()}>{c('撤回本次修改', 'Discard these changes')}</button>}
+      {onShowHistory && <button type="button" className="text-button" onClick={onShowHistory}>{c('查看历史版本', 'View page history')}</button>}
+    </div>
     {selectedSection && <p className="content-editor-context">{c('正在编辑区块 ', 'Editing section ') + (selectedSectionIndex + 1)}：{selectedSection.title}</p>}
     <fieldset disabled={busy}>
       <label className="field">{c('标题', 'Title')}<input value={title} maxLength={200} required onChange={(e) => change(() => setTitle(e.target.value))} /></label>
@@ -79,7 +94,8 @@ export function NodeContentEditor({ node, projectId, local, selectedHotspotId, s
         <label className="field">{c('版式', 'Layout')}<select value={scene.layout} onChange={(e) => change(() => setScene({ ...scene, layout: e.target.value as SceneDocument['layout'] }))}><option value="atlas">{c('分项图鉴', 'Atlas')}</option><option value="sequence">{c('过程说明', 'Sequence')}</option></select></label>
         {scene.sections.map((section, i) => <div className={`section-editor${section.id === selectedSectionId ? ' is-selected' : ''}`} role="group" aria-label={`${c('内容区块 ', 'Section ') + (i + 1)}：${section.title}`} key={section.id}
           ref={(element) => { if (element) sectionElements.current.set(section.id, element); else sectionElements.current.delete(section.id) }}>
-          <div className="section-editor-title"><strong>{c('内容区块 ', 'Section ') + (i + 1)}{section.id === selectedSectionId && <span className="section-editor-selection">{c(' · 已选中', ' · Selected')}</span>}</strong><button type="button" className="icon-button" aria-label={c('移除区块 ', 'Remove section ') + (i + 1)} onClick={() => change(() => setScene({ ...scene, sections: scene.sections.filter((s) => s.id !== section.id) }))}><Icon name="x" /></button></div>
+          <div className="section-editor-title"><strong>{c('内容区块 ', 'Section ') + (i + 1)}{section.id === selectedSectionId && <span className="section-editor-selection">{c(' · 已选中', ' · Selected')}</span>}</strong><button type="button" className="icon-button" aria-label={c('移除区块 ', 'Remove section ') + (i + 1)} disabled={!!sectionHotspot(node, section, i).target_node_id} aria-describedby={sectionHotspot(node, section, i).target_node_id ? `section-branch-protection-${section.id}` : undefined} onClick={() => change(() => setScene({ ...scene, sections: scene.sections.filter((s) => s.id !== section.id) }))}><Icon name="x" /></button></div>
+          {sectionHotspot(node, section, i).target_node_id && <p className="field-hint" id={`section-branch-protection-${section.id}`}>{c('此区块已连接子页，保留区块可保护分支关系。', 'This section is connected to a page. It is kept to protect that branch.')}</p>}
           {section.id === selectedSectionId && selectionAction && <div className="section-branch-action">{selectionAction}</div>}
           <label className="field">{c('小标题', 'Heading')}<input ref={(element) => { if (element) headingFields.current.set(section.id, element); else headingFields.current.delete(section.id) }} maxLength={200} value={section.title} required onChange={(e) => change(() => setScene({ ...scene, sections: scene.sections.map((s) => s.id === section.id ? { ...s, title: e.target.value } : s) }))} /></label>
           <label className="field">{c('解释', 'Explanation')}<textarea rows={3} maxLength={5000} value={section.body} onChange={(e) => change(() => setScene({ ...scene, sections: scene.sections.map((s) => s.id === section.id ? { ...s, body: e.target.value } : s) }))} /></label>

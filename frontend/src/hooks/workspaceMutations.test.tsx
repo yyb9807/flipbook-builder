@@ -21,6 +21,7 @@ function deferred<T>() {
 }
 
 beforeEach(() => {
+  localStorage.clear()
   useGenerationJobStore.setState({ jobs: {}, references: {}, pending: {}, discovery: {}, syncing: {}, submitting: {} })
   useProjectStore.getState().resetProject()
   useLibraryStore.setState({ projects: {}, storageError: false })
@@ -55,6 +56,29 @@ describe('workspace mutation boundaries', () => {
     expect(result.current.saveStatus).toBe('saved')
   })
 
+  it('advances expected revisions only from this authoring queue, even if a concurrent read observes another author', async () => {
+    const project = { ...createExampleProject(), revision: 4 }
+    const id = project.root_node_id!
+    useProjectStore.getState().openProject(project, 'server')
+    useGenerationJobStore.getState().setDiscovery(project.project_id, 'ready')
+    const first = deferred<object>()
+    vi.mocked(api.updateNode).mockReturnValueOnce(first.promise).mockResolvedValueOnce({ project_revision: 6 })
+    const { result } = renderHook(() => useBuilderActions(vi.fn()))
+    let firstSave!: Promise<boolean>
+    let secondSave!: Promise<boolean>
+    act(() => { firstSave = result.current.handleNodeUpdate(id, { title: 'First author save' }) })
+    await waitFor(() => expect(api.updateNode).toHaveBeenCalledTimes(1))
+    expect(vi.mocked(api.updateNode).mock.calls[0][2].expected_revision).toBe(4)
+    act(() => {
+      useProjectStore.getState().adoptCommittedProject({ ...project, revision: 99 })
+      secondSave = result.current.handleNodeUpdate(id, { title: 'Second author save' })
+    })
+    expect(api.updateNode).toHaveBeenCalledTimes(1)
+    await act(async () => { first.resolve({ project_revision: 5 }); await firstSave; await secondSave })
+    expect(vi.mocked(api.updateNode).mock.calls[1][2].expected_revision).toBe(5)
+    expect(useProjectStore.getState().project?.revision).toBe(99)
+  })
+
   it('does not apply an old upload after the user opens another workspace', async () => {
     const finish = deferred<never>()
     vi.mocked(api.createProject).mockResolvedValue({ project_id: 'server-project', name: 'server', settings: {} })
@@ -76,11 +100,22 @@ describe('workspace mutation boundaries', () => {
     useProjectStore.getState().openProject(project, 'server')
     useGenerationJobStore.getState().setDiscovery(project.project_id, 'ready')
     vi.mocked(api.updateNode).mockRejectedValue(new Error('offline'))
-    const { result } = renderHook(() => useBuilderActions(vi.fn()))
+    const toast = vi.fn()
+    const { result } = renderHook(() => useBuilderActions(toast))
     await act(async () => { await result.current.handleNodeUpdate(id, { title: 'unsaved work' }) })
     const recovery = useLibraryStore.getState().projects['local-recovery-' + project.project_id]
     expect(recovery.project.nodes[id].title).toBe('unsaved work')
     expect(result.current.saveStatus).toBe('error')
+    const save = localStorage.setItem.bind(localStorage)
+    const storage = vi.spyOn(localStorage, 'setItem').mockImplementation((key, value) => {
+      if (key === 'flipbook-library') throw new Error('quota')
+      save(key, value)
+    })
+    await act(async () => { expect(await result.current.handleNodeUpdate(id, { title: 'newer work only in this tab' })).toBe(false) })
+    expect(toast).toHaveBeenLastCalledWith(expect.stringContaining('修改仍在当前页面或草稿中'), 'error')
+    expect(useLibraryStore.getState().projects['local-recovery-' + project.project_id]).toBe(recovery)
+    expect(useProjectStore.getState().project?.nodes[id].title).toBe('newer work only in this tab')
+    storage.mockRestore()
   })
 
   it('rejects editing during generation without changing local content', async () => {
@@ -144,7 +179,7 @@ describe('workspace mutation boundaries', () => {
     vi.mocked(api.updateHotspots).mockResolvedValue({})
     const { result } = renderHook(() => useBuilderActions(vi.fn()))
     await act(async () => { await result.current.handleHotspotUpdate({ ...connection, selected: true }) })
-    expect(api.updateHotspots).toHaveBeenCalledWith(project.project_id, id, [{ id: 'section', label: '蒸发', selected: true }])
+    expect(api.updateHotspots).toHaveBeenCalledWith(project.project_id, id, [{ id: 'section', label: '蒸发', selected: true }], undefined)
   })
 })
 
@@ -235,7 +270,7 @@ describe('hotspot labels and author review', () => {
     expect(useProjectStore.getState().project?.nodes[id].hotspots[0].label).toBe(project.nodes[id].hotspots[0].label)
   })
 
-  it('does not revive an old reviewed response when different hotspot requests finish out of order', async () => {
+  it('serializes different hotspots and does not revive review after a newer optimistic rename', async () => {
     const project = reviewedProject()
     const id = project.root_node_id!
     const geometryHotspot = project.nodes[id].hotspots[0]
@@ -251,11 +286,12 @@ describe('hotspot labels and author review', () => {
     act(() => { geometrySave = result.current.handleHotspotUpdate({ ...geometryHotspot, position: { x: .2, y: .3 } }) })
     await waitFor(() => expect(api.updateHotspots).toHaveBeenCalledTimes(1))
     act(() => { renameSave = result.current.handleHotspotUpdate({ ...project.nodes[id].hotspots[1], label: 'Changed topic' }) })
-    await waitFor(() => expect(api.updateHotspots).toHaveBeenCalledTimes(2))
+    expect(api.updateHotspots).toHaveBeenCalledTimes(1)
     const unreviewed: ContentMetadata = { ...project.nodes[id].content_metadata!, review_status: 'unreviewed' }
-    await act(async () => { renameResponse.resolve({ status: 'ok', content_metadata: unreviewed }); await renameSave })
-    expect(useProjectStore.getState().project?.nodes[id].content_metadata).toBe(unreviewed)
     await act(async () => { geometryResponse.resolve({ status: 'ok', content_metadata: project.nodes[id].content_metadata }); await geometrySave })
+    expect(useProjectStore.getState().project?.nodes[id].content_metadata?.review_status).toBe('unreviewed')
+    await waitFor(() => expect(api.updateHotspots).toHaveBeenCalledTimes(2))
+    await act(async () => { renameResponse.resolve({ status: 'ok', content_metadata: unreviewed }); await renameSave })
     expect(useProjectStore.getState().project?.nodes[id].content_metadata).toBe(unreviewed)
     expect(useProjectStore.getState().project?.nodes[id].hotspots[0].position).toEqual({ x: .2, y: .3 })
     expect(useProjectStore.getState().project?.nodes[id].hotspots[1].label).toBe('Changed topic')
@@ -280,8 +316,9 @@ describe('hotspot labels and author review', () => {
     })
     const renamedMetadata = useProjectStore.getState().project?.nodes[id].content_metadata
     expect(renamedMetadata?.review_status).toBe('unreviewed')
-    await waitFor(() => expect(api.updateHotspots).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(api.updateHotspots).toHaveBeenCalledTimes(1))
     await act(async () => { geometryResponse.resolve({ status: 'ok', content_metadata: project.nodes[id].content_metadata }); await geometrySave })
+    await waitFor(() => expect(api.updateHotspots).toHaveBeenCalledTimes(2))
     expect(useProjectStore.getState().project?.nodes[id].content_metadata).toBe(renamedMetadata)
     expect(useProjectStore.getState().project?.nodes[id].content_metadata?.review_status).toBe('unreviewed')
     await act(async () => { renameResponse.resolve({ status: 'ok', content_metadata: { ...project.nodes[id].content_metadata!, review_status: 'unreviewed' } }); await renameSave })
@@ -309,10 +346,12 @@ describe('hotspot labels and author review', () => {
       : { ...hotspot, position: { x: .2, y: .3 } }
     act(() => { hotspotSave = result.current.handleHotspotUpdate(changed) })
     await waitFor(() => expect(api.updateHotspots).toHaveBeenCalledTimes(1))
-    await act(async () => { expect(await result.current.handleNodeUpdate(id, { content_metadata: reviewed })).toBe(true) })
+    let contentSave!: Promise<boolean>
+    act(() => { contentSave = result.current.handleNodeUpdate(id, { content_metadata: reviewed }) })
+    expect(api.updateNode).not.toHaveBeenCalled()
     expect(useProjectStore.getState().project?.nodes[id].content_metadata).toBe(reviewed)
     const staleMetadata = { ...project.nodes[id].content_metadata!, review_status: change === 'rename' ? 'unreviewed' : 'reviewed' }
-    await act(async () => { response.resolve({ status: 'ok', content_metadata: staleMetadata }); await hotspotSave })
+    await act(async () => { response.resolve({ status: 'ok', content_metadata: staleMetadata }); await hotspotSave; expect(await contentSave).toBe(true) })
     expect(useProjectStore.getState().project?.nodes[id].content_metadata).toBe(reviewed)
     expect(useProjectStore.getState().project?.nodes[id].content_metadata?.references[0].title).toBe('New author reference')
     expect(useProjectStore.getState().project?.nodes[id].content_metadata?.review_status).toBe('reviewed')
@@ -352,9 +391,11 @@ describe('hotspot labels and author review', () => {
     let contentSave!: Promise<boolean>
     act(() => { contentSave = result.current.handleNodeUpdate(id, { content_metadata: reviewed }) })
     await waitFor(() => expect(api.updateNode).toHaveBeenCalledTimes(1))
-    await act(async () => { await result.current.handleHotspotUpdate({ ...project.nodes[id].hotspots[0], label: 'Topic changed after the check' }) })
-    expect(useProjectStore.getState().project?.nodes[id].content_metadata).toBe(unreviewed)
-    await act(async () => { nodeResponse.resolve({ content_metadata: reviewed, scene_document: structuredClone(project.nodes[id].scene_document), hotspots: structuredClone(project.nodes[id].hotspots) }); await contentSave })
+    let renameSave!: Promise<void>
+    act(() => { renameSave = result.current.handleHotspotUpdate({ ...project.nodes[id].hotspots[0], label: 'Topic changed after the check' }) })
+    expect(useProjectStore.getState().project?.nodes[id].content_metadata?.review_status).toBe('unreviewed')
+    expect(api.updateHotspots).not.toHaveBeenCalled()
+    await act(async () => { nodeResponse.resolve({ content_metadata: reviewed, scene_document: structuredClone(project.nodes[id].scene_document), hotspots: structuredClone(project.nodes[id].hotspots) }); await contentSave; await renameSave })
     expect(useProjectStore.getState().project?.nodes[id].content_metadata).toBe(unreviewed)
     expect(useProjectStore.getState().project?.nodes[id].content_metadata?.references[0].title).toBe('Updated reference')
     expect(useProjectStore.getState().project?.nodes[id].hotspots[0].label).toBe('Topic changed after the check')

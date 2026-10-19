@@ -95,6 +95,7 @@ export interface ProjectSettings {
 
 export interface Project {
   project_id: string
+  revision?: number
   name: string
   root_node_id: string | null
   settings: ProjectSettings

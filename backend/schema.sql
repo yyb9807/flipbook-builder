@@ -129,3 +129,30 @@ CREATE TABLE IF NOT EXISTS generation_events (
   UNIQUE(job_id, event_key)
 );
 CREATE INDEX IF NOT EXISTS generation_events_job_idx ON generation_events(job_id, id);
+
+-- Content history is independent of durable job execution and contains only
+-- allowlisted page content. Images have immutable asset URLs.
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS revision BIGINT NOT NULL DEFAULT 0;
+CREATE TABLE IF NOT EXISTS node_versions (
+  id TEXT PRIMARY KEY,
+  project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  node_id TEXT NOT NULL REFERENCES nodes(id) ON DELETE CASCADE,
+  sequence BIGINT NOT NULL,
+  project_revision BIGINT NOT NULL,
+  reason TEXT NOT NULL,
+  content_hash TEXT NOT NULL,
+  snapshot JSONB NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE(node_id, sequence)
+);
+CREATE INDEX IF NOT EXISTS node_versions_node_idx ON node_versions(node_id, sequence DESC);
+CREATE TABLE IF NOT EXISTS version_restore_operations (
+  project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  operation_id TEXT NOT NULL,
+  node_id TEXT NOT NULL REFERENCES nodes(id) ON DELETE CASCADE,
+  version_id TEXT NOT NULL REFERENCES node_versions(id) ON DELETE CASCADE,
+  expected_revision BIGINT NOT NULL,
+  result JSONB NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY(project_id, operation_id)
+);

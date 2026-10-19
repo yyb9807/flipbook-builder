@@ -2,7 +2,7 @@
 
 > 历史记录（2026-10-18）。本文保留当时状态；当前实现与可运行命令见[文档导航](../README.md)和[验证说明](../VERIFICATION.md)。旧 PoC / 36 场景 CLI 已退役。
 
-日期：2026-10-18。基线：6354b49。依据：[项目审查](PROJECT_AUDIT.md)、[架构研究](ARCHITECTURE_RESEARCH.md)。结果见[第一轮实施报告](IMPLEMENTATION_REPORT.md)、[第二轮实施报告](ROUND_2_IMPLEMENTATION.md)、[第三轮实施报告](ROUND_3_IMPLEMENTATION.md)、[第四轮实施报告](ROUND_4_IMPLEMENTATION.md)与[第五轮实施报告](../ROUND_5_IMPLEMENTATION.md)。
+日期：2026-10-18。基线：6354b49。依据：[项目审查](PROJECT_AUDIT.md)、[架构研究](ARCHITECTURE_RESEARCH.md)。结果见[第一轮实施报告](IMPLEMENTATION_REPORT.md)、[第二轮实施报告](ROUND_2_IMPLEMENTATION.md)、[第三轮实施报告](ROUND_3_IMPLEMENTATION.md)、[第四轮实施报告](ROUND_4_IMPLEMENTATION.md)与[第五轮实施报告](ROUND_5_IMPLEMENTATION.md)。
 
 用户授权自主决策和实施；先形成此计划，再修改业务代码。后续按验证结果更新状态，不把计划能力表述为已完成。
 
@@ -95,4 +95,4 @@
 
 每轮交付完整可用流程，记录问题与下一步；以严重缺陷、使用阻力、内容质量为优先级。未发生真实需求前不增加基础设施。用户已授权自主推进，技术实现选择与可逆修改直接执行；外部发布、使用付费凭据等若无授权则不自动扩大范围。
 
-Postgres整栈与三种任务恢复、第四轮编辑操作、第五轮AI结构化正文与作者资料已接入。第五轮先写[计划](ROUND_5_PLAN.md)，结果见[实施报告](../ROUND_5_IMPLEMENTATION.md)。整体约7/10、核心编辑26/40仍是第四轮修改前基线，不因实现完成自动加分。下一阶段优先撤销/版本恢复与独立只读发布版本；自动来源检索与逐句引用需要新的明确合约。真实付费模型的质量/预算评测、跨版本工作流迁移与多实例调度仍需单独验收。
+Postgres整栈与三种任务恢复、第四轮编辑操作、第五轮AI结构化正文与作者资料已接入。第五轮先写[计划](ROUND_5_PLAN.md)，结果见[实施报告](ROUND_5_IMPLEMENTATION.md)。整体约7/10、核心编辑26/40仍是第四轮修改前基线，不因实现完成自动加分。下一阶段优先撤销/版本恢复与独立只读发布版本；自动来源检索与逐句引用需要新的明确合约。真实付费模型的质量/预算评测、跨版本工作流迁移与多实例调度仍需单独验收。

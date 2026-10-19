@@ -1,0 +1,148 @@
+{
+  "date": "2026-10-19",
+  "baseline_commit": "e80a6b0",
+  "branch": "codex/page-history",
+  "checks": {
+    "backend_real_postgres_pytest": {
+      "passed": 268,
+      "failed": 0,
+      "seconds": 60.0,
+      "isolated_database_cleaned": true
+    },
+    "frontend_vitest": {
+      "files": 34,
+      "passed": 262,
+      "failed": 0
+    },
+    "ruff_backend_and_scripts": "passed",
+    "frontend_lint_typescript_build": "passed",
+    "page_history_process_scenarios": 10,
+    "knowledge_process_scenarios": 7,
+    "http_stack_checks": 19,
+    "offline_player_environments": [
+      "development",
+      "production"
+    ],
+    "offline_player_bytes_each": 198984,
+    "paid_model_calls": 0,
+    "local_design_detector_findings": 0
+  },
+  "review": {
+    "disposition": "ship",
+    "findings": [
+      {
+        "issue": "previous-version shortcut bypassed visible merged preview",
+        "priority": 2,
+        "status": "resolved"
+      },
+      {
+        "issue": "history merge allowed a thirteenth hotspot",
+        "priority": 2,
+        "status": "resolved"
+      }
+    ]
+  },
+  "runtime": {
+    "frontend_assets": [
+      {
+        "path": "/assets/_virtual_offline-player-BBUlGe0T.js",
+        "bytes": 210110,
+        "sha256": "069c3ab19695b4cc967fa270753c48d1e9fdafd4f6f1244761f4b4983cc1c00c",
+        "matches_local_production_build": true
+      },
+      {
+        "path": "/assets/index-CJt_XyVu.js",
+        "bytes": 412946,
+        "sha256": "5263106d3d1b420075d6633228a7a95dbc3a8c13f8e4ab5148647f16913e83b4",
+        "matches_local_production_build": true
+      },
+      {
+        "path": "/assets/index-HyZxzc91.css",
+        "bytes": 43899,
+        "sha256": "8d625d1ed3a580bf73af69fa58af442e56bb41f16a8cf01392d5f060f83acf7c",
+        "matches_local_production_build": true
+      },
+      {
+        "path": "/assets/offlineExport-WXeDlEIH.js",
+        "bytes": 15753,
+        "sha256": "55799392b6e9a71273cb7532aa8b828d1cee6a73a99719007d9017d03665499e",
+        "matches_local_production_build": true
+      }
+    ],
+    "backend_sources_match_running_container": {
+      "main.py": true,
+      "schema.sql": true,
+      "version_history.py": true,
+      "routers/versions.py": true,
+      "routers/nodes.py": true,
+      "routers/projects.py": true,
+      "jobs/locking.py": true,
+      "jobs/store.py": true,
+      "jobs/workflows.py": true,
+      "jobs/page_workflows.py": true,
+      "jobs/providers.py": true,
+      "hotspots.py": true,
+      "content_metadata.py": true
+    },
+    "remaining_server_projects": 0,
+    "temporary_test_services_stopped": true,
+    "isolated_test_databases_cleaned": true
+  },
+  "limits": [
+    "No real paid-model quality assessment.",
+    "No real-browser file protocol, multi-browser or assistive-technology certification.",
+    "localStorage has no cross-process compare-and-swap; not a realtime collaboration system.",
+    "No whole-tree time travel or deleted-project recovery.",
+    "Remote CI has not run for these uncommitted changes."
+  ],
+  "pre_commit_cleanup": {
+    "date": "2026-10-19",
+    "removed": [
+      "unused restorePrevious hook method; tests now call the explicit version restoration API",
+      "unused history reason aliases and overwritten lock result binding",
+      "unreferenced flipbook-builder-demo.gif"
+    ],
+    "archived": {
+      "round5_reports": 3,
+      "older_evidence_files": 8
+    },
+    "checks": {
+      "frontend_tests": 262,
+      "frontend_test_files": 34,
+      "frontend_lint_typescript_build": "passed",
+      "backend_history_postgres_tests": 19,
+      "ruff_backend_and_scripts": "passed",
+      "http_stack_checks": 19
+    },
+    "frontend_assets": [
+      {
+        "path": "/assets/_virtual_offline-player-BBUlGe0T.js",
+        "bytes": 210110,
+        "sha256": "069c3ab19695b4cc967fa270753c48d1e9fdafd4f6f1244761f4b4983cc1c00c",
+        "matches_local_production_build": true
+      },
+      {
+        "path": "/assets/index-C1zF83Ym.js",
+        "bytes": 412515,
+        "sha256": "b56fb1652027d02266a061935ed8c4dc7592aad8357d8640546238a0d73fce9c",
+        "matches_local_production_build": true
+      },
+      {
+        "path": "/assets/index-HyZxzc91.css",
+        "bytes": 43899,
+        "sha256": "8d625d1ed3a580bf73af69fa58af442e56bb41f16a8cf01392d5f060f83acf7c",
+        "matches_local_production_build": true
+      },
+      {
+        "path": "/assets/offlineExport-D_X0MMqF.js",
+        "bytes": 15753,
+        "sha256": "bae348150f1975da86f14a06cda836773b91f1b671d969173b6645a791dded19",
+        "matches_local_production_build": true
+      }
+    ],
+    "backend_source_files_matching_container": 13,
+    "remaining_server_projects": 0,
+    "local_markdown_links_checked": 250,
+    "remote_ci": "See the actual run for the pushed commit."
+  }
+}

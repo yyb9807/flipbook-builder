@@ -1,24 +1,26 @@
 # 验证与复测
 
-更新于 2026-10-18。此页是当前可运行入口；[历史记录](archive/README.md)中的旧阶段数字、临时地址与已退役脚本不代表当前复测方式。
+更新于 2026-10-19。此页是当前可运行入口；[历史记录](archive/README.md)中的旧阶段数字、临时地址与已退役脚本不代表当前复测方式。
 
 ## 最近完整结果
 
-本轮冗余清理后的本地结果如下。清理移除了旧 36 场景 CLI、独立 SQLite PoC 和未使用的生产 helper，并将当前进程验证的公共 Harness 归并到 `scripts/durable_acceptance/`；8 个只测试废弃 helper 的测试随之退役。第五轮原始 257 项结果仍保留在历史快照中，没有将删减误写成测试回退。完整操作、缺陷与修复过程见[实施报告](ROUND_5_IMPLEMENTATION.md)、[浏览器验收](ROUND_5_BROWSER_ACCEPTANCE.md)和[独立代码审查](ROUND_5_CODE_REVIEW.md)。
+第六轮完成页面草稿撤回、版本历史、真实合并预览、保留分支的恢复和项目修订冲突保护。以下为本轮最终本地结果；操作与审查修复见[实施报告](ROUND_6_IMPLEMENTATION.md)。模型请求均使用本地受控供应商。
 
 | 验证 | 最近结果 | 覆盖 |
 |---|---|---|
-| 后端 pytest + 真实 Postgres | 249/249 | 内容合约、API、关系、来源、任务恢复和安全边界 |
-| 前端 Vitest | 30 文件、232/232 | 草稿、并发保存、任务、渲染、来源和导出 |
-| Ruff、ESLint、TypeScript、production build | 通过 | 代码与构建 |
-| 独立播放器 | development / production 宿主均通过 | 实际构建产物、JSDOM file URL 启动、三层往返、来源与核对 |
-| 当前真实进程恢复 | 7/7 | 两次 SIGKILL、知识正文、未知出图、格式失败、再生和图片上传 |
+| 后端 pytest + 真实 Postgres | 268/268 | 内容与历史合约、API、关系、来源、任务恢复和安全边界 |
+| 前端 Vitest | 34 文件、262/262 | 草稿撤回、原子本地历史、存储失败、合并预览、并发保存与恢复、渲染和导出 |
+| Ruff、ESLint、TypeScript、正式 Docker 构建 | 通过 | 代码与 production 构建 |
+| 独立播放器 | development / production 宿主均通过；198,984 bytes | 实际构建产物、JSDOM file URL 启动、三层往返、来源与核对 |
+| 页面历史真实 HTTP / 进程 | 10/10 | 留版、预览、分支保护、恢复幂等、409、重启、归属与公开字段边界 |
+| 生成真实进程恢复 | 7/7 | 两次 SIGKILL、知识正文、未知出图、格式失败、再生和图片上传 |
 | nginx / FastAPI / Postgres HTTP | 19/19 | 正式三服务 API 与资源 |
-| 实际浏览器导出 | 26 项数据/安全检查通过 | 重新下载 ZIP、实际 HTTP 播放、三层导航与 390px 布局 |
+| 实际浏览器编辑、恢复与导出 | 通过 | 本地跨页草稿、恢复保留子页、刷新与实际 ZIP；服务器两层分支、双标签 409/整作品重载/恢复再找回、三层阅读；图片键盘位置恢复；390px 英文无横溢 |
+| 独立代码审查 | ship；2 项 P2 均已修复 | 快捷恢复先预览、合并后 13 热点拒绝 |
 
-本轮清理后的[验证汇总](evidence/cleanup-verification.json)、[7 场景进程复跑](evidence/cleanup-knowledge-process.json)与[19 项整栈复跑](evidence/cleanup-postgres-stack.json)记录当前代码结果。前端 30 文件、232 项与双环境播放器也再次通过；空 demo 启动/停止后完成审计和隔离库清理。
+第六轮证据：[验证汇总](evidence/round6-verification.json)、[10 场景历史进程](evidence/round6-history-process.json)、[7 场景生成进程](evidence/round6-knowledge-process.json)、[19 项整栈](evidence/round6-postgres-stack.json)、[浏览器运行](evidence/round6-browser-runtime.json)、[导出检查](evidence/round6-browser-export.json)。界面快照见[桌面](images/round6-final-desktop-history.png)和[390px 手机](images/round6-final-mobile-history.png)。
 
-第五轮[进程证据](evidence/round5-knowledge-process.json)、[HTTP 证据](evidence/round5-postgres-stack.json)、[导出检查](evidence/round5-browser-export.json)、[浏览器运行审计](evidence/round5-browser-runtime.json)和[部署资产对照](evidence/round5-final-assets.json)记录当次实测快照。它们含隔离测试数据库名和临时 localhost 地址，不是部署配置。
+早期验收及清理基线的原始数字见[历史索引](archive/README.md)。旧证据保留当时的测量上下文，不回写为当前结果；其中的隔离测试数据库名和临时 localhost 地址不是部署配置。
 
 ## 前端
 
@@ -45,7 +47,23 @@ DATABASE_URL=postgresql://flipbook:flipbook@localhost:5434/flipbook_test python 
 
 不要把 pytest 指向包含真实作品的数据库。CI 提供隔离的 Postgres 服务，执行相同检查。
 
-## 当前进程恢复验收
+## 页面历史进程验收
+
+在仓库根目录使用已安装后端开发依赖的 Python：
+
+```sh
+python scripts/verify_version_history.py \
+  --database-url postgresql://flipbook:flipbook@localhost:5434/flipbook \
+  --evidence /tmp/flipbook-history-acceptance-new.json
+```
+
+验证器启动正式 FastAPI/DBOS 与真实 Postgres，使用本地 HTTP 假供应商建立知识页和两层分支；中途重启后再次核对版本。覆盖生成根页基线、正文/资料与无操作去重、父子留版、只读合并预览、恢复新增版本且保留两层关系、幂等及陈旧编辑 409、找回恢复前内容并重置核对、重启持久化、跨项目/页面归属、历史白名单与导出排除，共 10 场景。
+
+它与下方生成验证器共用 `scripts/durable_acceptance/harness.py`。传入 DSN 只用于创建随机隔离数据库，成功后删除自己创建的库；不会清空传入库。测试 role 需 `CREATEDB`，原始关系文件扫描还需测试超级用户或相应 `pg_ls_dir` / `pg_read_binary_file` 权限。证据路径应使用新文件名；成功后才写 JSON，失败时保留终端输出。
+
+前端测试另外覆盖当前页撤回不影响其他草稿、本地每页 50 版、配额失败保留旧内容、预览与恢复排队、跨 workspace 迟到响应、冲突重载前先成功保留恢复副本。localStorage 不支持跨进程 compare-and-swap，测试不证明多标签同时写入的全局串行化或多人协作。
+
+## 生成进程恢复验收
 
 在仓库根目录使用已安装后端开发依赖的 Python：
 
@@ -91,6 +109,6 @@ python scripts/verify_stack.py --base-url http://localhost:8080
 
 ## 证据和限制
 
-进程验收扫描逻辑行、DBOS Base64 序列化、当前隔离库的原始关系文件、日志与资产，未发现合成 Key，负对照能检出误存 Key。第五轮没有执行 `pg_dump` 扫描，也未读取无关数据库或整个集群 WAL。
+当前进程验收扫描逻辑行、DBOS Base64 序列化、当前隔离库的原始关系文件、日志与资产，未发现合成 Key，负对照能检出误存 Key。审计仅针对验证器自己的隔离环境；第五轮没有执行 `pg_dump` 扫描，也未读取无关数据库或整个集群 WAL。
 
-全部自动化和本轮浏览器模型请求到本地受控供应商，真实付费请求为 0。它们证明结构、关系、恢复与导出行为，不证明知识正确性、参考资料真实支持正文或真实模型的速度/费用/跨页一致性。作者参考资料没有自动抓取或事实核验。跨浏览器、真实辅助技术、任意跨版本任务迁移、多副本和长期负载均未完整验证。远端 GitHub Actions 是否通过，以对应提交的实际运行结果为准。
+全部自动化和本轮浏览器模型请求到本地受控供应商，真实付费请求为 0。它们证明结构、关系、恢复与导出行为，不证明知识正确性、参考资料真实支持正文或真实模型的速度/费用/跨页一致性。作者参考资料没有自动抓取或事实核验，混合恢复内容没有区块级出处。历史不进入 JSON/ZIP，删除作品会删除历史；本地每页 50 版与服务器不主动裁剪均不能替代数据库和图片备份。跨浏览器、真实辅助技术、任意跨版本任务迁移、多副本和长期负载均未完整验证。远端 GitHub Actions 是否通过，以对应提交的实际运行结果为准。

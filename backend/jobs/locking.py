@@ -4,10 +4,16 @@ from fastapi import HTTPException
 from jobs.models import ACTIVE_SQL
 
 
-async def lock_project_write(conn, project_id: str, *, allow_active: bool = False):
+async def lock_project_write(conn, project_id: str, *, allow_active: bool = False, expected_revision: int | None = None):
     # Read via fetchval: this is a row lock, not a content mutation.
-    await conn.fetchval("SELECT id FROM projects WHERE id=$1 FOR UPDATE", project_id)
+    revision = await conn.fetchval("SELECT revision FROM projects WHERE id=$1 FOR UPDATE", project_id)
+    if expected_revision is not None:
+        if revision is None:
+            raise HTTPException(404, "项目不存在")
+        if revision != expected_revision:
+            raise HTTPException(409, "作品已在其他操作中更新，请刷新后重试；本次没有覆盖内容")
     if not allow_active and await conn.fetchval(
         f"SELECT 1 FROM generation_jobs WHERE project_id=$1 AND status IN {ACTIVE_SQL} LIMIT 1", project_id,
     ):
         raise HTTPException(409, "作品有未结束的生成任务，请先恢复或取消它")
+    return revision
