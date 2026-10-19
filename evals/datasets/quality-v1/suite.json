@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "id": "quality-v1",
+  "version": "1.0.0",
+  "title": "Fixed bilingual content, hotspot and cross-page quality suite",
+  "created_on": "2026-10-19",
+  "license": "MIT",
+  "description": "Six cases, three production-agent stages each. Four text briefs plus two language views of one original synthetic image. Replay outputs are contributor-authored controlled data, not real model quality evidence.",
+  "independent_visual_scenes": 1,
+  "stages": [
+    "root",
+    "child",
+    "grandchild"
+  ],
+  "case_files": [
+    "cases/water-cycle-zh.json",
+    "cases/water-cycle-en.json",
+    "cases/fictional-reservation-zh.json",
+    "cases/fictional-reservation-en.json",
+    "cases/shapes-zh.json",
+    "cases/shapes-en.json"
+  ],
+  "recordings_path": "replay.json",
+  "recording_origin": "contributor-authored-controlled-replay",
+  "limitations": [
+    "No real model quality score until source-anchored human review of a live run.",
+    "One simple synthetic image does not measure natural-image generalization.",
+    "Fixed labels deliberately block missing branches; no unrelated fallback.",
+    "The sample is a small regression set, not a statistical model ranking."
+  ]
+}

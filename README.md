@@ -71,7 +71,9 @@ Key 默认只在页面内存保存；选择「在此浏览器记住密钥」后�
 
 使用 Node.js 24、Python 3.13、Postgres 16。[前端说明](frontend/README.md)介绍共享渲染器、浏览器状态与构建；[后端说明](backend/README.md)提供本地启动、配置和 API 合约；[当前架构](docs/ARCHITECTURE.md)描述模块与任务数据流。
 
-所有检查命令、最近本地结果和未覆盖范围统一见[验证说明](docs/VERIFICATION.md)。GitHub Actions 配置包含前后端检查、真实 Postgres 测试和进程恢复验证，模型测试使用受控供应商，无付费调用；远端 CI 结果以对应提交的实际运行为准。
+所有检查命令、最近本地结果和未覆盖范围统一见[验证说明](docs/VERIFICATION.md)。检查在本地运行，模型测试使用受控供应商，无付费调用；仓库不配置 GitHub Actions CI/CD。
+
+[模型质量评估](docs/MODEL_QUALITY.md)提供中英文固定样例、三层正文与热点检查、逐项人工评审和运行对比。默认离线回放；真实供应商需显式配置与额度，未审结果不会显示为模型达标。
 
 备份数据库和 `data/`；`docker compose down -v` 会删除数据库卷。[历史计划与审查](docs/archive/README.md)用于追溯，不作为当前运行指南。
 

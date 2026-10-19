@@ -19,3 +19,4 @@ backend/tests
 backend/publication_runtime
 data
 docs
+evals/runs

@@ -1,0 +1,525 @@
+{
+  "schema_version": 1,
+  "suite_id": "quality-v1",
+  "origin": "contributor-authored-controlled-replay",
+  "responses": {
+    "water-cycle-zh": {
+      "root": {
+        "title": "水如何循环",
+        "description": "从蒸发、凝结到降水，区分气态水与可见水滴。",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "蒸发",
+            "body": "液态水获得能量后能够变成气态的水，也就是水蒸气。这个过程可以在没有沸腾时发生，不能限定为只有达到 100°C 才会蒸发。"
+          },
+          {
+            "title": "凝结",
+            "body": "空气中的水蒸气能够转变为液态水，这个变化叫凝结。气态水本身不可见，观察到的云滴是液态的小水滴，不能把二者当作同一种状态。"
+          },
+          {
+            "title": "水的返回",
+            "body": "云中的水可能通过降水返回地表，返回的水可以处于液态或固态。出现云并不保证一定下雨，这份素材也不能用来预测某地何时降雨。"
+          }
+        ],
+        "subject_en": "Educational explanatory diagram",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "first process",
+          "second process",
+          "third process"
+        ]
+      },
+      "child": {
+        "title": "继续理解蒸发",
+        "description": "围绕液态到气态的变化，区分能量、沸腾和观察到的水滴。",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "状态的变化",
+            "body": "蒸发描述水从液态变为气态，而不是水消失或被创造。保持这一状态区分，才能把蒸发与气态转回液态的凝结分开讨论。"
+          },
+          {
+            "title": "气态水与可见水滴",
+            "body": "蒸发形成的水蒸气本身肉眼不可见。若观察到悬浮的小水滴，应区分液滴与气态水；可见的液滴并不能直接证明看到了水蒸气。"
+          },
+          {
+            "title": "能量与条件",
+            "body": "蒸发需要能量，但并不要求水先达到沸腾状态。当前素材没有给出特定实验的温度或持续时间，因此不能把某个精确数值当作所有蒸发过程的条件。"
+          }
+        ],
+        "subject_en": "Educational explanatory diagram",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "first process",
+          "second process",
+          "third process"
+        ]
+      },
+      "grandchild": {
+        "title": "气态水与液滴",
+        "description": "用状态与可见性的区别，避免把观察和解释混为一谈。",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "气态的水",
+            "body": "水蒸气指处于气态的水，本身肉眼不可见。描述它时需要说明物质状态，不能仅凭画面里有白色团块就认定那就是气态水。"
+          },
+          {
+            "title": "可见的液滴",
+            "body": "小水滴处于液态，与气态的水蒸气不同。区分液滴和气体，可以避免把凝结形成的可见水滴反过来称为已经看见气态水。"
+          },
+          {
+            "title": "观察的边界",
+            "body": "这份素材支持区分气态水和可见水滴，但没有提供检测仪器或特定环境数据。对具体云团的成分和当地天气应保留判断，不能添加材料以外的精确预测。"
+          }
+        ],
+        "subject_en": "Educational explanatory diagram",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "first process",
+          "second process",
+          "third process"
+        ]
+      }
+    },
+    "water-cycle-en": {
+      "root": {
+        "title": "How water circulates",
+        "description": "Follow state changes while keeping invisible vapor distinct from visible droplets.",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "Evaporation",
+            "body": "Liquid water can become gaseous water when energy is available. Evaporation does not require the liquid to be boiling, so a claim that it happens only at 100 degrees Celsius would misstate the brief."
+          },
+          {
+            "title": "Condensation",
+            "body": "Condensation changes water vapor into liquid water. The gas itself is invisible to the human eye, whereas the tiny liquid droplets visible in a cloud have a different physical state."
+          },
+          {
+            "title": "Returning water",
+            "body": "Cloud water may return to the surface as precipitation in liquid or solid form. The presence of a cloud does not guarantee rain, and this brief cannot predict the weather at a particular location."
+          }
+        ],
+        "subject_en": "Educational explanatory diagram",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "first process",
+          "second process",
+          "third process"
+        ]
+      },
+      "child": {
+        "title": "Exploring evaporation",
+        "description": "Separate the state change, the need for energy, and what an observer can see.",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "The change of state",
+            "body": "Evaporation changes liquid water into gaseous water rather than making water cease to exist. Keeping the direction of this change explicit also distinguishes it from condensation, which returns the gas to liquid."
+          },
+          {
+            "title": "Water vapor and visible droplets",
+            "body": "Water vapor formed by evaporation is itself invisible to human eyes. Visible suspended droplets are liquid, so observing those droplets does not mean that the gaseous water has become directly visible."
+          },
+          {
+            "title": "Energy and conditions",
+            "body": "Evaporation needs energy but does not require the liquid to reach its boiling point first. The brief gives no controlled experimental duration or temperature, so a universal numerical rule would go beyond its evidence."
+          }
+        ],
+        "subject_en": "Educational explanatory diagram",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "first process",
+          "second process",
+          "third process"
+        ]
+      },
+      "grandchild": {
+        "title": "Vapor and droplets",
+        "description": "Keep physical state separate from what is visible in an observation.",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "Gaseous water",
+            "body": "Water vapor is water in the gaseous state and is invisible to the human eye. A visible white shape by itself is not evidence that the observer is directly seeing the gas."
+          },
+          {
+            "title": "Visible liquid droplets",
+            "body": "Tiny liquid droplets have a different state from gaseous water vapor. Making this distinction prevents the visible droplets formed during condensation from being described as visible gas."
+          },
+          {
+            "title": "Limits of observation",
+            "body": "The supplied context supports a distinction between gas and liquid droplets. It contains no instrument readings or local weather measurements, so precise claims about a particular cloud or forecast remain unsupported."
+          }
+        ],
+        "subject_en": "Educational explanatory diagram",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "first process",
+          "second process",
+          "third process"
+        ]
+      }
+    },
+    "fictional-reservation-zh": {
+      "root": {
+        "title": "虚构图书角预约流程",
+        "description": "本测试只解释雾湾图书角的固定约定，未定义事项保留未知。",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "提交申请",
+            "body": "申请需要书名和联系方式，每场活动只有 8 个名额。提交申请只是进入流程，不代表必然取得名额，也不能将每场容量改说成每天或每人的限额。"
+          },
+          {
+            "title": "核对与确认",
+            "body": "工作人员在提交后的 12 小时内核对信息和名额，确认通过后才发放取件码。取件码自发放时起 48 小时内有效，这个起点与申请提交的起点不同。"
+          },
+          {
+            "title": "领取与失效",
+            "body": "领取时需要有效的取件码，过期的码不能用于领取。素材没有说明延期、候补、费用、地点或真实日期，因此不能把这些未知项编成确定的服务安排。"
+          }
+        ],
+        "subject_en": "Educational explanatory diagram",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "first process",
+          "second process",
+          "third process"
+        ]
+      },
+      "child": {
+        "title": "核对与确认的边界",
+        "description": "保留容量、两种计时起点以及确认前后的条件。",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "名额约束",
+            "body": "每场活动提供 8 个名额，这是一场活动的容量约定。申请和最终确认之间还存在核对步骤，所以提交申请不能被描述成已经获得名额。"
+          },
+          {
+            "title": "核对时限",
+            "body": "核对窗口从申请提交开始，工作人员应在 12 小时内检查信息和名额。这个时限描述核对环节，不应与取件码发放后的有效时间合并或交换。"
+          },
+          {
+            "title": "取件码有效期",
+            "body": "取件码仅在确认通过后发放，自发放时起 48 小时内有效。48 小时不是从申请提交时开始；素材也没有定义过期后的延期方案。"
+          }
+        ],
+        "subject_en": "Educational explanatory diagram",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "first process",
+          "second process",
+          "third process"
+        ]
+      },
+      "grandchild": {
+        "title": "取件码如何计时",
+        "description": "围绕确认、发放、48 小时与未知的延期政策继续解释。",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "计时起点",
+            "body": "取件码需要在确认通过后发放，计时起点是发放事件。将起点提前到申请提交会改变原约定，不能用这种替换来解释有效期。"
+          },
+          {
+            "title": "有效时间",
+            "body": "取件码自发放时起 48 小时内有效，过期码不能领取。这里的 48 小时应保持原数值，不能与核对环节的 12 小时交换。"
+          },
+          {
+            "title": "未定义事项",
+            "body": "当前材料没有定义延期安排，也没有提供具体日历日期。遇到延期、费用或真实地点的问题，应说明资料不足，而不是把可能的设想写成已承诺的规则。"
+          }
+        ],
+        "subject_en": "Educational explanatory diagram",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "first process",
+          "second process",
+          "third process"
+        ]
+      }
+    },
+    "fictional-reservation-en": {
+      "root": {
+        "title": "A fictional book reservation",
+        "description": "Explain the fixed Mist Bay conventions while leaving undefined details unknown.",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "Application",
+            "body": "A request contains a book title and contact details, and each session has exactly 8 places. Applying enters the process but does not guarantee a place; the capacity is per session rather than per day or per reader."
+          },
+          {
+            "title": "Checking and confirmation",
+            "body": "Staff check information and capacity within 12 hours after submission and issue a code only after confirmation. The code is valid for 48 hours after issue, so its clock starts at a different event from the checking window."
+          },
+          {
+            "title": "Collection and expiry",
+            "body": "Collection requires a valid code, and an expired code cannot be used. Extensions, waiting lists, fees, locations and calendar dates are undefined in this fictional brief and must not become invented service promises."
+          }
+        ],
+        "subject_en": "Educational explanatory diagram",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "first process",
+          "second process",
+          "third process"
+        ]
+      },
+      "child": {
+        "title": "Checking and confirmation",
+        "description": "Keep capacity, the two timing anchors, and confirmation conditions distinct.",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "Capacity limit",
+            "body": "Exactly 8 places are available for each session, which is a session capacity rather than a daily or individual allowance. A request still needs checking, so submission cannot be treated as a confirmed place."
+          },
+          {
+            "title": "Checking window",
+            "body": "The checking window begins with submission and lasts up to 12 hours. This describes the information and capacity check, not the later period for using a collection code."
+          },
+          {
+            "title": "Code validity",
+            "body": "A collection code is issued only after confirmation and is valid for 48 hours after issue. Those 48 hours do not start at submission, and the brief supplies no policy for extending an expired code."
+          }
+        ],
+        "subject_en": "Educational explanatory diagram",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "first process",
+          "second process",
+          "third process"
+        ]
+      },
+      "grandchild": {
+        "title": "How the code clock works",
+        "description": "Explore the issue event, the 48-hour duration, and the missing extension policy.",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "Starting event",
+            "body": "Code issue happens after confirmation and is the event that starts its validity clock. Moving that anchor back to request submission would alter the rule rather than explain it."
+          },
+          {
+            "title": "Validity duration",
+            "body": "The code remains valid for 48 hours after issue, and an expired code cannot be used for collection. Preserve 48 hours as written instead of swapping it with the 12-hour checking window."
+          },
+          {
+            "title": "Undefined details",
+            "body": "The context gives no extension arrangement and no actual calendar date. Questions about extensions, charges or a real address require an explicit information-gap statement rather than an invented institutional promise."
+          }
+        ],
+        "subject_en": "Educational explanatory diagram",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "first process",
+          "second process",
+          "third process"
+        ]
+      }
+    },
+    "shapes-zh": {
+      "root": {
+        "summary": "浅色背景上从左到右是红色圆形、蓝色正方形和绿色三角形，三个图形互不重叠。",
+        "scene_type": "abstract",
+        "language_hint": "zh",
+        "hotspots": [
+          {
+            "id": "hs_1",
+            "label": "红色圆形",
+            "x": 0.1,
+            "y": 0.25,
+            "width": 0.2,
+            "height": 0.3
+          },
+          {
+            "id": "hs_2",
+            "label": "蓝色正方形",
+            "x": 0.4,
+            "y": 0.25,
+            "width": 0.2,
+            "height": 0.3
+          },
+          {
+            "id": "hs_3",
+            "label": "绿色三角形",
+            "x": 0.7,
+            "y": 0.25,
+            "width": 0.2,
+            "height": 0.3
+          }
+        ],
+        "keywords": [
+          {
+            "label": "红色圆形",
+            "description": "观察可见的颜色、轮廓和位置。"
+          },
+          {
+            "label": "蓝色正方形",
+            "description": "观察可见的颜色、轮廓和位置。"
+          },
+          {
+            "label": "绿色三角形",
+            "description": "观察可见的颜色、轮廓和位置。"
+          }
+        ]
+      },
+      "child": {
+        "title": "观察红色圆形",
+        "description": "只讨论图片支持的颜色、轮廓和相对位置，不推断材质或用途。",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "圆形的边界",
+            "body": "左侧红色图形的轮廓是圆形，可以沿整个边界识别一个闭合形状。它与中间的蓝色正方形、右侧绿色三角形分离，不能把三个区域合成一个点击框。"
+          },
+          {
+            "title": "颜色与位置",
+            "body": "图片把这个圆形显示为红色，并将它放在另外两个图形的左侧。颜色和相对位置是可观察内容，不足以说明图形对应的真实材料或制造过程。"
+          },
+          {
+            "title": "未知属性",
+            "body": "这是一幅原创的合成几何测试图，没有提供实际物体、比例尺或来源照片。无法仅凭红色填充断言物体质量、材质、用途或历史。"
+          }
+        ],
+        "subject_en": "Educational explanatory diagram",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "first process",
+          "second process",
+          "third process"
+        ]
+      },
+      "grandchild": {
+        "title": "圆形边界与点击区域",
+        "description": "进一步检查边界范围和可见证据，保持几何与语义分开。",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "闭合轮廓",
+            "body": "圆形边界围住左侧的红色区域，与另外两个形状相互分离。评估点击框时应覆盖这个图形，而不是把背景或蓝色正方形当作目标。"
+          },
+          {
+            "title": "框与实际形状",
+            "body": "点击区域使用矩形外接框描述圆形的范围，矩形和圆形本身并不是同一种轮廓。框的几何覆盖是否合适，与标签是否正确都需要分别检查。"
+          },
+          {
+            "title": "可见证据的限度",
+            "body": "这一合成图支持观察轮廓和相对位置，没有提供实际尺度或材料信息。进一步解释应保持这些边界，不能凭颜色创造现实物体的属性。"
+          }
+        ],
+        "subject_en": "Educational explanatory diagram",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "first process",
+          "second process",
+          "third process"
+        ]
+      }
+    },
+    "shapes-en": {
+      "root": {
+        "summary": "On a light background, a red circle, a blue square and a green triangle appear from left to right without overlap.",
+        "scene_type": "abstract",
+        "language_hint": "en",
+        "hotspots": [
+          {
+            "id": "hs_1",
+            "label": "Red circle",
+            "x": 0.1,
+            "y": 0.25,
+            "width": 0.2,
+            "height": 0.3
+          },
+          {
+            "id": "hs_2",
+            "label": "Blue square",
+            "x": 0.4,
+            "y": 0.25,
+            "width": 0.2,
+            "height": 0.3
+          },
+          {
+            "id": "hs_3",
+            "label": "Green triangle",
+            "x": 0.7,
+            "y": 0.25,
+            "width": 0.2,
+            "height": 0.3
+          }
+        ],
+        "keywords": [
+          {
+            "label": "Red circle",
+            "description": "Observe visible color, outline and position."
+          },
+          {
+            "label": "Blue square",
+            "description": "Observe visible color, outline and position."
+          },
+          {
+            "label": "Green triangle",
+            "description": "Observe visible color, outline and position."
+          }
+        ]
+      },
+      "child": {
+        "title": "Observing the red circle",
+        "description": "Discuss only the visible color, outline and relative position.",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "Circular boundary",
+            "body": "The red shape on the left has a closed circular boundary and is separate from the blue square and green triangle. A clickable region should identify that shape rather than combine all three objects into one box."
+          },
+          {
+            "title": "Color and position",
+            "body": "The image depicts this circle as red and places it to the left of the other two shapes. Visible color and relative placement do not establish a real material or a manufacturing method."
+          },
+          {
+            "title": "Unknown properties",
+            "body": "This is an original synthetic geometry fixture without a physical scale or a source photograph. Its colored fill cannot establish the mass, material, purpose or history of a real object."
+          }
+        ],
+        "subject_en": "Educational explanatory diagram",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "first process",
+          "second process",
+          "third process"
+        ]
+      },
+      "grandchild": {
+        "title": "Circular boundaries and click regions",
+        "description": "Keep geometric coverage separate from the semantic correctness of a label.",
+        "layout": "sequence",
+        "sections": [
+          {
+            "title": "Closed outline",
+            "body": "The circular boundary encloses the left red region, apart from the other two shapes. A click region should cover that target rather than the background or the blue square."
+          },
+          {
+            "title": "Box versus shape",
+            "body": "A rectangular bounding box describes the extent of a circle without changing the circle into a rectangle. Its geometric coverage and the accuracy of its label are separate evaluation questions."
+          },
+          {
+            "title": "Limits of visible evidence",
+            "body": "The synthetic picture supports observations about outlines and relative placement but supplies no real scale or material information. A deeper page must preserve those limits rather than invent physical attributes."
+          }
+        ],
+        "subject_en": "Educational explanatory diagram",
+        "composition_type": "diagram",
+        "sub_topics_en": [
+          "first process",
+          "second process",
+          "third process"
+        ]
+      }
+    }
+  }
+}

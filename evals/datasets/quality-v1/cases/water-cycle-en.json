@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "id": "water-cycle-en",
+  "version": "1.0.0",
+  "language": "en",
+  "title": "Water cycle: states and qualifications",
+  "input": {
+    "kind": "text",
+    "text": "Water cycle: this is a contributor-authored summary based on USGS water-science material, not a complete textbook.\nEvaporation changes liquid water into gaseous water, or water vapor. Energy is needed, but evaporation can occur without the water boiling; it is not restricted to 100 degrees Celsius.\nCondensation changes water vapor into liquid water. Water vapor itself is invisible to the human eye; visible tiny liquid droplets in a cloud must not be equated with the gas.\nWater in clouds may return to the surface as precipitation in liquid or solid form. Not every cloud produces rain.\nThis brief supplies no local weather forecast, universal process duration, global percentage or controlled experimental temperature. State the information gap rather than inventing exact figures."
+  },
+  "source": {
+    "kind": "primary-source-summary",
+    "text": "Water cycle: this is a contributor-authored summary based on USGS water-science material, not a complete textbook.\nEvaporation changes liquid water into gaseous water, or water vapor. Energy is needed, but evaporation can occur without the water boiling; it is not restricted to 100 degrees Celsius.\nCondensation changes water vapor into liquid water. Water vapor itself is invisible to the human eye; visible tiny liquid droplets in a cloud must not be equated with the gas.\nWater in clouds may return to the surface as precipitation in liquid or solid form. Not every cloud produces rain.\nThis brief supplies no local weather forecast, universal process duration, global percentage or controlled experimental temperature. State the information gap rather than inventing exact figures.",
+    "license": "MIT",
+    "notes": "Original contributor-authored summary or fictional brief; references are reviewer anchors, not model-generated citations.",
+    "references": [
+      {
+        "id": "usgs-evaporation",
+        "title": "USGS: Evaporation and the Water Cycle",
+        "url": "https://www.usgs.gov/water-science-school/science/evaporation-and-water-cycle",
+        "checked_on": "2026-10-19"
+      },
+      {
+        "id": "usgs-condensation",
+        "title": "USGS: Condensation and the Water Cycle",
+        "url": "https://www.usgs.gov/water-science-school/science/condensation-and-water-cycle",
+        "checked_on": "2026-10-19"
+      },
+      {
+        "id": "usgs-glossary",
+        "title": "USGS: Glossary of Water Cycle Terms",
+        "url": "https://www.usgs.gov/glossary/glossary-water-cycle-terms",
+        "checked_on": "2026-10-19"
+      }
+    ]
+  },
+  "branch_steps": [
+    {
+      "preferred_labels": [
+        "Evaporation"
+      ]
+    },
+    {
+      "preferred_labels": [
+        "Water vapor and visible droplets",
+        "Vapor and droplets"
+      ]
+    }
+  ],
+  "fact_checks": [
+    {
+      "id": "water-evaporation",
+      "claim": "Evaporation changes liquid water into gas.",
+      "evidence_excerpt": "Evaporation changes liquid water into gaseous water",
+      "source_id": "usgs-evaporation",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    },
+    {
+      "id": "water-condensation",
+      "claim": "Condensation changes gas into liquid.",
+      "evidence_excerpt": "Condensation changes water vapor into liquid water",
+      "source_id": "usgs-condensation",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    },
+    {
+      "id": "water-invisible",
+      "claim": "Water vapor is invisible; visible droplets are liquid.",
+      "evidence_excerpt": "Water vapor itself is invisible to the human eye",
+      "source_id": "usgs-glossary",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "water-not-boiling",
+      "claim": "Evaporation does not require boiling.",
+      "evidence_excerpt": "evaporation can occur without the water boiling",
+      "source_id": "usgs-evaporation",
+      "severity": "major",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "water-not-all-clouds",
+      "claim": "A cloud does not guarantee rain.",
+      "evidence_excerpt": "Not every cloud produces rain",
+      "source_id": "usgs-condensation",
+      "severity": "major",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    }
+  ],
+  "forbidden_claims": [
+    {
+      "id": "water-boiling-only",
+      "claim": "Evaporation occurs only at 100 degrees Celsius.",
+      "reason": "The brief explicitly says boiling is unnecessary.",
+      "severity": "critical"
+    },
+    {
+      "id": "water-vapor-visible",
+      "claim": "A white cloud is visible gaseous water vapor.",
+      "reason": "This confuses gas with liquid droplets.",
+      "severity": "critical"
+    },
+    {
+      "id": "water-rain-guaranteed",
+      "claim": "Every cloud immediately produces rain.",
+      "reason": "The brief states a possibility, not a guarantee.",
+      "severity": "major"
+    }
+  ],
+  "unknown_limits": [
+    "Local weather predictions",
+    "Universal durations and exact global percentages"
+  ],
+  "dimension_notes": {
+    "body": "Check the supplied fact anchors and substance of every section. Additional real-world claims require independent evidence; word presence alone does not establish truth.",
+    "hotspots": "Check whether each actual label promises the material behind that entry. Do not reward a valid rectangle for an unrelated label.",
+    "cross_page": "Trace the selected label and the exact context actually sent. Check useful added explanation, preserved quantities and qualifications, and contradictions; repetition statistics alone are not a semantic verdict.",
+    "instruction": "Preserve the requested language and distinguish the fixed source, inference, fiction and unknown information. Do not invent references or verification status."
+  }
+}

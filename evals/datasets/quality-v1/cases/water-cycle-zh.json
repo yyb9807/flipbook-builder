@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "id": "water-cycle-zh",
+  "version": "1.0.0",
+  "language": "zh",
+  "title": "水循环：状态与限定条件",
+  "input": {
+    "kind": "text",
+    "text": "水循环：以下是依据 USGS 水科学资料撰写的简要素材，不是完整教材。\n蒸发：液态水转变为气态的水，气态的水也叫水蒸气。蒸发需要能量，也能在水没有沸腾时发生；不要把蒸发说成只在 100°C 才发生。\n凝结：水蒸气转变为液态水；空气中的水蒸气本身是肉眼不可见的，云中可见的小水滴不能直接等同于气态水。\n水的返回：云中的水可能形成降水，水以液态或固态返回地表。不是每一片云都会下雨。\n素材没有给出当地的降雨预测、各过程的固定耗时、全球比例或实验温度条件。需要这些结论时应说明资料不足，不要编造精确数字。"
+  },
+  "source": {
+    "kind": "primary-source-summary",
+    "text": "水循环：以下是依据 USGS 水科学资料撰写的简要素材，不是完整教材。\n蒸发：液态水转变为气态的水，气态的水也叫水蒸气。蒸发需要能量，也能在水没有沸腾时发生；不要把蒸发说成只在 100°C 才发生。\n凝结：水蒸气转变为液态水；空气中的水蒸气本身是肉眼不可见的，云中可见的小水滴不能直接等同于气态水。\n水的返回：云中的水可能形成降水，水以液态或固态返回地表。不是每一片云都会下雨。\n素材没有给出当地的降雨预测、各过程的固定耗时、全球比例或实验温度条件。需要这些结论时应说明资料不足，不要编造精确数字。",
+    "license": "MIT",
+    "notes": "Original contributor-authored summary or fictional brief; references are reviewer anchors, not model-generated citations.",
+    "references": [
+      {
+        "id": "usgs-evaporation",
+        "title": "USGS: Evaporation and the Water Cycle",
+        "url": "https://www.usgs.gov/water-science-school/science/evaporation-and-water-cycle",
+        "checked_on": "2026-10-19"
+      },
+      {
+        "id": "usgs-condensation",
+        "title": "USGS: Condensation and the Water Cycle",
+        "url": "https://www.usgs.gov/water-science-school/science/condensation-and-water-cycle",
+        "checked_on": "2026-10-19"
+      },
+      {
+        "id": "usgs-glossary",
+        "title": "USGS: Glossary of Water Cycle Terms",
+        "url": "https://www.usgs.gov/glossary/glossary-water-cycle-terms",
+        "checked_on": "2026-10-19"
+      }
+    ]
+  },
+  "branch_steps": [
+    {
+      "preferred_labels": [
+        "蒸发",
+        "水的蒸发"
+      ]
+    },
+    {
+      "preferred_labels": [
+        "气态水与可见水滴",
+        "水蒸气与水滴"
+      ]
+    }
+  ],
+  "fact_checks": [
+    {
+      "id": "water-evaporation",
+      "claim": "蒸发是液态到气态的变化。",
+      "evidence_excerpt": "液态水转变为气态的水",
+      "source_id": "usgs-evaporation",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    },
+    {
+      "id": "water-condensation",
+      "claim": "凝结是气态到液态的变化。",
+      "evidence_excerpt": "水蒸气转变为液态水",
+      "source_id": "usgs-condensation",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    },
+    {
+      "id": "water-invisible",
+      "claim": "气态水蒸气不可见，液滴与气体不可混同。",
+      "evidence_excerpt": "水蒸气本身是肉眼不可见的",
+      "source_id": "usgs-glossary",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "water-not-boiling",
+      "claim": "蒸发不要求水已经沸腾。",
+      "evidence_excerpt": "也能在水没有沸腾时发生",
+      "source_id": "usgs-evaporation",
+      "severity": "major",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "water-not-all-clouds",
+      "claim": "形成云不等于必然下雨。",
+      "evidence_excerpt": "不是每一片云都会下雨",
+      "source_id": "usgs-condensation",
+      "severity": "major",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    }
+  ],
+  "forbidden_claims": [
+    {
+      "id": "water-boiling-only",
+      "claim": "蒸发只能在 100°C 发生。",
+      "reason": "素材明确说明不必先沸腾。",
+      "severity": "critical"
+    },
+    {
+      "id": "water-vapor-visible",
+      "claim": "白色云团就是肉眼可见的气态水。",
+      "reason": "混淆水蒸气与液滴。",
+      "severity": "critical"
+    },
+    {
+      "id": "water-rain-guaranteed",
+      "claim": "所有云必然立即下雨。",
+      "reason": "将可能的降水改为必然。",
+      "severity": "major"
+    }
+  ],
+  "unknown_limits": [
+    "当地天气预测",
+    "固定耗时与精确全球比例"
+  ],
+  "dimension_notes": {
+    "body": "Check the supplied fact anchors and substance of every section. Additional real-world claims require independent evidence; word presence alone does not establish truth.",
+    "hotspots": "Check whether each actual label promises the material behind that entry. Do not reward a valid rectangle for an unrelated label.",
+    "cross_page": "Trace the selected label and the exact context actually sent. Check useful added explanation, preserved quantities and qualifications, and contradictions; repetition statistics alone are not a semantic verdict.",
+    "instruction": "Preserve the requested language and distinguish the fixed source, inference, fiction and unknown information. Do not invent references or verification status."
+  }
+}

@@ -64,9 +64,11 @@ Keep the ZIP files together. Publish the entire extracted folder as static files
 
 ## Development and verification
 
+The [model quality workflow](docs/MODEL_QUALITY.md) includes fixed Chinese/English cases, three-level content and hotspot checks, evidence-based manual review and run comparisons. It defaults to offline replay. Live providers require explicit credentials and limits; unreviewed results never constitute a model quality pass.
+
 Use Node.js 24, Python 3.13 and Postgres 16. The [frontend guide](frontend/README.md) covers shared rendering, browser state and builds; the [backend guide](backend/README.md) covers local startup, configuration and API contracts. See the [architecture](docs/ARCHITECTURE.md) for modules and data flow.
 
-All check commands, recent local results and limits live in the [verification guide](docs/VERIFICATION.md). GitHub Actions is configured for frontend checks, real Postgres backend tests and process recovery verification using controlled providers, with no paid model calls. Remote CI status comes from the actual run for each commit.
+All check commands, recent local results and limits live in the [verification guide](docs/VERIFICATION.md). Run checks locally with controlled providers and no paid model calls. This repository has no GitHub Actions CI/CD configuration.
 
 Back up the database and `data/`; `docker compose down -v` removes database volumes. [Historical reports](docs/archive/README.md) are retained for traceability, not as current setup instructions.
 

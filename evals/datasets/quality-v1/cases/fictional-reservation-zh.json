@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "id": "fictional-reservation-zh",
+  "version": "1.0.0",
+  "language": "zh",
+  "title": "虚构预约：数字与未知项",
+  "input": {
+    "kind": "text",
+    "text": "雾湾图书角是为本测试虚构的机构，不对应真实服务。请根据下列约定解释预约、核对和领取，不要把虚构规定说成现实政策。\n提交申请：读者提交书名和联系方式。每场活动只有 8 个名额，提交申请不代表一定获得名额。\n核对与确认：工作人员在申请提交后的 12 小时内核对名额和信息。只有确认通过后才发放取件码；取件码从发放时起 48 小时内有效。核对时限和有效期的起算事件不同。\n领取与失效：读者在有效期内凭取件码领取，过期码不能领取。素材没有定义延期、候补、收费、退款、地点或真实日期。\n解释遇到未定义事项时，应明确说资料未提供，而不是补造服务承诺。"
+  },
+  "source": {
+    "kind": "synthetic-closed-world",
+    "text": "雾湾图书角是为本测试虚构的机构，不对应真实服务。请根据下列约定解释预约、核对和领取，不要把虚构规定说成现实政策。\n提交申请：读者提交书名和联系方式。每场活动只有 8 个名额，提交申请不代表一定获得名额。\n核对与确认：工作人员在申请提交后的 12 小时内核对名额和信息。只有确认通过后才发放取件码；取件码从发放时起 48 小时内有效。核对时限和有效期的起算事件不同。\n领取与失效：读者在有效期内凭取件码领取，过期码不能领取。素材没有定义延期、候补、收费、退款、地点或真实日期。\n解释遇到未定义事项时，应明确说资料未提供，而不是补造服务承诺。",
+    "license": "MIT",
+    "notes": "Original contributor-authored summary or fictional brief; references are reviewer anchors, not model-generated citations.",
+    "references": [
+      {
+        "id": "authored-brief",
+        "title": "Original synthetic fixture, not a real institution",
+        "checked_on": "2026-10-19"
+      }
+    ]
+  },
+  "branch_steps": [
+    {
+      "preferred_labels": [
+        "核对与确认"
+      ]
+    },
+    {
+      "preferred_labels": [
+        "取件码有效期"
+      ]
+    }
+  ],
+  "fact_checks": [
+    {
+      "id": "reservation-capacity",
+      "claim": "每场只有 8 个名额，不是每天。",
+      "evidence_excerpt": "每场活动只有 8 个名额",
+      "source_id": "authored-brief",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    },
+    {
+      "id": "reservation-checking",
+      "claim": "12 小时核对窗口从提交开始。",
+      "evidence_excerpt": "申请提交后的 12 小时内",
+      "source_id": "authored-brief",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "reservation-validity",
+      "claim": "取件码 48 小时有效期从发放开始。",
+      "evidence_excerpt": "取件码从发放时起 48 小时内有效",
+      "source_id": "authored-brief",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "reservation-conditional",
+      "claim": "申请并不保证获得名额。",
+      "evidence_excerpt": "提交申请不代表一定获得名额",
+      "source_id": "authored-brief",
+      "severity": "major",
+      "applies_to": [
+        "root"
+      ]
+    }
+  ],
+  "forbidden_claims": [
+    {
+      "id": "reservation-number-swap",
+      "claim": "核对期为 48 小时，码有效期为 12 小时。",
+      "reason": "混淆两个期限。",
+      "severity": "critical"
+    },
+    {
+      "id": "reservation-clock-shift",
+      "claim": "码从申请提交时起计时。",
+      "reason": "改变发放起点。",
+      "severity": "critical"
+    },
+    {
+      "id": "reservation-invented-policy",
+      "claim": "可以保证免费延期、退款或候补。",
+      "reason": "这些规定并未提供。",
+      "severity": "major"
+    }
+  ],
+  "unknown_limits": [
+    "延期、候补、收费、退款、地点和真实日期"
+  ],
+  "dimension_notes": {
+    "body": "Check the supplied fact anchors and substance of every section. Additional real-world claims require independent evidence; word presence alone does not establish truth.",
+    "hotspots": "Check whether each actual label promises the material behind that entry. Do not reward a valid rectangle for an unrelated label.",
+    "cross_page": "Trace the selected label and the exact context actually sent. Check useful added explanation, preserved quantities and qualifications, and contradictions; repetition statistics alone are not a semantic verdict.",
+    "instruction": "Preserve the requested language and distinguish the fixed source, inference, fiction and unknown information. Do not invent references or verification status."
+  }
+}

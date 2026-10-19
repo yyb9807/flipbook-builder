@@ -45,6 +45,9 @@ data/publications/*
 !data/publications/.gitkeep
 backend/publication_runtime/
 
+# 模型评估运行含原始响应和人工评审，仅固定合成数据集入库
+evals/runs/
+
 # ── 数据库 dump ──
 *.sql.bak
 *.dump

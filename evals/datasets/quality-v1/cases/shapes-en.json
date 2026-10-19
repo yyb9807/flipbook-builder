@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "id": "shapes-en",
+  "version": "1.0.0",
+  "language": "en",
+  "title": "Original shapes: grounding and observation limits",
+  "input": {
+    "kind": "image",
+    "image_path": "assets/shapes.png",
+    "sha256": "f9027b72549866fc7344d053cdfe3db16ad62286569d25d1203d10b589345587",
+    "width": 960,
+    "height": 640
+  },
+  "source": {
+    "kind": "original-synthetic-image",
+    "text": "On a light background, a red circle, a blue square and a green triangle appear from left to right without overlap.",
+    "license": "MIT",
+    "notes": "One independently authored visual scene, reused for Chinese and English. Original code-native raster from assets/generate_shapes.py; no third-party images, real photo or model image. Ground truth boxes include pixel endpoints. Does not establish natural-image performance.",
+    "references": [
+      {
+        "id": "original-image",
+        "title": "Original three-shape fixture, MIT",
+        "checked_on": "2026-10-19"
+      }
+    ]
+  },
+  "branch_steps": [
+    {
+      "preferred_labels": [
+        "Red circle",
+        "red disk",
+        "red circular shape"
+      ]
+    },
+    {
+      "preferred_labels": [
+        "Circular boundary"
+      ]
+    }
+  ],
+  "fact_checks": [
+    {
+      "id": "image-objects",
+      "claim": "The image contains three separate colored shapes.",
+      "evidence_excerpt": "On a light background, a red circle, a blue square and a green triangle appear from left to right without overlap.",
+      "source_id": "original-image",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    },
+    {
+      "id": "image-order",
+      "claim": "Left to right: red circle, blue square, green triangle.",
+      "evidence_excerpt": "On a light background, a red circle, a blue square and a green triangle appear from left to right without overlap.",
+      "source_id": "original-image",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    }
+  ],
+  "forbidden_claims": [
+    {
+      "id": "image-object-invention",
+      "claim": "The image establishes a real institution, historical event or material.",
+      "reason": "The synthetic scene supplies visible geometry only.",
+      "severity": "major"
+    },
+    {
+      "id": "image-order-reversal",
+      "claim": "The red circle is on the far right.",
+      "reason": "This contradicts the image layout.",
+      "severity": "critical"
+    }
+  ],
+  "unknown_limits": [
+    "Physical dimensions, material, mass, purpose and history"
+  ],
+  "dimension_notes": {
+    "body": "Check the supplied fact anchors and substance of every section. Additional real-world claims require independent evidence; word presence alone does not establish truth.",
+    "hotspots": "Check whether each actual label promises the material behind that entry. Do not reward a valid rectangle for an unrelated label.",
+    "cross_page": "Trace the selected label and the exact context actually sent. Check useful added explanation, preserved quantities and qualifications, and contradictions; repetition statistics alone are not a semantic verdict.",
+    "instruction": "Preserve the requested language and distinguish the fixed source, inference, fiction and unknown information. Do not invent references or verification status."
+  },
+  "expected_hotspots": [
+    {
+      "id": "shape-circle",
+      "label": "Red circle",
+      "aliases": [
+        "red disk",
+        "red circular shape"
+      ],
+      "box": {
+        "x": 0.1,
+        "y": 0.25,
+        "width": 0.2,
+        "height": 0.3
+      },
+      "required": true
+    },
+    {
+      "id": "shape-square",
+      "label": "Blue square",
+      "aliases": [
+        "blue rectangular square",
+        "blue block"
+      ],
+      "box": {
+        "x": 0.4,
+        "y": 0.25,
+        "width": 0.2,
+        "height": 0.3
+      },
+      "required": true
+    },
+    {
+      "id": "shape-triangle",
+      "label": "Green triangle",
+      "aliases": [
+        "green triangular shape"
+      ],
+      "box": {
+        "x": 0.7,
+        "y": 0.25,
+        "width": 0.2,
+        "height": 0.3
+      },
+      "required": true
+    }
+  ],
+  "iou_threshold": 0.5,
+  "independent_visual_scene_id": "three-shapes-v1"
+}

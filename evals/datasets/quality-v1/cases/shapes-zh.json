@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "id": "shapes-zh",
+  "version": "1.0.0",
+  "language": "zh",
+  "title": "原创几何图：热点与观察边界",
+  "input": {
+    "kind": "image",
+    "image_path": "assets/shapes.png",
+    "sha256": "f9027b72549866fc7344d053cdfe3db16ad62286569d25d1203d10b589345587",
+    "width": 960,
+    "height": 640
+  },
+  "source": {
+    "kind": "original-synthetic-image",
+    "text": "浅色背景上从左到右是红色圆形、蓝色正方形和绿色三角形，三个图形互不重叠。",
+    "license": "MIT",
+    "notes": "One independently authored visual scene, reused for Chinese and English. Original code-native raster from assets/generate_shapes.py; no third-party images, real photo or model image. Ground truth boxes include pixel endpoints. Does not establish natural-image performance.",
+    "references": [
+      {
+        "id": "original-image",
+        "title": "Original three-shape fixture, MIT",
+        "checked_on": "2026-10-19"
+      }
+    ]
+  },
+  "branch_steps": [
+    {
+      "preferred_labels": [
+        "红色圆形",
+        "红圆",
+        "红色的圆形",
+        "红色圆"
+      ]
+    },
+    {
+      "preferred_labels": [
+        "圆形的边界"
+      ]
+    }
+  ],
+  "fact_checks": [
+    {
+      "id": "image-objects",
+      "claim": "图上恰有三个分离的彩色图形。",
+      "evidence_excerpt": "浅色背景上从左到右是红色圆形、蓝色正方形和绿色三角形，三个图形互不重叠。",
+      "source_id": "original-image",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    },
+    {
+      "id": "image-order",
+      "claim": "从左到右是红圆、蓝方形、绿三角。",
+      "evidence_excerpt": "浅色背景上从左到右是红色圆形、蓝色正方形和绿色三角形，三个图形互不重叠。",
+      "source_id": "original-image",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    }
+  ],
+  "forbidden_claims": [
+    {
+      "id": "image-object-invention",
+      "claim": "图片显示真实机构、历史事件或确定材质。",
+      "reason": "合成图只提供可见几何。",
+      "severity": "major"
+    },
+    {
+      "id": "image-order-reversal",
+      "claim": "红色圆形在最右侧。",
+      "reason": "与图像位置矛盾。",
+      "severity": "critical"
+    }
+  ],
+  "unknown_limits": [
+    "真实尺寸、材质、质量、用途和历史"
+  ],
+  "dimension_notes": {
+    "body": "Check the supplied fact anchors and substance of every section. Additional real-world claims require independent evidence; word presence alone does not establish truth.",
+    "hotspots": "Check whether each actual label promises the material behind that entry. Do not reward a valid rectangle for an unrelated label.",
+    "cross_page": "Trace the selected label and the exact context actually sent. Check useful added explanation, preserved quantities and qualifications, and contradictions; repetition statistics alone are not a semantic verdict.",
+    "instruction": "Preserve the requested language and distinguish the fixed source, inference, fiction and unknown information. Do not invent references or verification status."
+  },
+  "expected_hotspots": [
+    {
+      "id": "shape-circle",
+      "label": "红色圆形",
+      "aliases": [
+        "红圆",
+        "红色的圆形",
+        "红色圆"
+      ],
+      "box": {
+        "x": 0.1,
+        "y": 0.25,
+        "width": 0.2,
+        "height": 0.3
+      },
+      "required": true
+    },
+    {
+      "id": "shape-square",
+      "label": "蓝色正方形",
+      "aliases": [
+        "蓝色方形",
+        "蓝色的正方形",
+        "蓝色方块"
+      ],
+      "box": {
+        "x": 0.4,
+        "y": 0.25,
+        "width": 0.2,
+        "height": 0.3
+      },
+      "required": true
+    },
+    {
+      "id": "shape-triangle",
+      "label": "绿色三角形",
+      "aliases": [
+        "绿三角",
+        "绿色的三角形",
+        "绿色三角"
+      ],
+      "box": {
+        "x": 0.7,
+        "y": 0.25,
+        "width": 0.2,
+        "height": 0.3
+      },
+      "required": true
+    }
+  ],
+  "iou_threshold": 0.5,
+  "independent_visual_scene_id": "three-shapes-v1"
+}

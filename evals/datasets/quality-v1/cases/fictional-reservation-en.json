@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "id": "fictional-reservation-en",
+  "version": "1.0.0",
+  "language": "en",
+  "title": "Fictional reservations: numbers and unknowns",
+  "input": {
+    "kind": "text",
+    "text": "Mist Bay Book Corner is a fictional institution invented for this test, not a real service. Explain application, confirmation and collection using only these conventions; do not present them as real-world policy.\nApplication: readers submit a book title and contact details. Each session has exactly 8 places. Submitting a request does not guarantee a place.\nChecking and confirmation: staff check the information and capacity within 12 hours after submission. A collection code is issued only after confirmation; it remains valid for 48 hours after issue. The checking window and code validity start from different events.\nCollection and expiry: readers collect using a valid code. An expired code cannot be used. The brief defines no extension, waitlist, fees, refunds, location or real calendar date.\nWhen a requested detail is undefined, state that the material does not supply it rather than inventing a service promise."
+  },
+  "source": {
+    "kind": "synthetic-closed-world",
+    "text": "Mist Bay Book Corner is a fictional institution invented for this test, not a real service. Explain application, confirmation and collection using only these conventions; do not present them as real-world policy.\nApplication: readers submit a book title and contact details. Each session has exactly 8 places. Submitting a request does not guarantee a place.\nChecking and confirmation: staff check the information and capacity within 12 hours after submission. A collection code is issued only after confirmation; it remains valid for 48 hours after issue. The checking window and code validity start from different events.\nCollection and expiry: readers collect using a valid code. An expired code cannot be used. The brief defines no extension, waitlist, fees, refunds, location or real calendar date.\nWhen a requested detail is undefined, state that the material does not supply it rather than inventing a service promise.",
+    "license": "MIT",
+    "notes": "Original contributor-authored summary or fictional brief; references are reviewer anchors, not model-generated citations.",
+    "references": [
+      {
+        "id": "authored-brief",
+        "title": "Original synthetic fixture, not a real institution",
+        "checked_on": "2026-10-19"
+      }
+    ]
+  },
+  "branch_steps": [
+    {
+      "preferred_labels": [
+        "Checking and confirmation"
+      ]
+    },
+    {
+      "preferred_labels": [
+        "Code validity"
+      ]
+    }
+  ],
+  "fact_checks": [
+    {
+      "id": "reservation-capacity",
+      "claim": "There are exactly 8 places per session, not per day.",
+      "evidence_excerpt": "Each session has exactly 8 places",
+      "source_id": "authored-brief",
+      "severity": "critical",
+      "applies_to": [
+        "root"
+      ]
+    },
+    {
+      "id": "reservation-checking",
+      "claim": "The 12-hour checking window begins at submission.",
+      "evidence_excerpt": "within 12 hours after submission",
+      "source_id": "authored-brief",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "reservation-validity",
+      "claim": "Code validity is 48 hours after issue.",
+      "evidence_excerpt": "it remains valid for 48 hours after issue",
+      "source_id": "authored-brief",
+      "severity": "critical",
+      "applies_to": [
+        "all_pages_if_mentioned"
+      ]
+    },
+    {
+      "id": "reservation-conditional",
+      "claim": "Submission does not guarantee a place.",
+      "evidence_excerpt": "Submitting a request does not guarantee a place",
+      "source_id": "authored-brief",
+      "severity": "major",
+      "applies_to": [
+        "root"
+      ]
+    }
+  ],
+  "forbidden_claims": [
+    {
+      "id": "reservation-number-swap",
+      "claim": "Checking lasts 48 hours and code validity lasts 12 hours.",
+      "reason": "This swaps two different durations.",
+      "severity": "critical"
+    },
+    {
+      "id": "reservation-clock-shift",
+      "claim": "Code validity begins at application submission.",
+      "reason": "This changes the issue-time anchor.",
+      "severity": "critical"
+    },
+    {
+      "id": "reservation-invented-policy",
+      "claim": "Free extensions, refunds or a waitlist are guaranteed.",
+      "reason": "These policies are not supplied.",
+      "severity": "major"
+    }
+  ],
+  "unknown_limits": [
+    "Extensions, waitlists, fees, refunds, locations and real calendar dates"
+  ],
+  "dimension_notes": {
+    "body": "Check the supplied fact anchors and substance of every section. Additional real-world claims require independent evidence; word presence alone does not establish truth.",
+    "hotspots": "Check whether each actual label promises the material behind that entry. Do not reward a valid rectangle for an unrelated label.",
+    "cross_page": "Trace the selected label and the exact context actually sent. Check useful added explanation, preserved quantities and qualifications, and contradictions; repetition statistics alone are not a semantic verdict.",
+    "instruction": "Preserve the requested language and distinguish the fixed source, inference, fiction and unknown information. Do not invent references or verification status."
+  }
+}

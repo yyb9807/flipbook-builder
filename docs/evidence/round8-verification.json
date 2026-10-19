@@ -1,0 +1,247 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-19T02:49:32.848006+00:00",
+  "baseline_commit": "d3dc4b54e9d2bc118edd384787ed3fab4342d202",
+  "branch": "codex/model-quality-evals",
+  "scope": "Round 8 fixed-sample evaluation workflow; production source unchanged",
+  "paid_provider_calls": 0,
+  "evidence_kind": "controlled_fixture_and_synthetic_loopback_http",
+  "quality_claim": {
+    "real_model_quality": "not_measured",
+    "human_review": "not_reviewed",
+    "overall_score": null
+  },
+  "suite": {
+    "cases": 6,
+    "languages": [
+      "zh",
+      "en"
+    ],
+    "stages_per_case": 3,
+    "independent_visual_scenes": 1,
+    "sha256": "c58fc124ea4212795bcec5c6f5a9f954387654db121469400e7249321292e5dd"
+  },
+  "producer_sha256": "e7a712056676ea9c50a87bffabc4ac8204c7df4c7442ece58af015cb72497401",
+  "evaluator_sha256": "2384c58eee9300973011571853b9e9aad7fcbae4fb3757f8aebb589d5707134f",
+  "runs": [
+    {
+      "label": "baseline",
+      "run_sha256": "5d7c54698cf3c6440c841de42ae276761b3a97f0b79491cd56986e90aa80d531",
+      "mode": "replay",
+      "status": "completed",
+      "calls": 18,
+      "reserved_output_tokens": 66400,
+      "pages": 18
+    },
+    {
+      "label": "candidate",
+      "run_sha256": "f3d956fee3be14a95b533422de3e385da581fae7a9dbbf55510a0250e6b049d1",
+      "mode": "replay",
+      "status": "completed",
+      "calls": 18,
+      "reserved_output_tokens": 66400,
+      "pages": 18
+    }
+  ],
+  "assessment": {
+    "execution": "passed",
+    "automatic": "passed",
+    "human_quality": "not_reviewed",
+    "overall_quality_score": null
+  },
+  "comparison": {
+    "comparable": true,
+    "case_pairs": 6,
+    "implementation_changed": false,
+    "winner": null
+  },
+  "verification": {
+    "quality_pytest": {
+      "passed": 89,
+      "seconds": 3.84
+    },
+    "backend_postgres_pytest": {
+      "passed": 290,
+      "seconds": 66.2,
+      "isolated_database_removed": true
+    },
+    "ruff_backend_and_scripts": "passed",
+    "cli_process_tests": [
+      "offline_with_socket_and_dns_denied_and_unused_deployment_key",
+      "real_loopback_http_18_stages_auth_payload_context_and_credential_redaction",
+      "call_cap_before_dispatch_and_resume_without_new_request",
+      "unknown_http_result_stops_all_cases_and_resume_without_new_request"
+    ],
+    "negative_controls": [
+      "empty_and_duplicate_body",
+      "wrong_geometry_and_duplicate_predictions",
+      "broken_bidirectional_branches",
+      "missing_or_ambiguous_fixed_selector",
+      "missing_and_stale_review",
+      "fact_contradiction_and_forbidden_claim_review",
+      "low_cross_page_score",
+      "mismatched_suite_method_or_budget_comparison",
+      "budget_and_time_exhaustion",
+      "tampered_cached_response",
+      "short_key_preserves_budget_fields_and_unknown_state",
+      "report_script_injection_escaped",
+      "unfinished_review_template_preserved"
+    ],
+    "completed_replay_resume": {
+      "before_calls": 18,
+      "after_calls": 18
+    },
+    "independent_review": "ship_after_fixes",
+    "final_cli_review_recheck": {
+      "quality_pytest_passed": 89,
+      "seconds": 4.01,
+      "ruff_backend_and_scripts": "passed",
+      "calibration_review_ingestion": "passed; does not grant human model approval",
+      "stale_review_rejection_preserves_saved_review": true
+    },
+    "documentation": {
+      "markdown_files": 45,
+      "local_links_checked": 303,
+      "missing": 0
+    }
+  },
+  "browser": {
+    "engine": "ChatGPT in-app browser",
+    "desktop": {
+      "viewport_width": 1280,
+      "client_width": 1265,
+      "scroll_width": 1265,
+      "three_columns": true,
+      "paired_columns": 2
+    },
+    "mobile": {
+      "viewport_width": 390,
+      "client_width": 375,
+      "scroll_width": 375,
+      "stacked_columns": 1,
+      "expanded_source_table_no_overflow": true,
+      "expanded_paired_comparison_no_overflow": true
+    },
+    "images": {
+      "loaded": 2,
+      "natural_width": 960,
+      "natural_height": 640
+    },
+    "script_elements": 0,
+    "console_errors_or_warnings": [],
+    "paired_cases": 6,
+    "viewport_reset": true,
+    "temporary_tab_closed": true,
+    "screenshots": [
+      "docs/images/round8-desktop-quality.jpg",
+      "docs/images/round8-mobile-quality.jpg"
+    ]
+  },
+  "limitations": [
+    "No paid or real-model quality measurement.",
+    "One branch per case, one authored response per stage, one independent synthetic visual scene.",
+    "Call and reserved-output-token caps are not a monetary cap or measured token usage.",
+    "Saved raw output is capped; the existing production HTTP adapter does not stream-limit network response bodies.",
+    "No new frontend or production API behavior; prior publication and browser product checks remain Round 7 evidence.",
+    "Remote GitHub Actions was not run for these uncommitted local changes."
+  ],
+  "pre_commit_cleanup": {
+    "recorded_at": "2026-10-19T03:00:05.277995+00:00",
+    "quality_pytest": {
+      "passed": 94,
+      "seconds": 4.55
+    },
+    "ruff_backend_and_scripts": "passed",
+    "production_application_code_changed": false,
+    "cleanup": [
+      "shared_canonical_hash_helper_without_changing_dataset_digest",
+      "removed_unused_collections_and_passthrough_parameter",
+      "malformed_run_checkpoint_and_comparison_review_return_controlled_errors",
+      "round7_docs_and_evidence_archived",
+      "jpeg_extensions_corrected_without_changing_image_bytes",
+      "eval_runs_excluded_from_docker_context"
+    ],
+    "producer_sha256": "932b974c8f499b0ff73895c38a3eef5723acc5023ae10e4d2548cf647e27165a",
+    "evaluator_sha256": "e03f4709da8b37aef18081cc1077819cfd0e3eb7378dc683f5bc8fec07c3340a",
+    "suite_sha256": "c58fc124ea4212795bcec5c6f5a9f954387654db121469400e7249321292e5dd",
+    "runs": [
+      {
+        "label": "baseline",
+        "run_sha256": "61cd316807b8987986c54948c4369c749e9a45dacaa7fc72725903911d252b7d",
+        "status": "completed",
+        "cases": 6,
+        "pages": 18,
+        "calls": 18,
+        "reserved_output_tokens": 66400
+      },
+      {
+        "label": "candidate",
+        "run_sha256": "6dde19230e20bcc11fc4094952c52917a58a613a3573b4b51903e7a76186df3f",
+        "status": "completed",
+        "cases": 6,
+        "pages": 18,
+        "calls": 18,
+        "reserved_output_tokens": 66400
+      }
+    ],
+    "all_six_generated_projects_identical_to_original_replay": true,
+    "completed_resume_call_count": 18,
+    "comparison": {
+      "comparable": true,
+      "case_pairs": 6,
+      "winner": null
+    },
+    "paid_calls": 0,
+    "real_model_quality": "not_reviewed",
+    "docker_context_export": {
+      "scratch_copy_build": "passed",
+      "evaluation_runs_present": false,
+      "git_metadata_present": false,
+      "production_build_inputs_present": true
+    },
+    "archived_round7_json_byte_identical": [
+      {
+        "path": "docs/archive/evidence/round7-browser.json",
+        "sha256": "d4920e2906b5ab65d522182620596e97080581c5678985f43eb70940ef0900cb"
+      },
+      {
+        "path": "docs/archive/evidence/round7-history-process.json",
+        "sha256": "7beee72a2d0dead666c5f3088ee02f88d3479b61641bf5866bbff52a248ed5d3"
+      },
+      {
+        "path": "docs/archive/evidence/round7-isolation.json",
+        "sha256": "491ea1aa2377ce7544db01aa0bb793da5a31d3f829544b5ffd94e0a094cca285"
+      },
+      {
+        "path": "docs/archive/evidence/round7-knowledge-process.json",
+        "sha256": "00a9b446ebe1a36aa4b98f4b3f990a0d0642ac4f75e70c5bf3fbf04b737692ac"
+      },
+      {
+        "path": "docs/archive/evidence/round7-postgres-stack.json",
+        "sha256": "1f2fa5ee07392c51951bc36752a15e4bbadccf40f2c2ee49c6e44f3e346b7794"
+      },
+      {
+        "path": "docs/archive/evidence/round7-publication-process.json",
+        "sha256": "d6dd96a9545a7482e301c4cb52abc7d9049ecdaa0a47f6260e09ee638f597a27"
+      },
+      {
+        "path": "docs/archive/evidence/round7-verification.json",
+        "sha256": "1f81e9c83ef593824256f3da36e8f8ee69185437f5b4f0b83954e301b111135f"
+      }
+    ],
+    "review": "ship_after_cleanup",
+    "upstream_ci_removal_commit": "0232a5eff9764d57e11988dd527a76d5cbc004de",
+    "browser": "Original Round 8 browser evidence retained; report layout unchanged by this cleanup.",
+    "regression_scope": "Quality workflow and packaging rechecked; existing backend/product flow results above are retained prior measurements.",
+    "documentation": {
+      "markdown_files": 45,
+      "local_links": 296,
+      "missing": 0
+    },
+    "staged_file_audit": {
+      "changed_paths": 55,
+      "private_runtime_or_cache_paths": 0,
+      "workflow_files_remaining": 0
+    }
+  }
+}
