@@ -71,7 +71,7 @@ npm run verify:player
 npm run build
 ```
 
-后端启动、API 与测试见[后端说明](backend/README.md)；项目模块和任务数据流见[当前架构](docs/ARCHITECTURE.md)。CI 执行前后端检查、真实 Postgres 测试和进程恢复验证，所有模型测试使用受控供应商，无付费调用。最近完整验收与可复跑命令见[验证说明](docs/VERIFICATION.md)。
+后端启动、API 与测试见[后端说明](backend/README.md)；项目模块和任务数据流见[当前架构](docs/ARCHITECTURE.md)。检查在本地运行，所有模型测试使用受控供应商，无付费调用；仓库不配置 GitHub Actions CI/CD。最近完整验收与可复跑命令见[验证说明](docs/VERIFICATION.md)。
 
 备份数据库和 `data/`；`docker compose down -v` 会删除数据库卷。[历史计划与审查](docs/archive/README.md)用于追溯，不作为当前运行指南。
 

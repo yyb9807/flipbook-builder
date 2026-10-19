@@ -1,6 +1,6 @@
 # 后端开发与验证
 
-后端使用 Python 3.13、FastAPI 与 PostgreSQL 16。开发和 CI 使用同一份开发依赖；运行依赖已固定直接版本。
+后端使用 Python 3.13、FastAPI 与 PostgreSQL 16。开发检查在本地使用开发依赖运行；运行依赖已固定直接版本。
 
 ## 启动
 
@@ -35,7 +35,7 @@ python -m pytest tests/test_security.py tests/test_node_integrity.py tests/test_
 DATABASE_URL=postgresql://flipbook:flipbook@localhost:5434/flipbook_test python -m pytest -q
 ```
 
-`flipbook_test` 需预先创建。全量测试会写入临时项目并清理，建议使用专用测试数据库。CI 启动隔离的 Postgres 服务运行全量测试；本地没有数据库时运行上面的无数据库测试集即可。所有自动化测试均不调用付费模型。
+`flipbook_test` 需预先创建。全量测试会写入临时项目并清理，请自行准备专用的隔离 Postgres 测试数据库；本地没有数据库时运行上面的无数据库测试集即可。所有自动化测试均不调用付费模型。
 
 ## 配置与数据边界
 

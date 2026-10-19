@@ -66,7 +66,7 @@ npm run verify:player
 npm run build
 ```
 
-See [backend development](backend/README.md), [current architecture](docs/ARCHITECTURE.md) and [verification commands and limits](docs/VERIFICATION.md). CI runs frontend checks, real Postgres backend tests and process recovery verification using controlled providers, with no paid model calls.
+See [backend development](backend/README.md), [current architecture](docs/ARCHITECTURE.md) and [verification commands and limits](docs/VERIFICATION.md). Run frontend checks, real Postgres backend tests and process recovery verification locally with controlled providers and no paid model calls. This repository has no GitHub Actions CI/CD configuration.
 
 Back up the database and `data/`; `docker compose down -v` removes database volumes. [Historical reports](docs/archive/README.md) are retained for traceability, not as current setup instructions.
 

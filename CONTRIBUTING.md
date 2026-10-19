@@ -2,7 +2,7 @@
 
 Use Node.js 24, Python 3.13 and Postgres 16. Follow the [root README](README.md), [frontend guide](frontend/README.md) and [backend guide](backend/README.md) for setup. [Architecture](docs/ARCHITECTURE.md) describes the current implementation; [verification](docs/VERIFICATION.md) lists runnable checks and their limits.
 
-Before proposing a change, run the relevant checks. Frontend changes normally require lint, tests and build; changes to rendering or export also require `npm run verify:player`. Backend changes require Ruff and relevant pytest coverage, with a dedicated Postgres test database for integration tests. Task recovery changes also require the current `scripts/verify_knowledge_generation.py` process verifier. Never point tests at a database containing real projects. CI runs these checks with controlled providers; it does not evaluate paid model quality.
+Before proposing a change, run the relevant checks locally. Frontend changes normally require lint, tests and build; changes to rendering or export also require `npm run verify:player`. Backend changes require Ruff and relevant pytest coverage, with a dedicated Postgres test database for integration tests. Task recovery changes also require the current `scripts/verify_knowledge_generation.py` process verifier. Never point tests at a database containing real projects. Use controlled providers for these checks; they do not evaluate paid model quality.
 
 For bug reports, include the screen, steps, expected result, actual result and relevant versions. Use synthetic content and remove keys, secret-bearing provider responses and private images. Do not commit `.env`, local databases, uploads, generated distributions or machine-specific screenshots and logs.
 
